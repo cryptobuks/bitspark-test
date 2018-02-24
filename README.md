@@ -72,3 +72,9 @@ Since we are running on Testnet the risk of losing coins is negligible - we woul
 ## User accounts
 
 Ask me for one :) or create it yourself using **bitspark** user. But make sure you know what you are doing ;) 
+
+## WEB Wallet
+
+```
+make -C web-wallet run
+```
