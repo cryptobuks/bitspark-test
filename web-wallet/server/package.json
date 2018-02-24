@@ -1,0 +1,14 @@
+{
+  "name": "web-wallet-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "Marian Schubert",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.2"
+  }
+}
