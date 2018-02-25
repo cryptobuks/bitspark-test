@@ -76,5 +76,5 @@ Ask me for one :) or create it yourself using **bitspark** user. But make sure y
 ## WEB Wallet
 
 ```
-make -C web-wallet run
+make -C web-wallet dev
 ```

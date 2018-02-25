@@ -1,13 +1,12 @@
 <template>
-  <div id="app">
+  <v-app id="app">
     <header>
-      <span>Vue.js PWA</span>
+      <span>BiLuminate Wallet</span>
     </header>
     <main>
-      <img src="./assets/logo.png" alt="Vue.js PWA">
       <router-view></router-view>
     </main>
-  </div>
+  </v-app>
 </template>
 
 <script>

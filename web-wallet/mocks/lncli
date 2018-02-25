@@ -34,6 +34,6 @@ case "$COMMAND" in
         handle_$COMMAND "$@"
         ;;
     *)
-        echo Unknown command
+        echo 'Unknown command (Use: pay, decodepay)'
         ;;
 esac
