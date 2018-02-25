@@ -1,5 +1,8 @@
 .PHONY: build
 
+dev: node_modules
+	npm run dev
+
 build: node_modules
 	npm run build
 
