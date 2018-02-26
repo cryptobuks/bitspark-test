@@ -1,6 +1,8 @@
-export PATH=$PATH:/data/bitcoin/bitcoinbin/bin
-export PATH=$PATH:/data/lightning/lightning/cli
+LS_COLORS=$LS_COLORS:'di=0;33:' ; export LS_COLORS
+
+export PATH=$PATH:/mnt/data/bitcoin/bitcoinbin/bin
+export PATH=$PATH:/mnt/data/lightning/lightning/cli
 
 alias btcli="bitcoin-cli -testnet -rpcuser=bitspark -rpcpassword=bitspark"
-alias lncli="lightning-cli --lightning-dir=/data/lightning/data_testnet"
-
+alias lncli="lightning-cli --lightning-dir=/mnt/data/lightning/data_testnet"
+alias ln2cli="lightning-cli --lightning-dir=/mnt/data/lightning/data2_testnet"

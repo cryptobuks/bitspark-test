@@ -10,52 +10,41 @@ Later this will include also the wallet backend/frontend and the user account da
 
 ## Server
 
-We use one of Threatlabs Research unused machines: **prg07-006.srv.int.avast.com** (10.1.54.156)
-
-This machine is not visible from the public internet (you need to be on Avast VPN to connect to it from outside). This is good for us since we do not want anyone to easily see what we are doing.
-
-I have created a user **bitspark** that has **sudo**. If you need sudo access use this account. The password is the same as the username (lets ignore security for now). This user has a screen session active. The following command allows you to access it if you are logged in as bitspark:
-
-```
-screen -dr btc
-```
-
-This might be needed if the Bitcoin or LN node go down for some reason (see below).
-
+Hostname/IP: **bit-1.maio.cz** (35.204.151.181)
 
 ## Bitcoin node
 
-The bitcoin node is running as a daemon and uses the bitcoin test network (aka *"testnet"*). It runs under the user **bitspark**.
+The bitcoin node is running as a daemon and uses the bitcoin test network (aka *"testnet"*).
 
-* **data directory:** /data/bitcoin/data_testnet
-* **executables directory**: /data/bitcoin/bitcoinbin/bin
+* **data directory:** /mnt/data/bitcoin/data_testnet
+* **executables directory**: /mnt/data/bitcoin/bitcoinbin/bin
 
 To communicate with it, use the **bitcoin-cli** executable. To make this easier, add this to your bashrc profile:
 
 ```
-export PATH=$PATH:/data/bitcoin/bitcoinbin/bin
+export PATH=$PATH:/mnt/data/bitcoin/bitcoinbin/bin
 alias btcli="bitcoin-cli -testnet -rpcuser=bitspark -rpcpassword=bitspark"
 ```
 
-If the node is not running for some reason (no bitcoind process running) you can try relaunching it in the bitspark screen session. Just run this script (includes all needed command line options): `/data/bitcoin/runbtcd_testnet.sh`.
+If the node is not running for some reason (no bitcoind process running) you can try relaunching it in the bitspark screen session. Just run this script (includes all needed command line options): `/mnt/data/bitcoin/runbtcd_testnet.sh`.
 
 ## Lightning Network node
 
-THe LN node does not seem to be able to run as a daemon just yet, so it runs in a screen session under the user **bitspark**.
-
+There are two LN nodes running as a daemon and both use the bitcoin test network.
 
 ```
-export PATH=$PATH:/data/lightning/lightning/cli
-alias lncli="lightning-cli --lightning-dir=/data/lightning/data_testnet"
+export PATH=$PATH:/mnt/data/lightning/lightning/cli
+alias lncli="lightning-cli --lightning-dir=/mnt/data/lightning/data_testnet"
+alias ln2cli="lightning-cli --lightning-dir=/mnt/data/lightning/data2_testnet"
 ```
 
-If the node is not running for some reason you can try relaunching it in the bitspark screen session. Just run this script: `/data/lightning/lightning/runlnd_testnet.sh`
+For our test we consider `lncli` to be our (internal) node and `ln2cli` to be a merchant (external) node.
 
-Make sure you do not close the screen session, just detach from it!
+If any of the LN nodes do not run you can relaunch them using the appropriate scripts: `/mnt/data/lightning/lightning/runlnd_testnet.sh` or `/mnt/data/lightning/lightning/runlnd2_testnet.sh`
 
 ## Communicating with Bitcoin and LN node
 
-If you have the `btcli` and `lncli` aliases in your bashrc (make sure to run `source ~/.bashrc` to refresh it) then it is quite straightforward. Both communicate with the appropriate nodes using RPC. Try:
+If you have the `btcli` and `lncli` and `ln2cli` aliases in your bashrc (make sure to run `source ~/.bashrc` to refresh it) then it is quite straightforward. Both communicate with the appropriate nodes using RPC. Try:
 
 ```
 btcli help
@@ -65,13 +54,14 @@ To see available Bitcoin Node commands. For LN, use:
 
 ```
 lncli help
+ln2cli help
 ```
 
 Since we are running on Testnet the risk of losing coins is negligible - we would only have to get new ones from a faucet (it's free). Nevertheless please be careful when managing funds. Losing the wallet would mean waiting up to an hour for new coins to arrive from the faucet and recreating all LN channels takes even more time.
 
 ## User accounts
 
-Ask me for one :) or create it yourself using **bitspark** user. But make sure you know what you are doing ;) 
+You should have one ;)
 
 ## WEB Wallet
 
