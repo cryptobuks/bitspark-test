@@ -1,6 +1,7 @@
 #!/bin/bash
 
 handle_decodepay() {
+    local id=${1: -3}
     cat <<EOF
 {
     "currency" : "tb",
@@ -9,7 +10,7 @@ handle_decodepay() {
     "expiry" : 3600,
     "payee" : "021fa38fe355fb1528ae976ddd940cdf899f9cdfb16719602a2b7d13dbb12c60d7",
     "msatoshi" : 50000000,
-    "description" : "Yummy",
+    "description" : "Yummy (${id})",
     "min_final_cltv_expiry" : 6,
     "payment_hash" : "a3fe33c774c2c9e98fd5a8fbcdebc8eeb6adbeb7d9e2ae8314aeee39f7fa004a",
     "signature" : "30440220442717ac6d85507239a3e3b5c13c8962bdf5c9f7bc7498dc7e6448a152496c8f02205940db5c36c315edcca85198a6811b1013e965e10a959ebd10bea4fa2d04ce6a"
