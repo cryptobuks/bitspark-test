@@ -8,6 +8,10 @@
     </div>
     <!-- Loading -->
     <p v-else-if="isLoading">Fetching invoice data...</p>
+    <!-- Processing -->
+    <p v-else-if="isProcessing">Processing payment...</p>
+    <!-- Payed -->
+    <p v-else-if="isPayed">Success</p>
     <!-- Show invoice -->
     <div v-else>
       <h3>Description</h3>
@@ -15,7 +19,7 @@
       <h3>Price</h3>
       <p>{{ invoicePayload.msatoshi }}</p>
 
-      <v-btn flat color="blue">PAY</v-btn>
+      <v-btn flat color="blue" v-on:click="processPayment">PAY</v-btn>
       <v-btn flat color="orange">CANCEL</v-btn>
     </div>
   </div>
@@ -27,13 +31,18 @@ export default {
   name: 'pay-invoice',
   data () {
     return {
+      isProcessing: false,
       apiError: undefined,
-      invoicePayload: undefined
+      invoicePayload: undefined,
+      paymentResult: undefined
     }
   },
   computed: {
     isLoading: function () {
       return !this.invoicePayload
+    },
+    isPayed: function () {
+      return this.paymentResult !== undefined
     }
   },
   watch: {
@@ -45,9 +54,37 @@ export default {
     this.fetchInvoicePayload()
   },
   methods: {
+    processPayment: function () {
+      this.isProcessing = true
+      fetch('/api/invoice/pay', {
+        method: 'POST',
+        cache: 'no-cache',
+        mode: 'cors',
+        body: JSON.stringify({
+          invoice: this.invoice
+        }),
+        headers: new Headers({
+          'Content-Type': 'application/json'
+        })
+      })
+        .then(r => r.json())
+        .then(r => {
+          if (r.status !== 'OK') {
+            this.apiError = r.error
+            return
+          }
+          this.isProcessing = false
+          this.paymentResult = r.payload
+        })
+        .catch(e => {
+          this.isProcessing = false
+          console.error(e)
+          this.apiError = 'Process payment failed'
+        })
+    },
     fetchInvoicePayload: function () {
       this.invoicePayload = undefined
-      fetch('/api/invoice-info?invoice=' + this.invoice)
+      fetch('/api/invoice/info?invoice=' + this.invoice)
         .then(r => r.json())
         .then(r => {
           if (r.status !== 'OK') {

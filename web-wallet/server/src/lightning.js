@@ -11,4 +11,14 @@ function getInvoicePayload(invoice) {
   })
 }
 
+function payInvoice(invoice) {
+  // TODO: When something goes wrong command returns non-zero exit code (e.g., wrong invoice)
+  return exec(config.lncli + ' pay ' + invoice).then(result => {
+    if (result.stderr) console.error(result.stderr)
+
+    return JSON.parse(result.stdout)
+  })
+}
+
 module.exports.getInvoicePayload = getInvoicePayload;
+module.exports.payInvoice = payInvoice;
