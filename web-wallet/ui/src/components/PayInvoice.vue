@@ -36,17 +36,28 @@ export default {
       return !this.invoicePayload
     }
   },
+  watch: {
+    invoice: function () {
+      this.fetchInvoicePayload()
+    }
+  },
   created () {
-    fetch('/api/invoice-info?invoice=' + this.invoice)
-      .then(r => r.json())
-      .then(r => {
-        if (r.status !== 'OK') {
-          this.apiError = r.error
-          return
-        }
-        this.invoicePayload = r.payload
-      })
-      .catch(e => (this.apiError = 'Fetch failed'))
+    this.fetchInvoicePayload()
+  },
+  methods: {
+    fetchInvoicePayload: function () {
+      this.invoicePayload = undefined
+      fetch('/api/invoice-info?invoice=' + this.invoice)
+        .then(r => r.json())
+        .then(r => {
+          if (r.status !== 'OK') {
+            this.apiError = r.error
+            return
+          }
+          this.invoicePayload = r.payload
+        })
+        .catch(e => (this.apiError = 'Fetch failed'))
+    }
   }
 }
 </script>
