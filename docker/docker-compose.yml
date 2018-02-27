@@ -1,0 +1,27 @@
+version: '2'
+services:
+  web-wallet:
+    image: node:8
+    container_name: web-wallet
+    restart: always
+    volumes:
+      - "../web-wallet:/app"
+    expose:
+      - "80"
+    networks:
+      - web
+    command: make LNCLI=/app/mocks/lncli PORT=80 -C /app run
+  proxy:
+    image: abiosoft/caddy
+    container_name: caddy
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "./Caddyfile:/etc/Caddyfile"
+    networks:
+      - web
+
+networks:
+  web:
