@@ -1,0 +1,21 @@
+# place into /etc/monit/conf-enabled
+
+# check bitcoind
+#check process bitcoind with pidfile /mnt/data/bitcoin/data_testnet/testnet3/bitcoind.pid
+check process bitcoind matching "bitcoind.*bitcoin/data_testnet"
+  start program = "/bin/bash -c '/home/bitspark/bitspark-test/scripts/runbtcd_testnet.sh'" as uid "bitspark" and gid "bitspark" with timeout 60 seconds
+  stop program = "/bin/bash -c '/home/bitspark/bitspark-test/scripts/stopbtcd_testnet.sh'" as uid "bitspark" and gid "bitspark"
+
+# check lightningd 1
+#check process lightningd with pidfile /mnt/data/lightning/data_testnet/lightningd-testnet.pid
+check process lightningd matching "lightningd.*lightning/data_testnet"
+  start program = "/bin/bash -c '/home/bitspark/bitspark-test/scripts/runlnd_testnet.sh'" as uid "bitspark" and gid "bitspark" with timeout 60 seconds
+  stop program = "/bin/bash -c '/home/bitspark/bitspark-test/scripts/stoplnd_testnet.sh'" as uid "bitspark" and gid "bitspark"
+  depends on bitcoind
+
+# check lightning 2
+#check process lightningd2 with pidfile /mnt/data/lightning/data2_testnet/lightningd-testnet.pid
+check process lightningd2 matching "lightningd.*lightning/data2_testnet"
+  start program = "/bin/bash -c '/home/bitspark/bitspark-test/scripts/runlnd2_testnet.sh'" as uid "bitspark" and gid "bitspark" with timeout 60 seconds
+  stop program = "/bin/bash -c '/home/bitspark/bitspark-test/scripts/stoplnd2_testnet.sh'" as uid "bitspark" and gid "bitspark"
+  depends on bitcoind
