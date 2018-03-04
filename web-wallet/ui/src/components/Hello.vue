@@ -9,7 +9,7 @@ export default {
   name: 'hello',
   data () {
     return {
-      msg: 'Welcome Your Wallet'
+      msg: 'Welcome to Your Wallet'
     }
   }
 }
