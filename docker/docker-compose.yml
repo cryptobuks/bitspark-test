@@ -6,7 +6,6 @@ services:
     restart: always
     user: 1005:1006  # bitspark:bitspark
     volumes:
-      - "../web-wallet:/app"
       - "/mnt:/mnt"
     expose:
       - "8080"
