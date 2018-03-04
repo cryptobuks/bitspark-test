@@ -1,15 +1,35 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-  </div>
+<div class="hello">
+  <h1>{{ msg }}</h1>
+  <p v-if="!user">
+    <v-btn v-on:click="doLogin">Login</v-btn>
+  </p>
+  <p v-else>
+    {{ user.name }}
+  </p>
+</div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import lock from '../auth'
+
 export default {
   name: 'hello',
   data () {
     return {
       msg: 'Welcome to Your Wallet'
+    }
+  },
+  computed: mapGetters([
+    'user'
+  ]),
+  created () {
+    console.log('created')
+  },
+  methods: {
+    doLogin: function () {
+      lock.show()
     }
   }
 }
