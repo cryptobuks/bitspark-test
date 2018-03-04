@@ -4,13 +4,15 @@ services:
     image: node:8
     container_name: web-wallet
     restart: always
+    user: 1005:1006  # bitspark:bitspark
     volumes:
       - "../web-wallet:/app"
+      - "/mnt:/mnt"
     expose:
       - "80"
     networks:
       - web
-    command: make LNCLI=/app/mocks/lncli PORT=80 -C /app run
+    command: make LNCLI='/mnt/data/lightning/lightning/cli/lightning-cli --lightning-dir=/mnt/data/lightning/data_testnet' PORT=80 -C /app run
   proxy:
     image: abiosoft/caddy
     container_name: caddy
