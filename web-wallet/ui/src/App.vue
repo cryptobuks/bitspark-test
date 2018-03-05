@@ -1,8 +1,10 @@
 <template>
   <v-app id="app">
-    <header>
-      <span>BiLuminate Wallet</span>
-    </header>
+    <v-toolbar dark color="primary">
+      <v-toolbar-title>BiLuminate Wallet</v-toolbar-title>
+      <v-spacer></v-spacer>
+      <span v-if="user">{{ initials }}</span>
+    </v-toolbar>
     <main>
       <router-view></router-view>
     </main>
@@ -10,8 +12,20 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
-  name: 'app'
+  name: 'app',
+  computed: {
+    initials: function () {
+      if (!this.user) return null
+      if (!this.user.name) return 'YOU'
+      return this.user.name.split(/\s+/).map(s => s[0]).join('')
+    },
+    ...mapGetters([
+      'user'
+    ])
+  }
 }
 </script>
 
