@@ -53,7 +53,7 @@ app.get('/api/invoice/info', (req, res) => {
   }))
 })
 
-app.post('/api/invoice/pay', (req, res) => {
+app.post('/api/invoice/pay', jwtCheck, (req, res) => {
   console.info('PAY', req.body)
 
   var invoice = req.body.invoice

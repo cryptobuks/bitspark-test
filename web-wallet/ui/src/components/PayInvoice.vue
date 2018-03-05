@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import auth from '../auth'
 
 export default {
@@ -51,7 +51,8 @@ export default {
       return this.paymentResult !== undefined
     },
     ...mapGetters([
-      'user'
+      'user',
+      'accessToken'
     ])
   },
   watch: {
@@ -63,6 +64,7 @@ export default {
     this.fetchInvoicePayload()
   },
   methods: {
+    ...mapActions(['apiAuthError']),
     doLogin: auth.doLogin,
     processPayment: function () {
       this.isProcessing = true
@@ -74,9 +76,17 @@ export default {
           invoice: this.invoice
         }),
         headers: new Headers({
+          'Authorization': 'Bearer ' + this.accessToken,
           'Content-Type': 'application/json'
         })
       })
+        .then(r => {
+          if (r.status === 401) {
+            this.apiAuthError()
+            throw new Error('Not authorized')
+          }
+          return r
+        })
         .then(r => r.json())
         .then(r => {
           if (r.status !== 'OK') {
