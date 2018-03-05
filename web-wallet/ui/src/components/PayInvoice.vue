@@ -1,31 +1,37 @@
 <template>
-  <div class="pay-invoice">
-    <h1>Pay Invoice</h1>
-    <!-- Error -->
-    <div v-if="apiError">
-      <h2>Error</h2>
-      <div>{{ apiError }}</div>
-    </div>
-    <!-- Loading -->
-    <p v-else-if="isLoading">Fetching invoice data...</p>
-    <!-- Processing -->
-    <p v-else-if="isProcessing">Processing payment...</p>
-    <!-- Payed -->
-    <p v-else-if="isPayed">Success</p>
-    <!-- Show invoice -->
-    <div v-else>
-      <h3>Description</h3>
-      <p>{{ invoicePayload.description }}</p>
-      <h3>Price</h3>
-      <p>{{ invoicePayload.msatoshi }}</p>
+  <v-container grid-list-md text-xs-center fill-height>
+    <v-layout row wrap>
+      <v-flex xs12>
+        <!-- Error -->
+        <div v-if="apiError">
+          <h2>Error</h2>
+          <div>{{ apiError }}</div>
+        </div>
+        <!-- Loading -->
+        <p v-else-if="isLoading">Fetching invoice data...</p>
+        <!-- Processing -->
+        <p v-else-if="isProcessing">Processing payment...</p>
+        <!-- Payed -->
+        <div v-else-if="isPayed">
+          <p class="display-2">Success</p>
+          <v-btn large color="primary" class="mt-5" v-on:click="successOk">OK</v-btn>          
+        </div>
+        <!-- Show invoice -->
+        <div v-else>
+          <p class="display-2">{{ invoicePayload.description }}</p>
+          <p class="display-1 mt-5">{{ price.amount }} {{ price.unit }}</p>
 
-      <v-btn v-if="!user" v-on:click="doLogin">Login</v-btn>
-      <div v-else>
-        <v-btn flat color="blue" v-on:click="processPayment">PAY</v-btn>
-        <v-btn flat color="orange" v-on:click="cancelPayment">CANCEL</v-btn>
-      </div>
-    </div>
-  </div>
+          <div class="mt-5">
+            <v-btn v-if="!user" v-on:click="doLogin">Login</v-btn>
+            <div v-else>
+              <v-btn large color="primary" v-on:click="processPayment">PAY<v-icon right>mdi-flash</v-icon></v-btn>
+              <v-btn color="accent" v-on:click="cancelPayment">CANCEL<v-icon right>mdi-close-circle</v-icon></v-btn>
+            </div>
+          </div>
+        </div>
+      </v-flex>
+    </v-layout>
+  </v-container>
 </template>
 
 <script>
@@ -50,6 +56,12 @@ export default {
     isPayed: function () {
       return this.paymentResult !== undefined
     },
+    price: function () {
+      return {
+        amount: this.invoicePayload.msatoshi / 100000000,
+        unit: 'mBTC'
+      }
+    },
     ...mapGetters([
       'user',
       'accessToken'
@@ -67,6 +79,9 @@ export default {
     ...mapActions(['apiAuthError']),
     doLogin: auth.doLogin,
     cancelPayment: function () {
+      this.$router.push('/')
+    },
+    successOk: function () {
       this.$router.push('/')
     },
     processPayment: function () {
