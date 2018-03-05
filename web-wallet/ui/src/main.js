@@ -6,11 +6,20 @@ import App from './App'
 import router from './router'
 import store from './store'
 import auth from './auth'
+import colors from 'vuetify/es5/util/colors'
 
 Vue.config.productionTip = false
 
-Vue.use(Vuetify)
+Vue.use(Vuetify, {
+  theme: {
+    primary: colors.red.darken1, // #E53935
+    secondary: colors.red.lighten4, // #FFCDD2
+    accent: colors.indigo.base // #3F51B5
+  }
+})
 require('vuetify/dist/vuetify.min.css')
+require('mdi/fonts/materialdesignicons-webfont.ttf')
+require('mdi/css/materialdesignicons.min.css')
 
 window.router = router
 

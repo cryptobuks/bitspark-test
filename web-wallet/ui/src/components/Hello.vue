@@ -1,13 +1,10 @@
 <template>
-<div class="hello">
-  <h1>{{ msg }}</h1>
-  <p v-if="!user">
-    <v-btn v-on:click="doLogin">Login</v-btn>
-  </p>
-  <p v-else>
-    {{ user.email }}
-  </p>
-</div>
+  <v-container fill-height justify-center>
+    <v-btn v-if="!user" large right v-on:click="doLogin">Login<v-icon right>mdi-account</v-icon></v-btn>
+    <div v-else>
+      <h1>Welcome to Your Wallet</h1>
+    </div>
+  </v-container>
 </template>
 
 <script>
@@ -18,7 +15,6 @@ export default {
   name: 'hello',
   data () {
     return {
-      msg: 'Welcome to Your Wallet'
     }
   },
   computed: mapGetters([
@@ -32,21 +28,4 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
-h1, h2 {
-  font-weight: normal;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-
-a {
-  color: #35495E;
-}
 </style>

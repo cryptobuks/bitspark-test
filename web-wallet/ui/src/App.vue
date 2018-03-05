@@ -1,13 +1,13 @@
 <template>
   <v-app id="app">
-    <v-toolbar dark color="primary">
-      <v-toolbar-title>BiLuminate Wallet</v-toolbar-title>
-      <v-spacer></v-spacer>
-      <span v-if="user">{{ initials }}</span>
-    </v-toolbar>
-    <main>
+    <v-layout column align-center>
+      <v-toolbar dark color="primary">
+        <v-toolbar-title>BiLuminate Wallet</v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-btn flat icon><v-icon>mdi-account</v-icon></v-btn>
+      </v-toolbar>
       <router-view></router-view>
-    </main>
+    </v-layout>
   </v-app>
 </template>
 
