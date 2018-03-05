@@ -5,14 +5,14 @@
     <v-btn v-on:click="doLogin">Login</v-btn>
   </p>
   <p v-else>
-    {{ user.name }}
+    {{ user.email }}
   </p>
 </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import lock from '../auth'
+import auth from '../auth'
 
 export default {
   name: 'hello',
@@ -24,13 +24,8 @@ export default {
   computed: mapGetters([
     'user'
   ]),
-  created () {
-    console.log('created')
-  },
   methods: {
-    doLogin: function () {
-      lock.show()
-    }
+    doLogin: auth.doLogin
   }
 }
 </script>

@@ -5,11 +5,14 @@ import Vuetify from 'vuetify'
 import App from './App'
 import router from './router'
 import store from './store'
+import auth from './auth'
 
 Vue.config.productionTip = false
 
 Vue.use(Vuetify)
 require('vuetify/dist/vuetify.min.css')
+
+window.router = router
 
 /* eslint-disable no-new */
 new Vue({
@@ -17,5 +20,8 @@ new Vue({
   router,
   store,
   template: '<App/>',
-  components: { App }
+  components: { App },
+  mounted () {
+    auth.init()
+  }
 })

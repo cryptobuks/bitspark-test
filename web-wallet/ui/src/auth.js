@@ -1,39 +1,50 @@
-import router from './router'
 import store from './store'
 
 import { Auth0Lock } from 'auth0-lock'
 
 var lock = new Auth0Lock(
-  'VNuKB9PX4R6v27ltkqjhe68X5NSH8pND', 'biluminate.eu.auth0.com')
+  'VNuKB9PX4R6v27ltkqjhe68X5NSH8pND', 'biluminate.eu.auth0.com',
+  {
+    auth: {
+      params: {
+        audience: 'https://biluminate.net/auth'
+      }
+    }
+  }
+)
 
 function getUserInfo (accessToken) {
   lock.getUserInfo(accessToken, function (error, profile) {
     if (error) {
-      alert(error)
+      store.dispatch('loginFailure', {
+        error: error,
+        accessToken
+      })
       return
     }
 
-    localStorage.setItem('accessToken', accessToken)
-
-    store.dispatch('login', {
+    store.dispatch('loginSuccess', {
       user: profile,
-      accessToken: accessToken
+      accessToken
     })
-
-    console.log(profile)
-    router.push('/')
   })
 }
 
-lock.on('authenticated', function (authResult) {
-  console.log(authResult)
-  getUserInfo(authResult.accessToken)
-})
-
-var accessToken = localStorage.getItem('accessToken')
-
-if (accessToken) {
-  getUserInfo(accessToken)
+function init () {
+  lock.on('authenticated', function (authResult) {
+    console.warn('authenticated')
+    getUserInfo(authResult.accessToken)
+  })
 }
 
-export default lock
+function doLogin () {
+  store.dispatch('beforeLogin', {})
+  lock.show()
+}
+
+const auth = {
+  init: init,
+  doLogin: doLogin
+}
+
+export default auth

@@ -19,13 +19,19 @@
       <h3>Price</h3>
       <p>{{ invoicePayload.msatoshi }}</p>
 
-      <v-btn flat color="blue" v-on:click="processPayment">PAY</v-btn>
-      <v-btn flat color="orange">CANCEL</v-btn>
+      <v-btn v-if="!user" v-on:click="doLogin">Login</v-btn>
+      <div v-else>
+        <v-btn flat color="blue" v-on:click="processPayment">PAY</v-btn>
+        <v-btn flat color="orange">CANCEL</v-btn>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import auth from '../auth'
+
 export default {
   props: ['invoice'],
   name: 'pay-invoice',
@@ -43,7 +49,10 @@ export default {
     },
     isPayed: function () {
       return this.paymentResult !== undefined
-    }
+    },
+    ...mapGetters([
+      'user'
+    ])
   },
   watch: {
     invoice: function () {
@@ -54,6 +63,7 @@ export default {
     this.fetchInvoicePayload()
   },
   methods: {
+    doLogin: auth.doLogin,
     processPayment: function () {
       this.isProcessing = true
       fetch('/api/invoice/pay', {
