@@ -22,7 +22,7 @@
       <v-btn v-if="!user" v-on:click="doLogin">Login</v-btn>
       <div v-else>
         <v-btn flat color="blue" v-on:click="processPayment">PAY</v-btn>
-        <v-btn flat color="orange">CANCEL</v-btn>
+        <v-btn flat color="orange" v-on:click="cancelPayment">CANCEL</v-btn>
       </div>
     </div>
   </div>
@@ -66,6 +66,9 @@ export default {
   methods: {
     ...mapActions(['apiAuthError']),
     doLogin: auth.doLogin,
+    cancelPayment: function () {
+      this.$router.push('/')
+    },
     processPayment: function () {
       this.isProcessing = true
       fetch('/api/invoice/pay', {
