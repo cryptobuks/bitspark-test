@@ -22,7 +22,7 @@
           <p class="display-1 mt-5">{{ price.amount }} {{ price.unit }}</p>
 
           <div class="mt-5">
-            <v-btn v-if="!user" v-on:click="doLogin">Login</v-btn>
+            <LoginButton v-if="!user" />
             <div v-else>
               <v-btn large color="primary" v-on:click="processPayment">PAY<v-icon right>mdi-flash</v-icon></v-btn>
               <v-btn color="accent" v-on:click="cancelPayment">CANCEL<v-icon right>mdi-close-circle</v-icon></v-btn>
@@ -37,10 +37,12 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import auth from '../auth'
+import LoginButton from '@/components/LoginButton'
 
 export default {
   props: ['invoice'],
   name: 'pay-invoice',
+  components: { LoginButton },
   data () {
     return {
       isProcessing: false,

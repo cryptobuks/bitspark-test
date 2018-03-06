@@ -1,6 +1,6 @@
 <template>
   <v-container fill-height justify-center>
-    <v-btn v-if="!user" large right v-on:click="doLogin">Login<v-icon right>mdi-account</v-icon></v-btn>
+    <LoginButton v-if="!user" />
     <div v-else>
       <h1>Welcome to Your Wallet</h1>
     </div>
@@ -9,20 +9,18 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import auth from '../auth'
+import LoginButton from '@/components/LoginButton'
 
 export default {
   name: 'hello',
+  components: { LoginButton },
   data () {
     return {
     }
   },
   computed: mapGetters([
     'user'
-  ]),
-  methods: {
-    doLogin: auth.doLogin
-  }
+  ])
 }
 </script>
 
