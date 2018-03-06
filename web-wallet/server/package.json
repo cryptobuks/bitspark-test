@@ -2,10 +2,11 @@
   "name": "web-wallet-server",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
   "scripts": {
     "test": "mocha",
-    "dev": "nodemon server.js"
+    "start": "npm run migrate up && node server.js",
+    "dev": "npm run migrate up && nodemon server.js",
+    "migrate": "node migrate.js"
   },
   "author": "Marian Schubert",
   "license": "ISC",
@@ -15,7 +16,9 @@
     "express": "^4.16.2",
     "express-jwt": "^5.3.0",
     "express-jwt-authz": "^1.0.0",
-    "jwks-rsa": "^1.2.1"
+    "jwks-rsa": "^1.2.1",
+    "node-pg-migrate": "^2.24.1",
+    "pg": "^7.4.1"
   },
   "devDependencies": {
     "nodemon": "^1.15.1"

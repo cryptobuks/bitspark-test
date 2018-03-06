@@ -14,6 +14,8 @@ services:
     environment:
       - LNCLI=/mnt/data/lightning/lightning/cli/lightning-cli --lightning-dir=/mnt/data/lightning/data_testnet
       - PORT=8080
+      - PGHOST=database
+
   proxy:
     image: abiosoft/caddy
     container_name: caddy
@@ -25,6 +27,21 @@ services:
       - "./Caddyfile:/etc/Caddyfile"
     networks:
       - web
+
+  database:
+    container_name: database
+    restart: always
+    image: postgres:latest
+    restart: always
+    volumes:
+      - database-volume:/var/lib/postgresql
+    networks:
+      - web
+    ports:
+      - "5432:5432"
+
+volumes:
+  database-volume:
 
 networks:
   web:

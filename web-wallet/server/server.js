@@ -5,6 +5,7 @@ const jwks = require('jwks-rsa');
 const cors = require('cors')
 const bodyParser = require('body-parser')
 const lightning = require('./src/lightning')
+const db = require('./src/db')
 
 const jwtCheck = jwt({
   secret: jwks.expressJwtSecret({
@@ -26,6 +27,17 @@ app.use(bodyParser.urlencoded({
 }))
 
 app.get('/api', (req, res) => res.send('API'))
+
+app.get('/api/db-check', (req, res) => {
+  db.query("SELECT 'OK' AS x")
+    .then(r => {
+      res.send(r.rows[0].x)
+    })
+    .catch(err => {
+      console.error(err)
+      res.send('Error')
+    })
+})
 
 app.get('/api/auth-check', jwtCheck, (req, res) => {
   console.log(req.user)
