@@ -1,10 +1,9 @@
 <template>
-<div class="hello">
-  <h1>API</h1>
-  <p>
-    <div>Status: <span>{{ status || "Pending..." }}</span></div>
-  </p>
-</div>
+  <v-container fluid fill-height>
+    <v-layout align-center justify-center>
+      <span>Status: <span>{{ status || "Pending..." }}</span></span>
+    </v-layout>
+  </v-container>
 </template>
 
 <script>
@@ -43,24 +42,3 @@ export default {
   }
 }
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style>
-h1, h2 {
-  font-weight: normal;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-
-a {
-  color: #35495E;
-}
-</style>

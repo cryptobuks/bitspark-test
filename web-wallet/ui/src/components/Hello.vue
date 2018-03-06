@@ -14,16 +14,8 @@ import LoginButton from '@/components/LoginButton'
 export default {
   name: 'hello',
   components: { LoginButton },
-  data () {
-    return {
-    }
-  },
-  computed: mapGetters([
-    'user'
-  ])
+  computed: {
+    ...mapGetters(['user'])
+  }
 }
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style>
-</style>

@@ -36,7 +36,6 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import auth from '../auth'
 import LoginButton from '@/components/LoginButton'
 
 export default {
@@ -79,7 +78,6 @@ export default {
   },
   methods: {
     ...mapActions(['apiAuthError']),
-    doLogin: auth.doLogin,
     cancelPayment: function () {
       this.$router.push('/')
     },
@@ -138,10 +136,3 @@ export default {
   }
 }
 </script>
-
-<style>
-h1, h2, h3 {
-  font-weight: normal;
-  margin-bottom: 10px;
-}
-</style>
