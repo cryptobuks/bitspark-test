@@ -31,7 +31,7 @@ services:
   database:
     container_name: database
     restart: always
-    image: postgres:latest
+    image: postgres:10.3
     restart: always
     volumes:
       - database-volume:/var/lib/postgresql

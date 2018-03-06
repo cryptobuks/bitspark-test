@@ -15,7 +15,7 @@ services:
 
   database:
     restart: always
-    image: postgres:latest
+    image: postgres:10.3
     volumes:
       - database-volume:/var/lib/postgresql
     ports:
