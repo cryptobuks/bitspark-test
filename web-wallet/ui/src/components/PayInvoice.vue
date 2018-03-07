@@ -65,8 +65,7 @@ export default {
     },
     ...mapGetters([
       'api',
-      'user',
-      'accessToken'
+      'user'
     ])
   },
   watch: {

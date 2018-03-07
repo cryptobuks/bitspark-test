@@ -1,12 +1,28 @@
-export class NotAuthorized extends Error {
-  constructor () {
-    super('Not Authorized')
-  }
+export function NotAuthorizedError (message) {
+  Error.call(this, message)
+  this.message = message
 }
 
-export default class API {
+function assertHttpOk (res) {
+  if (res.status === 401) {
+    throw new NotAuthorizedError('Not Authorized')
+  }
+  return res
+}
+
+export class API {
   constructor (accessToken) {
     this.accessToken = accessToken
+  }
+
+  getCurrentUserInfo () {
+    return fetch('/api/user/info', {
+      headers: new Headers({
+        'Authorization': 'Bearer ' + this.accessToken,
+        'Content-Type': 'application/json'
+      })
+    }).then(assertHttpOk)
+      .then(r => r.json())
   }
 
   payInvoice (invoice) {
@@ -22,12 +38,7 @@ export default class API {
         'Content-Type': 'application/json'
       })
     })
-      .then(r => {
-        if (r.status === 401) {
-          throw new NotAuthorized()
-        }
-        return r
-      })
+      .then(assertHttpOk)
       .then(r => r.json())
   }
 

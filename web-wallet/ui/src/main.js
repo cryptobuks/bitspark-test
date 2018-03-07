@@ -34,3 +34,13 @@ new Vue({
     auth.init()
   }
 })
+
+router.beforeEach((to, from, next) => {
+  store.dispatch('navigate', {to, from}).then(() => next())
+})
+
+router.onReady(() => {
+  store.dispatch('navigate', {
+    to: router.currentRoute
+  })
+})

@@ -2,23 +2,35 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import VuexPersistence from 'vuex-persist'
 import router from './router'
-import API from './api'
+import { API, NotAuthorizedError } from './api'
 
 Vue.use(Vuex)
 
 const state = {
-  user: undefined,
+  user: undefined, // currently authorized user
   accessToken: undefined,
-  returnTo: undefined
+  returnTo: undefined,
+  userInfo: undefined // user information provided by backend
 }
 
 const mutations = {
+  apiError (state, err) {
+    if (err instanceof NotAuthorizedError) {
+      state.user = undefined
+      state.accessToken = undefined
+      state.userInfo = undefined
+    }
+  },
+  currentUser (state, userInfo) {
+    state.userInfo = userInfo
+  },
   beforeLogin (state, payload) {
     state.returnTo = payload.returnTo
   },
   apiAuthError (state, payload) {
     state.user = undefined
     state.accessToken = undefined
+    state.userInfo = undefined
   },
   loginFailure (state, payload) {
     state.user = undefined
@@ -32,6 +44,15 @@ const mutations = {
 }
 
 const actions = {
+  fetchUserInfo: ({ commit, getters: { api } }) => {
+    return api.getCurrentUserInfo()
+      .then(r => commit('currentUser', r))
+      .catch(err => commit('apiError', err))
+  },
+  navigate: ({ dispatch, state }, { to, from }) => {
+    console.log('to', to)
+    console.log('from', from)
+  },
   beforeLogin: ({ commit }, payload) => {
     // Save current route so that we can return to it after successful login
     const currentRoute = router.currentRoute
@@ -62,7 +83,7 @@ const actions = {
 const getters = {
   api: state => new API(state.accessToken),
   user: state => state.user,
-  accessToken: state => state.accessToken
+  balance: state => state.userInfo && state.userInfo.balance
 }
 
 const vuexLocal = new VuexPersistence({

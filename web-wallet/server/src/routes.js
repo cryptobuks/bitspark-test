@@ -1,6 +1,7 @@
 const express = require('express')
 const db = require('./db')
 const paymentRoutes = require('./payment-routes')
+const userRoutes = require('./user-routes')
 const jwtCheck = require('./jwt-check')
 
 const router = express.Router()
@@ -8,6 +9,7 @@ const router = express.Router()
 router.get('/', (req, res) => res.send('API'))
 
 router.use('/payment', paymentRoutes)
+router.use('/user', userRoutes)
 
 router.get('/db-check', (req, res) => {
   db.query("SELECT 'OK' AS x")
