@@ -10,7 +10,7 @@ const state = {
   user: undefined, // currently authorized user
   accessToken: undefined,
   returnTo: undefined,
-  userInfo: undefined // user information provided by backend
+  wallet: undefined
 }
 
 const mutations = {
@@ -18,11 +18,11 @@ const mutations = {
     if (err instanceof NotAuthorizedError) {
       state.user = undefined
       state.accessToken = undefined
-      state.userInfo = undefined
+      state.wallet = undefined
     }
   },
-  currentUser (state, userInfo) {
-    state.userInfo = userInfo
+  walletInfo (state, walletInfo) {
+    state.wallet = walletInfo
   },
   beforeLogin (state, payload) {
     state.returnTo = payload.returnTo
@@ -30,7 +30,7 @@ const mutations = {
   apiAuthError (state, payload) {
     state.user = undefined
     state.accessToken = undefined
-    state.userInfo = undefined
+    state.wallet = undefined
   },
   loginFailure (state, payload) {
     state.user = undefined
@@ -45,8 +45,8 @@ const mutations = {
 
 const actions = {
   fetchUserInfo: ({ commit, getters: { api } }) => {
-    return api.getCurrentUserInfo()
-      .then(r => commit('currentUser', r))
+    return api.getWalletInfo()
+      .then(r => commit('walletInfo', r))
       .catch(err => commit('apiError', err))
   },
   navigate: ({ dispatch, state }, { to, from }) => {
@@ -83,7 +83,7 @@ const actions = {
 const getters = {
   api: state => new API(state.accessToken),
   user: state => state.user,
-  balance: state => state.userInfo && state.userInfo.balance
+  balance: state => state.wallet && state.wallet.balance
 }
 
 const vuexLocal = new VuexPersistence({

@@ -15,8 +15,8 @@ export class API {
     this.accessToken = accessToken
   }
 
-  getCurrentUserInfo () {
-    return fetch('/api/user/info', {
+  getWalletInfo () {
+    return fetch('/api/wallet/info', {
       headers: new Headers({
         'Authorization': 'Bearer ' + this.accessToken,
         'Content-Type': 'application/json'
