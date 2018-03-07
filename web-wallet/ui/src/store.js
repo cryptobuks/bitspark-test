@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import VuexPersistence from 'vuex-persist'
 import router from './router'
+import API from './api'
 
 Vue.use(Vuex)
 
@@ -59,6 +60,7 @@ const actions = {
 }
 
 const getters = {
+  api: state => new API(state.accessToken),
   user: state => state.user,
   accessToken: state => state.accessToken
 }

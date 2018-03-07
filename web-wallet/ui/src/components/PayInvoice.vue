@@ -64,6 +64,7 @@ export default {
       }
     },
     ...mapGetters([
+      'api',
       'user',
       'accessToken'
     ])
@@ -86,26 +87,7 @@ export default {
     },
     processPayment: function () {
       this.isProcessing = true
-      fetch('/api/payment/invoice/pay', {
-        method: 'POST',
-        cache: 'no-cache',
-        mode: 'cors',
-        body: JSON.stringify({
-          invoice: this.invoice
-        }),
-        headers: new Headers({
-          'Authorization': 'Bearer ' + this.accessToken,
-          'Content-Type': 'application/json'
-        })
-      })
-        .then(r => {
-          if (r.status === 401) {
-            this.apiAuthError()
-            throw new Error('Not authorized')
-          }
-          return r
-        })
-        .then(r => r.json())
+      this.api.payInvoice(this.invoice)
         .then(r => {
           if (r.status !== 'OK') {
             this.apiError = r.error
@@ -122,8 +104,7 @@ export default {
     },
     fetchInvoicePayload: function () {
       this.invoicePayload = undefined
-      fetch('/api/payment/invoice/info?invoice=' + this.invoice)
-        .then(r => r.json())
+      this.api.getInvoiceInfo(this.invoice)
         .then(r => {
           if (r.status !== 'OK') {
             this.apiError = r.error
