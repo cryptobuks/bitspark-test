@@ -86,7 +86,7 @@ export default {
     },
     processPayment: function () {
       this.isProcessing = true
-      fetch('/api/invoice/pay', {
+      fetch('/api/payment/invoice/pay', {
         method: 'POST',
         cache: 'no-cache',
         mode: 'cors',
@@ -122,7 +122,7 @@ export default {
     },
     fetchInvoicePayload: function () {
       this.invoicePayload = undefined
-      fetch('/api/invoice/info?invoice=' + this.invoice)
+      fetch('/api/payment/invoice/info?invoice=' + this.invoice)
         .then(r => r.json())
         .then(r => {
           if (r.status !== 'OK') {
