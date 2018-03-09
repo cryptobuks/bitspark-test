@@ -1,6 +1,6 @@
 <template>
   <v-app id="app">
-    <v-layout column align-center>
+    <v-layout column fill-height>
       <v-toolbar dark color="primary">
         <v-toolbar-title>BiLuminate Wallet</v-toolbar-title>
         <v-spacer></v-spacer>
