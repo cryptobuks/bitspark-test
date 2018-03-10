@@ -1,13 +1,12 @@
 <template>
-  <v-container fill-height>
+  <v-container fill-height fluid>
     <v-layout align-center justify-center text-xs-center>
       <v-flex xs12>
         <LoginButton v-if="!user" />
         <div v-else>
           <h1 class="mb-5">Welcome Your Wallet</h1>
           <p>
-            Available balance<br />
-            <strong><Amount :msatoshi="balance && balance.msatoshi" /></strong>
+            <Amount :msatoshi="balance && balance.msatoshi" />
           </p>
         </div>
       </v-flex>

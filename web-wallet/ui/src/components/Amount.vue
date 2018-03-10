@@ -1,5 +1,5 @@
 <template>
-  <span v-if="msatoshi !== undefined">{{ mbtc }} mBTC</span>
+  <span v-if="msatoshi !== undefined"><strong class="display-2">{{ mbtc }}</strong> <span class="caption">mBTC</span></span>
   <span v-else>Unknown</span>
 </template>
 
