@@ -1,7 +1,15 @@
 #!/bin/bash
 
 handle_decodepay() {
+    local invoice=${1}
     local id=${1: -3}
+    if [ "$id" = "666" ] ; then
+        cat <<EOF
+{ "code" : -1, "message" : "Invalid bolt11: Bad bech32 string" }
+EOF
+        exit 1
+    fi
+
     cat <<EOF
 {
     "currency" : "tb",
@@ -19,6 +27,15 @@ EOF
 }
 
 handle_pay() {
+    local invoice=${1}
+    local id=${1: -3}
+    if [ "$id" = "999" ] ; then
+        cat <<EOF
+{ "code" : -1, "message" : "Invalid bolt11: Bad bech32 string" }
+EOF
+        exit 1
+    fi
+
     cat <<EOF
 {
     "preimage" : "5dc58524fb29117fec5b01db18bb3710ed989b5546788c831f250a8249a9a900",

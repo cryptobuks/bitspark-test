@@ -2,10 +2,9 @@
   <v-layout row align-center text-xs-center>
     <v-flex xs12>
       <!-- Error -->
-      <div v-if="apiError">
-        <h2>Error</h2>
-        <div>{{ apiError }}</div>
-      </div>
+      <p v-if="error">
+        {{ error.message }}
+      </p>
       <!-- Loading -->
       <p v-else-if="isLoading">Fetching invoice data...</p>
       <!-- Processing -->
@@ -29,22 +28,22 @@
                   </v-layout>
                   <v-layout row text-xs-center class="my-4">
                     <v-flex xs12>
-                      <Amount :msatoshi="invoicePayload.msatoshi" />
+                      <Amount :msatoshi="invoiceInfo.payload.msatoshi" />
                     </v-flex>
                   </v-layout>
                 </v-container>
               </v-card-title>
               <v-card-text>
-                {{ invoicePayload.description }}
+                {{ invoiceInfo.payload.description }}
               </v-card-text>
               <v-footer height="auto" class="transparent mt-5">
                 <v-layout row>
                   <v-flex xs6 text-xs-right class="pr-3">
-                    <v-btn flat color="grey lighten-2" v-on:click="cancelPayment">Cancel</v-btn>
+                    <v-btn flat color="grey lighten-2" to="/">Cancel</v-btn>
                   </v-flex>
                   <v-flex xs6 text-xs-left class="pl-3">
                     <LoginButton v-if="!user" flat />
-                    <v-btn v-else flat color="primary" v-on:click="processPayment">&nbsp;<v-icon left class="mr-2">mdi-check-circle</v-icon>Pay&nbsp;</v-btn>
+                    <v-btn v-else flat color="primary" v-on:click="processPayment(invoice)">&nbsp;<v-icon left class="mr-2">mdi-check-circle</v-icon>Pay&nbsp;</v-btn>
                   </v-flex>
                 </v-layout>
               </v-footer>
@@ -60,81 +59,47 @@
 import { mapGetters, mapActions } from 'vuex'
 import LoginButton from '@/components/LoginButton'
 import Amount from '@/components/Amount'
+import { isLoading } from '@/store'
 
 export default {
   props: ['invoice'],
   name: 'pay-invoice',
   components: { LoginButton, Amount },
   data () {
-    return {
-      isProcessing: false,
-      apiError: undefined,
-      invoicePayload: undefined,
-      paymentResult: undefined
-    }
+    return {}
   },
   computed: {
+    invoiceInfo () {
+      return this.$store.getters.getInvoiceInfo(this.invoice)
+    },
+    error () {
+      return this.invoiceInfo.payload instanceof Error ? this.invoiceInfo.payload
+        : (this.invoiceInfo.paymentResult instanceof Error ? this.invoiceInfo.paymentResult
+          : undefined)
+    },
     isLoading: function () {
-      return !this.invoicePayload
+      return this.invoiceInfo.payload === isLoading
+    },
+    isProcessing: function () {
+      return this.invoiceInfo.paymentResult === isLoading
     },
     isPayed: function () {
-      return this.paymentResult !== undefined
+      return this.invoiceInfo.paymentResult && !this.isProcessing
     },
-    price: function () {
-      return {
-        amount: this.invoicePayload.msatoshi / 100000000,
-        unit: 'mBTC'
-      }
-    },
-    ...mapGetters([
-      'api',
-      'user'
-    ])
+    ...mapGetters(['user'])
   },
   watch: {
     invoice: function () {
-      this.fetchInvoicePayload()
+      this.displayInvoice(this.invoice)
     }
   },
   created () {
-    this.fetchInvoicePayload()
+    this.displayInvoice(this.invoice)
   },
   methods: {
-    ...mapActions(['apiAuthError']),
-    cancelPayment: function () {
-      this.$router.push('/')
-    },
+    ...mapActions(['displayInvoice', 'processPayment']),
     successOk: function () {
       this.$router.push('/')
-    },
-    processPayment: function () {
-      this.isProcessing = true
-      this.api.payInvoice(this.invoice)
-        .then(r => {
-          if (r.status !== 'OK') {
-            this.apiError = r.error
-            return
-          }
-          this.isProcessing = false
-          this.paymentResult = r.payload
-        })
-        .catch(e => {
-          this.isProcessing = false
-          console.error(e)
-          this.apiError = 'Process payment failed'
-        })
-    },
-    fetchInvoicePayload: function () {
-      this.invoicePayload = undefined
-      this.api.getInvoiceInfo(this.invoice)
-        .then(r => {
-          if (r.status !== 'OK') {
-            this.apiError = r.error
-            return
-          }
-          this.invoicePayload = r.payload
-        })
-        .catch(e => (this.apiError = 'Fetch failed'))
     }
   }
 }

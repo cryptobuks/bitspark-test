@@ -5,6 +5,14 @@ const db = require('./db')
 
 const router = express.Router()
 
+function getErrorMessage(e) {
+  try {
+    return JSON.parse(e.stdout).message
+  } catch (e) {
+    return e.toString()
+  }
+}
+
 router.get('/invoice/info', (req, res) => {
   var invoice = req.query.invoice
   if (!invoice) {
@@ -20,10 +28,13 @@ router.get('/invoice/info', (req, res) => {
     status: 'OK',
     payload
   }))
-  .catch(error => res.json({
-    status: 'ERROR',
-    error: error
-  }))
+  .catch(e => {
+    console.error('/invoice/info', e)
+    res.json({
+      status: 'ERROR',
+      error: getErrorMessage(e)
+    })
+  })
 })
 
 router.post('/invoice/pay', jwtCheck, (req, res) => {
@@ -61,12 +72,13 @@ router.post('/invoice/pay', jwtCheck, (req, res) => {
             })
           })
     })
-    .catch(err => {
+    .catch(e => {
+      console.error('/invoice/pay', e)
       res.json({
         status: 'ERROR',
-        error: err instanceof Error ? err.toString() : err
+        error: getErrorMessage(e)
       })
     })
-  })
+})
 
 module.exports = router

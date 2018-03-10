@@ -40,10 +40,22 @@ export class API {
     })
       .then(assertHttpOk)
       .then(r => r.json())
+      .then(r => {
+        if (r.status !== 'OK') {
+          throw new Error(r.error)
+        }
+        return r.payload
+      })
   }
 
   getInvoiceInfo (invoice) {
     return fetch('/api/payment/invoice/info?invoice=' + invoice)
       .then(r => r.json())
+      .then(r => {
+        if (r.status !== 'OK') {
+          throw new Error(r.error)
+        }
+        return r.payload
+      })
   }
 }

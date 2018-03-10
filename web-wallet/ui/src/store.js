@@ -10,7 +10,8 @@ const state = {
   user: undefined, // currently authorized user
   accessToken: undefined,
   returnTo: undefined,
-  wallet: undefined
+  wallet: undefined,
+  invoices: {}
 }
 
 const mutations = {
@@ -40,6 +41,42 @@ const mutations = {
     state.user = payload.user
     state.accessToken = payload.accessToken
     state.returnTo = undefined
+  },
+  initializeInvoice (state, invoice) {
+    state.invoices = {
+      ...state.invoices,
+      [invoice]: state.invoices[invoice] || {
+        payload: isLoading,
+        paymentResult: undefined
+      }
+    }
+  },
+  setInvoicePayload (state, { invoice, payload }) {
+    state.invoices = {
+      ...state.invoices,
+      [invoice]: {
+        ...state.invoices[invoice],
+        payload
+      }
+    }
+  },
+  startInvoicePayment (state, invoice) {
+    state.invoices = {
+      ...state.invoices,
+      [invoice]: {
+        ...state.invoices[invoice],
+        paymentResult: isLoading
+      }
+    }
+  },
+  setInvoicePaymentResult (state, { invoice, paymentResult }) {
+    state.invoices = {
+      ...state.invoices,
+      [invoice]: {
+        ...state.invoices[invoice],
+        paymentResult
+      }
+    }
   }
 }
 
@@ -77,13 +114,29 @@ const actions = {
     if (returnTo) {
       router.push(returnTo)
     }
+  },
+  displayInvoice: ({ commit, state, getters: { api } }, invoice) => {
+    commit('initializeInvoice', invoice)
+    api.getInvoiceInfo(invoice)
+      .catch(e => e)
+      .then(payload => commit('setInvoicePayload', { invoice, payload }))
+  },
+  processPayment ({ commit, state, getters: { api } }, invoice) {
+    commit('startInvoicePayment', invoice)
+    api.payInvoice(invoice)
+      .catch(e => e)
+      .then(paymentResult => commit('setInvoicePaymentResult', { invoice, paymentResult }))
   }
+
 }
 
 const getters = {
   api: state => new API(state.accessToken),
   user: state => state.user,
-  balance: state => state.wallet && state.wallet.balance
+  balance: state => state.wallet && state.wallet.balance,
+  getInvoiceInfo (state) {
+    return (invoice) => state.invoices[invoice]
+  }
 }
 
 const vuexLocal = new VuexPersistence({
@@ -93,6 +146,8 @@ const vuexLocal = new VuexPersistence({
     accessToken: state.accessToken
   })
 })
+
+export const isLoading = class {}
 
 export default new Vuex.Store({
   state,
