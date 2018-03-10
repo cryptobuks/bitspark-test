@@ -143,7 +143,8 @@ const vuexLocal = new VuexPersistence({
   storage: window.localStorage,
   reducer: state => ({
     user: state.user,
-    accessToken: state.accessToken
+    accessToken: state.accessToken,
+    returnTo: state.returnTo
   })
 })
 
