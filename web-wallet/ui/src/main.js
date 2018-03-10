@@ -9,6 +9,7 @@ import auth from './auth'
 
 Vue.config.productionTip = false
 
+// https://material.io/color/#!/?view.left=0&view.right=0&primary.color=9CCC65&secondary.color=EF9A9A
 Vue.use(Vuetify, {
   theme: {
     primary: '#9ccc65',
@@ -43,3 +44,8 @@ router.onReady(() => {
     to: router.currentRoute
   })
 })
+
+navigator.registerProtocolHandler(
+  'web+lightning',
+  'bit-1.biluminate.net/#/pay/%s',
+  'Lightning handler')
