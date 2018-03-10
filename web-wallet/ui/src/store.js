@@ -87,7 +87,11 @@ const getters = {
 }
 
 const vuexLocal = new VuexPersistence({
-  storage: window.localStorage
+  storage: window.localStorage,
+  reducer: state => ({
+    user: state.user,
+    accessToken: state.accessToken
+  })
 })
 
 export default new Vuex.Store({
