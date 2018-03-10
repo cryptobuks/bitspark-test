@@ -2,9 +2,10 @@
   <v-layout row align-center text-xs-center>
     <v-flex xs12>
       <!-- Error -->
-      <p v-if="error">
-        {{ error.message }}
-      </p>
+      <div v-if="error">
+        <h2>Error</h2>
+        <div>{{ error.message }}</div>
+      </div>
       <!-- Loading -->
       <p v-else-if="isLoading">Fetching invoice data...</p>
       <!-- Processing -->
