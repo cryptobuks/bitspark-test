@@ -5,6 +5,7 @@ import { Auth0Lock } from 'auth0-lock'
 var lock = new Auth0Lock(
   'VNuKB9PX4R6v27ltkqjhe68X5NSH8pND', 'biluminate.eu.auth0.com',
   {
+    autoclose: true,
     auth: {
       params: {
         audience: 'https://biluminate.net/auth'

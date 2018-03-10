@@ -43,7 +43,7 @@
                     <v-btn flat color="grey lighten-2" v-on:click="cancelPayment">Cancel</v-btn>
                   </v-flex>
                   <v-flex xs6 text-xs-left class="pl-3">
-                    <LoginButton v-if="!user" />
+                    <LoginButton v-if="!user" flat />
                     <v-btn v-else flat color="primary" v-on:click="processPayment">&nbsp;<v-icon left class="mr-2">mdi-check-circle</v-icon>Pay&nbsp;</v-btn>
                   </v-flex>
                 </v-layout>
