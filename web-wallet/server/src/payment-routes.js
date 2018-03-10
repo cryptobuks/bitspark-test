@@ -13,9 +13,17 @@ function getErrorMessage(e) {
   }
 }
 
+function validateInvoice(invoice) {
+  if (invoice.match(/^\w+$/)) {
+    return invoice
+  }
+
+  return undefined
+}
+
 router.get('/invoice/info', (req, res) => {
   var invoice = req.query.invoice
-  if (!invoice) {
+  if (!validateInvoice(invoice)) {
     res.json({
       status: 'ERROR',
       error: 'Missing invoice parameter'
@@ -41,7 +49,7 @@ router.post('/invoice/pay', jwtCheck, (req, res) => {
   console.info('PAY', req.body)
 
   var invoice = req.body.invoice
-  if (!invoice) {
+  if (!validateInvoice(invoice)) {
     res.json({
       status: 'ERROR',
       error: 'Missing invoice parameter'
