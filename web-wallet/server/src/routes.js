@@ -17,7 +17,7 @@ router.get('/db-check', (req, res) => {
       res.send(r.rows[0].x)
     })
     .catch(err => {
-      console.error(err)
+      console.error('/db-check', err)
       res.send('Error')
     })
 })

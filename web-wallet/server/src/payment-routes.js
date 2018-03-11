@@ -5,14 +5,6 @@ const db = require('./db')
 
 const router = express.Router()
 
-function getErrorMessage(e) {
-  try {
-    return JSON.parse(e.stdout).message
-  } catch (e) {
-    return e.toString()
-  }
-}
-
 function validateInvoice(invoice) {
   if (invoice.match(/^\w+$/)) {
     return invoice
@@ -32,17 +24,18 @@ router.get('/invoice/info', (req, res) => {
     return
   }
 
-  return lightning.getInvoicePayload(invoice).then(payload => res.json({
-    status: 'OK',
-    payload
-  }))
-  .catch(e => {
-    console.error('/invoice/info', e)
-    res.json({
-      status: 'ERROR',
-      error: getErrorMessage(e)
+  return lightning.getInvoicePayload(invoice)
+    .then(payload => res.json({
+      status: 'OK',
+      payload
+    }))
+    .catch(e => {
+      console.error('/invoice/info', e)
+      res.json({
+        status: 'ERROR',
+        error: e.message
+      })
     })
-  })
 })
 
 router.post('/invoice/pay', jwtCheck, (req, res) => {
@@ -84,7 +77,7 @@ router.post('/invoice/pay', jwtCheck, (req, res) => {
       console.error('/invoice/pay', e)
       res.json({
         status: 'ERROR',
-        error: getErrorMessage(e)
+        error: e.message
       })
     })
 })

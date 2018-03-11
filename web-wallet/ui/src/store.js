@@ -20,6 +20,7 @@ const mutations = {
       state.user = undefined
       state.accessToken = undefined
       state.wallet = undefined
+      state.returnTo = undefined
     }
   },
   walletInfo (state, walletInfo) {
@@ -28,14 +29,10 @@ const mutations = {
   beforeLogin (state, payload) {
     state.returnTo = payload.returnTo
   },
-  apiAuthError (state, payload) {
-    state.user = undefined
-    state.accessToken = undefined
-    state.wallet = undefined
-  },
   loginFailure (state, payload) {
     state.user = undefined
     state.accessToken = undefined
+    state.returnTo = undefined
   },
   loginSuccess (state, payload) {
     state.user = payload.user
@@ -81,14 +78,14 @@ const mutations = {
 }
 
 const actions = {
-  fetchUserInfo: ({ commit, getters: { api } }) => {
+  fetchUserInfo: ({ commit, getters: { api, user } }) => {
+    if (!user) return
+
     return api.getWalletInfo()
       .then(r => commit('walletInfo', r))
       .catch(err => commit('apiError', err))
   },
   navigate: ({ dispatch, state }, { to, from }) => {
-    console.log('to', to)
-    console.log('from', from)
   },
   beforeLogin: ({ commit }, payload) => {
     // Save current route so that we can return to it after successful login
@@ -100,13 +97,9 @@ const actions = {
       }
     })
   },
-  apiAuthError: ({ commit }) => {
-    commit('apiAuthError')
-    console.error('apiAuthError')
-  },
   loginFailure: ({ commit }, payload) => {
     commit('loginFailure', payload)
-    console.error('loginFailure', payload.error)
+    router.push('/')
   },
   loginSuccess: ({ commit, state }, payload) => {
     const returnTo = state.returnTo
@@ -118,20 +111,29 @@ const actions = {
   displayInvoice: ({ commit, state, getters: { api } }, invoice) => {
     commit('initializeInvoice', invoice)
     api.getInvoiceInfo(invoice)
-      .catch(e => e)
+      .catch(e => {
+        commit('apiError', e)
+        return e
+      })
       .then(payload => commit('setInvoicePayload', { invoice, payload }))
   },
   processPayment ({ commit, state, getters: { api } }, invoice) {
     commit('startInvoicePayment', invoice)
     api.payInvoice(invoice)
-      .catch(e => e)
-      .then(paymentResult => commit('setInvoicePaymentResult', { invoice, paymentResult }))
+      .catch(e => {
+        commit('apiError', e)
+        return e
+      })
+      .then(paymentResult => {
+        commit('setInvoicePaymentResult', { invoice, paymentResult })
+      })
   }
 
 }
 
 const getters = {
   api: state => new API(state.accessToken),
+  accessToken: state => state.accessToken,
   user: state => state.user,
   balance: state => state.wallet && state.wallet.balance,
   getInvoiceInfo (state) {

@@ -18,8 +18,7 @@ function getUserInfo (accessToken) {
   lock.getUserInfo(accessToken, function (error, profile) {
     if (error) {
       store.dispatch('loginFailure', {
-        error: error,
-        accessToken
+        error: error
       })
       return
     }
@@ -32,9 +31,18 @@ function getUserInfo (accessToken) {
 }
 
 function init () {
+  if (store.getters.accessToken) {
+    getUserInfo(store.getters.accessToken)
+  }
+
   lock.on('authenticated', function (authResult) {
-    console.warn('authenticated')
     getUserInfo(authResult.accessToken)
+  })
+
+  lock.on('authorization_error', function (error) {
+    store.dispatch('loginFailure', {
+      error: error
+    })
   })
 }
 

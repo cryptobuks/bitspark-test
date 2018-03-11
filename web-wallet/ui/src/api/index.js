@@ -1,7 +1,9 @@
 export function NotAuthorizedError (message) {
-  Error.call(this, message)
   this.message = message
+  this.name = 'NotAuthorizedError'
 }
+
+NotAuthorizedError.prototype = new Error()
 
 function assertHttpOk (res) {
   if (res.status === 401) {
