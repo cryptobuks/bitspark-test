@@ -7,6 +7,9 @@ function assertHttpOk (res) {
   if (res.status === 401) {
     throw new NotAuthorizedError('Not Authorized')
   }
+  if (res.status !== 200) {
+    throw new Error('Request failed: ' + res.status + ' ' + res.statusText)
+  }
   return res
 }
 
@@ -50,6 +53,7 @@ export class API {
 
   getInvoiceInfo (invoice) {
     return fetch('/api/payment/invoice/info?invoice=' + invoice)
+      .then(assertHttpOk)
       .then(r => r.json())
       .then(r => {
         if (r.status !== 'OK') {
