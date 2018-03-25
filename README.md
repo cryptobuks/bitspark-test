@@ -10,7 +10,7 @@ Later this will include also the wallet backend/frontend and the user account da
 
 ## Server
 
-Hostname/IP: **bit-1.maio.cz** (35.204.151.181)
+Hostname: **bit-1.biluminate.net**
 
 ## Bitcoin node
 
