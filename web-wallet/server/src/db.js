@@ -8,25 +8,31 @@ exports.query = function (query, args) {
   return pool.query(query, args)
 }
 
-exports.getOrCreateWallet = function (user) {
-  return pool.query('SELECT * FROM wallet WHERE sub = $1', [user.sub])
-    .then(r => {
-      if (r.rows.length === 1) {
-        wallet = r.rows[0]
-        return {
-          id: wallet.id,
-          balance: {
-            msatoshi: wallet.balance
-          }
-        }
+exports.getOrCreateWallet = async function (user) {
+  const fetchResult = await pool.query('SELECT * FROM wallet WHERE sub = $1', [user.sub])
+  if (fetchResult.rows.length === 1) {
+    wallet = fetchResult.rows[0]
+    return {
+      id: wallet.id,
+      balance: {
+        msatoshi: wallet.balance
       }
+    }
+  }
 
-      const initialBalance = 5100000000;
+  // Create new wallet
+  const initialBalance = 5100000000; // 51 mBTC
 
-      return pool.query(
-        'INSERT INTO wallet (sub, balance) VALUES ($1, $2)',
-        [user.sub, initialBalance]).then(() => exports.getOrCreateWallet(user))
-    })
+  const createResult = await pool.query(
+    'INSERT INTO wallet (sub, balance) VALUES ($1, $2) RETURNING id',
+    [user.sub, initialBalance])
+
+  await pool.query(
+    'INSERT INTO transaction (wallet_id, state, msatoshi, description)'
+    + ' VALUES ($1, $2, $3, $4)',
+    [createResult.rows[0].id, 'approved', initialBalance, 'Initial balance'])
+
+  return exports.getOrCreateWallet(user)
 }
 
 exports.updateWalletBalance = function (user, delta) {
@@ -36,4 +42,22 @@ exports.updateWalletBalance = function (user, delta) {
         throw new Error('Insufficient funds')
       }
     })
+}
+
+exports.initTrancaction = async function (wallet, msatoshi, description, lighting_invoice, payload) {
+  const result = await pool.query(
+    'INSERT INTO transaction (wallet_id, state, msatoshi, description, lighting_invoice, payload)' +
+    ' VALUES ($1, \'initial\', $2, $3, $4, $5) RETURNING id',
+    [wallet.id, msatoshi, description, lighting_invoice, payload]
+  )
+
+  return result.rows[0].id
+}
+
+exports.approveTransaction = function (id) {
+  return pool.query('UPDATE transaction SET state = \'approved\' WHERE id = $1', [id])
+}
+
+exports.declineTransaction = function (id) {
+  return pool.query('UPDATE transaction SET state = \'declined\' WHERE id = $1', [id])
 }
