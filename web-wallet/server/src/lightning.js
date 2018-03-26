@@ -37,6 +37,7 @@ function getInvoicePayload(invoice) {
 }
 
 function payInvoice(invoice) {
+  // Docs: https://github.com/ElementsProject/lightning/blob/master/doc/lightning-pay.7.txt
   return exec(config.lncli + ' pay ' + invoice)
   .then(handleCliSuccess)
   .catch(handleCliError)
