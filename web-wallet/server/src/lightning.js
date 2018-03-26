@@ -19,6 +19,8 @@ function handleCliSuccess (result) {
 }
 
 function handleCliError (error) {
+  console.error(error)
+
   var message
   try {
     message = JSON.parse(error.stdout).message
