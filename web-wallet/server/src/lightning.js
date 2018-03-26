@@ -25,7 +25,6 @@ function handleCliError (error) {
   try {
     message = JSON.parse(error.stdout).message
   } catch (e) {
-    console.error(error.toString())
     message = 'Unexpected lncli error'
   }
   throw new LightningError(message)
