@@ -46,7 +46,8 @@ if not NAME:
 if AMOUNT % 1000 != 0 and AMOUNT < 1000:
 	raise RuntimeError("<amount> must be divisible by 1000 and >= 1000")
 
-CREATE_INVOICE = "/mnt/data/lightning/lightning/cli/lightning-cli --lightning-dir=/mnt/data/lightning/data_testnet invoice " + str(AMOUNT) + " " + NAME + "#" + str(ID) + " 1440"
+#CREATE_INVOICE = "/mnt/data/lightning/lightning/cli/lightning-cli --lightning-dir=/mnt/data/lightning/data_testnet invoice " + str(AMOUNT) + " " + NAME + "#" + str(ID) + " 1440"
+CREATE_INVOICE = "/mnt/data/lnd/lndbin/lncli --lnddir /mnt/data/lnd/data2_testnet --rpcserver=localhost:19736 --macaroonpath /mnt/data/lnd/data2_testnet/admin.macaroon addinvoice --memo=\"" + NAME + "#" + str(ID) + "\" --amt=" + str(AMOUNT) + " --expiry=86400"
 
 process = subprocess.Popen( CREATE_INVOICE.split( ), stdout=subprocess.PIPE )
 invoice_output, invoice_error = process.communicate( )
@@ -54,12 +55,14 @@ invoice_output, invoice_error = process.communicate( )
 if invoice_error:
 	raise RuntimeError("failed to create invoice")
 
-#INVOICE_STR = '{ "payment_hash" : "69d42628d106f1c84c23fa928b10f7ff057fa6e0cf2b02ed573df510fefce8ab", "expiry_time" : 1520861657, "expires_at" : 1520861657, "bolt11" : "lntb500u1pd2vlpepp5d82zv2x3qmcusnprl2fgky8hluzhlfhqeu4s9m2h8h63plhuaz4sdqsgfskwet5ddsjxdehxqrpdqcqpxjngagj5wrv9rf2pqysg4ph34lgultuxd52n00wvsw5sl6kx26yv5an90xs7saq0rqk6ancxytnx8ea7xh6taxgqz2kgfgy5g79cnhqsqgk7j23" }'
+#INVOICE_STR = '{ "r_hash": "659f482ec55b606eaefabbfad79603967c1a89ae71b495d578c380fb6d4c6fab", "pay_req": "lntb500u1pdvfqgtpp5vk05stk9tdsxath6h0ad09srje7p4zdwwx6ft4tccwq0km2vd74sdqdgfskwat9w36x2cqzysxqr8pqnexw2fa0znsfm2d0rmnwdcv6y5gsgkfun5yp7c89093f07ts6up4l08ejy4xjynmfylw60tajavqrefdmphshvm7te5lmd0xm038a4qqqc0lw7" }'
 #INVOICE=json.loads(INVOICE_STR)
-INVOICE=json.loads(invoice_output)
-print "LN payment: " + str(INVOICE["bolt11"])
 
-LNS = 'https://bit-1.biluminate.net/#/pay/' + str(INVOICE["bolt11"])
+INVOICE=json.loads(invoice_output)
+
+print "LN payment: " + str(INVOICE["pay_req"])
+
+LNS = 'https://bit-1.biluminate.net/#/pay/' + str(INVOICE["pay_req"])
 print "Biluminate URL: " + str(LNS)
 
 RESULT=Shorten(LNS)
