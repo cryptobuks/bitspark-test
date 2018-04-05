@@ -3,7 +3,7 @@
 # Usage: create_invoice.sh <id> <name> <amount> <QR code filename>
 #       <id>            a unique id for this invoice - never reuse id's
 #       <name>          a string describing the invoice ("Baguette")
-#       <amount>        amount in msatoshi (must be divisible by 1000)
+#       <amount>        amount in satoshi
 #	<QR>		the name of the file where to store the QR code
 #
 # Returns a QR code that contains an URL shortened with the Google URL Shortener service (http://goo.gl).
@@ -43,8 +43,8 @@ QR_PATH=str(sys.argv[4])
 if not NAME:
 	raise RuntimeError("<name> cannot be empty")
 
-if AMOUNT % 1000 != 0 and AMOUNT < 1000:
-	raise RuntimeError("<amount> must be divisible by 1000 and >= 1000")
+if AMOUNT > 16000000 or AMOUNT < 1:
+	raise RuntimeError("<amount> must be divisible by > 0 and <= 16 000 000")
 
 #CREATE_INVOICE = "/mnt/data/lightning/lightning/cli/lightning-cli --lightning-dir=/mnt/data/lightning/data_testnet invoice " + str(AMOUNT) + " " + NAME + "#" + str(ID) + " 1440"
 CREATE_INVOICE = "/mnt/data/lnd/lndbin/lncli --lnddir /mnt/data/lnd/data2_testnet --rpcserver=localhost:19736 --macaroonpath /mnt/data/lnd/data2_testnet/admin.macaroon addinvoice --memo=\"" + NAME + "#" + str(ID) + "\" --amt=" + str(AMOUNT) + " --expiry=86400"
