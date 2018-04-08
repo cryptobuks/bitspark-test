@@ -15,7 +15,7 @@ export PATH=$PATH:/mnt/data/lnd/lndbin
     --bitcoind.rpcuser=biluminate \
     --bitcoind.rpcpass=biluminate \
     --bitcoind.zmqpath=tcp://127.0.0.1:28332 \
-    --externalip=35.204.151.181 \
+    --externalip=35.204.151.181:9735 \
     --autopilot.active \
     --autopilot.maxchannels=20 \
     --autopilot.allocation=0.7
