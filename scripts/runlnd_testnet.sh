@@ -18,7 +18,7 @@ export PATH=$PATH:/mnt/data/lnd/lndbin
     --externalip=35.204.151.181:9735 \
     --autopilot.active \
     --autopilot.maxchannels=20 \
-    --autopilot.allocation=0.7
+    --autopilot.allocation=0.7 \
     --listen=127.0.0.1:9735 \
     --rpclisten=127.0.0.1:19735 \
     --restlisten=127.0.0.1:29735
