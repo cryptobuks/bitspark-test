@@ -1,16 +1,5 @@
-var hasErrors = false
-
-function reportConfigError(msg) {
-  console.error('Error:', msg)
-  hasErrors = true
-}
-
-// Lightning
-if (!process.env.LNCLI) {
-  reportConfigError('Missing LNCLI environment variable')
-}
-
-exports.lncli = process.env.LNCLI
+exports.lndRestUrl = process.env.LND_REST_URL
+exports.lndRestMacaroon = process.env.LND_REST_MACAROON
 
 // Database
 var db = {
@@ -28,8 +17,3 @@ exports.db = db
 exports.DATABASE_URL = 'postgres://' +
   db.user + (db.password ? (':' + db.password) : '') +
   '@' + db.host + ':' + db.port + '/' + db.database
-
-// Errors check
-if (hasErrors) {
-  process.exit(1)
-}

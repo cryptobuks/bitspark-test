@@ -12,7 +12,8 @@ services:
     networks:
       - web
     environment:
-      - LNCLI=/mnt/data/lightning/lightning/cli/lightning-cli --lightning-dir=/mnt/data/lightning/data_testnet
+      - LND_REST_URL=http://localhost:29735
+      - LND_REST_MACAROON=${LND_REST_MACAROON}
       - PORT=8080
       - PGHOST=database
 

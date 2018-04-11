@@ -1,6 +1,10 @@
-const util = require('util')
-const exec = util.promisify(require('child_process').exec)
 const config = require('./config')
+const https = require('https')
+const fetch = require('node-fetch')
+
+const agent = new https.Agent({
+  rejectUnauthorized: false
+})
 
 function LightningError (message) {
   this.message = message
@@ -9,38 +13,77 @@ function LightningError (message) {
 
 LightningError.prototype = new Error()
 
-function handleCliSuccess (result) {
-  try {
-    return JSON.parse(result.stdout)
-  } catch (e) {
-    console.error('Failed to parse lncli result', result)
-    throw new LightningError('Failed to parse lncli result')
+function handleRestError (response, body) {
+  console.error('REST call failed [', response.status, response.statusText, ']')
+  console.error('Body:', body)
+
+  return new LightningError(response.statusText)
+}
+
+async function GET(path) {
+  const url = config.lndRestUrl + path
+  console.debug('LND GET', url)
+
+  var opts = {
+    headers: {
+      'grpc-metadata-macaroon': config.lndRestMacaroon,
+    }
+  }
+
+  if (url.startsWith('https')) {
+    opts.agent = agent
+  }
+
+  const result = await fetch(url, opts)
+
+  if (result.status !== 200) {
+    throw handleRestError(result, await result.text())
+  }
+
+  return result.json()
+}
+
+async function POST(path, json) {
+  const url = config.lndRestUrl + path
+  console.debug('LND POST', url)
+
+  var opts = {
+    headers: {
+      'grpc-metadata-macaroon': config.lndRestMacaroon,
+      'content-type': 'application/json'
+    },
+    method: 'POST',
+    body: JSON.stringify(json)
+  }
+
+  if (url.startsWith('https')) {
+    opts.agent = agent
+  }
+
+  const result = await fetch(url, opts)
+
+  if (result.status !== 200) {
+    throw handleRestError(result, await result.text())
+  }
+
+  return result.json()
+}
+
+async function getInvoicePayload(invoice) {
+  const result = await GET('/v1/payreq/' + invoice)
+
+  return {
+    msatoshi: result.num_satoshis * 1000,
+    description: result.description
   }
 }
 
-function handleCliError (error) {
-  console.error(error)
+async function payInvoice(invoice) {
+  const result = await POST('/v1/channels/transactions', {
+    payment_request: invoice
+  })
 
-  var message
-  try {
-    message = JSON.parse(error.stdout).message
-  } catch (e) {
-    message = 'Unexpected lncli error'
-  }
-  throw new LightningError(message)
-}
-
-function getInvoicePayload(invoice) {
-  return exec(config.lncli + ' decodepay ' + invoice)
-    .then(handleCliSuccess)
-    .catch(handleCliError)
-}
-
-function payInvoice(invoice) {
-  // Docs: https://github.com/ElementsProject/lightning/blob/master/doc/lightning-pay.7.txt
-  return exec(config.lncli + ' pay ' + invoice)
-  .then(handleCliSuccess)
-  .catch(handleCliError)
+  return result
 }
 
 module.exports.LightningError = LightningError

@@ -31,7 +31,7 @@ router.get('/invoice/info', (req, res) => {
     return
   }
 
-  return lightning.getInvoicePayload(invoice)
+  lightning.getInvoicePayload(invoice)
     .then(payload => res.json({
       status: 'OK',
       payload
