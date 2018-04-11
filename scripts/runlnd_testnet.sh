@@ -21,4 +21,4 @@ export PATH=$PATH:/mnt/data/lnd/lndbin
     --autopilot.allocation=0.7 \
     --listen=127.0.0.1:9735 \
     --rpclisten=127.0.0.1:19735 \
-    --restlisten=127.0.0.1:29735
+    --restlisten=0.0.0.0:29735
