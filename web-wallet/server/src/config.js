@@ -1,3 +1,7 @@
+// HTTP Server
+exports.httpLogFormat = process.env.HTTP_LOG_FORMAT
+
+// LND
 exports.lndRestUrl = process.env.LND_REST_URL
 exports.lndRestMacaroon = process.env.LND_REST_MACAROON
 

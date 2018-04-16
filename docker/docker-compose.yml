@@ -12,6 +12,7 @@ services:
     networks:
       - web
     environment:
+      - HTTP_LOG_FORMAT=tiny
       - LND_REST_URL=https://bit-1.biluminate.net:29735
       - LND_REST_MACAROON=${LND_REST_MACAROON}
       - PORT=8080
