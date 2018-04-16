@@ -6,8 +6,9 @@ const agent = new https.Agent({
   rejectUnauthorized: false
 })
 
-function LightningError (message) {
+function LightningError (message, payload) {
   this.message = message
+  this.payload = payload
   this.name = 'LightningError'
 }
 
@@ -17,7 +18,7 @@ function handleRestError (response, body) {
   console.error('REST call failed [', response.status, response.statusText, ']')
   console.error('Body:', body)
 
-  return new LightningError(response.statusText)
+  return new LightningError(response.statusText, body)
 }
 
 async function GET(path) {
@@ -82,6 +83,11 @@ async function payInvoice(invoice) {
   const result = await POST('/v1/channels/transactions', {
     payment_request: invoice
   })
+
+  if (result.payment_error) {
+    console.error('Transaction processing failed, Reason:', result.payment_error)
+    throw new LightningError('Transaction processing failed', result.payment_error)
+  }
 
   return result
 }

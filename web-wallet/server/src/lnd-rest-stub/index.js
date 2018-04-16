@@ -22,6 +22,13 @@ router.post('/v1/channels/transactions', (req, res) => {
     return
   }
 
+  const invoice = req.body.payment_request
+
+  if (invoice.endsWith('999')) {
+    res.json({payment_error: "UnknownPaymentHash"})
+    return
+  }
+
   res.json(
     {
       "payment_preimage": "+b9n1eSD0DlPhIdh8JowwMhQfJXEAsxV6RAspa4OJRA=",
