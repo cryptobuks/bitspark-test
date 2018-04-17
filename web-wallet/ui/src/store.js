@@ -79,7 +79,7 @@ const mutations = {
 
 const actions = {
   fetchUserInfo: ({ commit, getters: { api, user } }) => {
-    if (!user) return
+    if (!user) return null
 
     return api.getWalletInfo()
       .then(r => commit('walletInfo', r))
