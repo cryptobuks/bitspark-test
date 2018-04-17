@@ -6,7 +6,7 @@ const router = express.Router()
 
 router.get('/info', jwtCheck, async (req, res) => {
   const wallet = await db.getOrCreateWallet(req.user)
-  res.send(wallet)
+  res.json(wallet)
 })
 
 module.exports = router
