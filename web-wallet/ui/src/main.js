@@ -21,10 +21,8 @@ require('vuetify/dist/vuetify.min.css')
 require('mdi/fonts/materialdesignicons-webfont.ttf')
 require('mdi/css/materialdesignicons.min.css')
 
-window.router = router
-
 /* eslint-disable no-new */
-new Vue({
+window.app = new Vue({
   el: '#app',
   router,
   store,

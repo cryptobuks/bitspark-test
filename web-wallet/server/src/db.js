@@ -44,6 +44,14 @@ exports.updateWalletBalance = function (user, delta) {
     })
 }
 
+exports.getTransactions = async function (wallet) {
+  const result = await pool.query(
+    'SELECT id, created_on, state, description, msatoshi FROM transaction WHERE wallet_id = $1',
+    [wallet.id])
+
+  return result.rows
+}
+
 exports.initTrancaction = async function (wallet, msatoshi, description, lighting_invoice, payload) {
   const result = await pool.query(
     'INSERT INTO transaction (wallet_id, state, msatoshi, description, lighting_invoice, payload)' +

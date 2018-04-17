@@ -30,6 +30,16 @@ export class API {
       .then(r => r.json())
   }
 
+  getTransactions () {
+    return fetch('/api/transactions', {
+      headers: new Headers({
+        'Authorization': 'Bearer ' + this.accessToken,
+        'Content-Type': 'application/json'
+      })
+    }).then(assertHttpOk)
+      .then(r => r.json())
+  }
+
   payInvoice (invoice) {
     return fetch('/api/payment/invoice/pay', {
       method: 'POST',
