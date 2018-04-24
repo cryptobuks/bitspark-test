@@ -7,5 +7,7 @@ defmodule WalletApiWeb.Router do
 
   scope "/api", WalletApiWeb do
     pipe_through :api
+
+    resources "/wallet", WalletController, singleton: true
   end
 end
