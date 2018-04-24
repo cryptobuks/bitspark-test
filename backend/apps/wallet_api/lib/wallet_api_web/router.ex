@@ -9,5 +9,6 @@ defmodule WalletApiWeb.Router do
     pipe_through :api
 
     resources "/wallet", WalletController, singleton: true
+    resources "/wallet/transactions", TransactionController, except: [:new, :edit]
   end
 end

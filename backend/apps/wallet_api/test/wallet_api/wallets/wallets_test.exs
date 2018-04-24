@@ -73,4 +73,72 @@ defmodule WalletApi.WalletsTest do
       assert %Ecto.Changeset{} = Wallets.change_wallet(wallet)
     end
   end
+
+  describe "transactions" do
+    alias WalletApi.Wallets.Transaction
+
+    @valid_attrs %{state: "initial", description: "some description", invoice: "some invoice", msatoshi: 42}
+    @update_attrs %{state: "approved", description: "some updated description", invoice: "some updated invoice", msatoshi: 43}
+    @invalid_attrs %{state: nil, description: nil, invoice: nil, msatoshi: nil}
+
+    def create_wallet() do
+      {:ok, user} = Accounts.create_user(%{sub: "xyz"})
+      {:ok, wallet} = Wallets.create_wallet(%{user_id: user.id})
+      wallet
+    end
+
+    def transaction_fixture(attrs \\ %{}) do
+      wallet = create_wallet()
+      {:ok, transaction} =
+        attrs
+        |> Enum.into(%{wallet_id: wallet.id})
+        |> Enum.into(@valid_attrs)
+        |> Wallets.create_transaction()
+
+      transaction
+    end
+
+    test "list_transactions/0 returns all transactions" do
+      transaction = transaction_fixture()
+      assert Wallets.list_transactions() == [transaction]
+    end
+
+    test "get_transaction!/1 returns the transaction with given id" do
+      transaction = transaction_fixture()
+      assert Wallets.get_transaction!(transaction.id) == transaction
+    end
+
+    test "create_transaction/1 with valid data creates a transaction" do
+      wallet = create_wallet()
+      assert {:ok, %Transaction{} = transaction} = Wallets.create_transaction(
+        Enum.into(%{wallet_id: wallet.id}, @valid_attrs))
+      assert transaction.description == "some description"
+      assert transaction.invoice == "some invoice"
+      assert transaction.msatoshi == 42
+    end
+
+    test "create_transaction/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Wallets.create_transaction(@invalid_attrs)
+    end
+
+    test "update_transaction/2 with valid data updates the transaction" do
+      transaction = transaction_fixture()
+      assert {:ok, transaction} = Wallets.update_transaction(transaction, @update_attrs)
+      assert %Transaction{} = transaction
+      assert transaction.description == "some updated description"
+      assert transaction.invoice == "some updated invoice"
+      assert transaction.msatoshi == 43
+    end
+
+    test "update_transaction/2 with invalid data returns error changeset" do
+      transaction = transaction_fixture()
+      assert {:error, %Ecto.Changeset{}} = Wallets.update_transaction(transaction, @invalid_attrs)
+      assert transaction == Wallets.get_transaction!(transaction.id)
+    end
+
+    test "change_transaction/1 returns a transaction changeset" do
+      transaction = transaction_fixture()
+      assert %Ecto.Changeset{} = Wallets.change_transaction(transaction)
+    end
+  end
 end
