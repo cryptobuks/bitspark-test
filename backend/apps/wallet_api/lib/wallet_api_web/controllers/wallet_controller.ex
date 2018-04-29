@@ -6,8 +6,10 @@ defmodule WalletApiWeb.WalletController do
 
   action_fallback WalletApiWeb.FallbackController
 
+  @users_wallet_id "20000000-0000-0000-0000-000000000001"
+
   def show(conn, %{}) do
-    wallet = Wallets.get_wallet!("20000000-0000-0000-0000-000000000001")
+    wallet = Wallets.get_wallet!(@users_wallet_id)
     render(conn, "show.json", wallet: wallet)
   end
 

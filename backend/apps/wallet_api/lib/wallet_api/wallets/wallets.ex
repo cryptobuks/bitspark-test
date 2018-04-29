@@ -151,6 +151,32 @@ defmodule WalletApi.Wallets do
   end
 
   @doc """
+  Pay lightning invoice.
+
+  ## Examples
+
+  iex> pay_invoice(%{invoice: invoice})
+  {:ok, %Transaction{}}
+
+  iex> pay_invoice(%{field: bad_value})
+  {:error, %Ecto.Changeset{}}
+
+  """
+  def pay_invoice(wallet_id, invoice) do
+    transaction_params = %{
+      "wallet_id" => wallet_id,
+      "invoice" => invoice,
+      "state" => "approved",
+      "msatoshi" => 123,
+      "description" => "hello"
+    }
+
+    %Transaction{}
+    |> Transaction.changeset(transaction_params)
+    |> Repo.insert()
+  end
+
+  @doc """
   Updates a transaction.
 
   ## Examples
