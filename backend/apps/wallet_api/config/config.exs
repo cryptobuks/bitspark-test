@@ -19,6 +19,12 @@ config :wallet_api, WalletApiWeb.Endpoint,
   pubsub: [name: WalletApi.PubSub,
            adapter: Phoenix.PubSub.PG2]
 
+# JWT tokens
+config :wallet_api, :auth0,
+  issuer: System.get_env("AUTH0_ISSUER") || "https://biluminate.eu.auth0.com/",
+  aud: System.get_env("AUTH0_AUD") || "https://biluminate.net/auth",
+  key: System.get_env("AUTH0_KEY") || "priv/auth/dev.pem" # https://biluminate.eu.auth0.com/.well-known/jwks.json
+
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
