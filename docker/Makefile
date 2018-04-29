@@ -4,7 +4,7 @@ run:
 	docker-compose -f docker-compose.yml up -d
 
 logs:
-	docker-compose logs -f web-wallet
+	docker-compose logs --timestamps --follow web-wallet
 
 stop:
 	docker-compose -f docker-compose.yml stop
