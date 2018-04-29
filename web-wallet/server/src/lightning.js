@@ -15,6 +15,17 @@ function LightningError (message, payload) {
 LightningError.prototype = new Error()
 
 function handleRestError (response, body) {
+  try {
+    const result = JSON.parse(body)
+
+    if (result.error && result.error.startsWith('invoice expired')) {
+      console.error('Transaction processing failed, Reason:', result.error)
+      return new LightningError(
+        'Transaction processing failed: Expired invoice',
+        result.error)
+    }
+  } catch (e) {}
+
   console.error('REST call failed [', response.status, response.statusText, ']')
   console.error('Body:', body)
 

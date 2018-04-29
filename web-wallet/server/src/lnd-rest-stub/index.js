@@ -24,6 +24,13 @@ router.post('/v1/channels/transactions', (req, res) => {
 
   const invoice = req.body.payment_request
 
+  if (invoice.endsWith('1999')) {
+    res.status(500).json({
+      "error":"invoice expired. Valid until 2018-04-28 11:43:00 +0000 UTC","code":2
+    })
+    return
+  }
+
   if (invoice.endsWith('999')) {
     res.json({payment_error: "UnknownPaymentHash"})
     return
