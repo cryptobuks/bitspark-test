@@ -12,6 +12,8 @@ defmodule WalletApi.Application do
       supervisor(WalletApi.Repo, []),
       # Start the endpoint when the application starts
       supervisor(WalletApiWeb.Endpoint, []),
+      # Start the Auth0
+      supervisor(WalletApiWeb.Auth0, []),
       # Start your own worker by calling: WalletApi.Worker.start_link(arg1, arg2, arg3)
       # worker(WalletApi.Worker, [arg1, arg2, arg3]),
     ]

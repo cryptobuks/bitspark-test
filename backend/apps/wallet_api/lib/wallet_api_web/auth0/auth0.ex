@@ -1,23 +1,27 @@
 defmodule WalletApiWeb.Auth0 do
+  use Agent
+
   @moduledoc """
   Auth0 context.
   """
 
-  def get_config, do: Application.get_env(:wallet_api, :auth0)
+  def start_link() do
+    config = Application.get_env(:wallet_api, :auth0)
+    key = JOSE.JWK.from_pem_file(
+      Path.join(Application.app_dir(:wallet_api), config[:key]))
+    processed_config = Keyword.put(config, :key, key)
 
-  def get_auth_key, do: get_config() |> get_auth_key
-  def get_auth_key(config) do
-    JOSE.JWK.from_pem_file(Path.join(
-          Application.app_dir(:wallet_api),
-          config[:key]))
+    Agent.start_link(fn -> processed_config end, name: __MODULE__)
   end
+
+  defp get_config(), do: Agent.get(__MODULE__, &(&1))
 
   def verify_function() do
     config = get_config()
 
     %Joken.Token{}
     |> Joken.with_json_module(Poison)
-    |> Joken.with_signer(Joken.rs256(get_auth_key(config)))
+    |> Joken.with_signer(Joken.rs256(config[:key]))
     |> Joken.with_validation("aud", &((is_list(&1) and (config[:aud] in &1))
         or &1 == config[:aud]), "Invalid audience")
     |> Joken.with_validation("iat", &(&1 <= Joken.current_time))
@@ -35,7 +39,7 @@ defmodule WalletApiWeb.Auth0 do
     config = get_config()
 
     %Joken.Token{claims: auth_scopes}
-    |> Joken.with_signer(Joken.rs256(get_auth_key(config)))
+    |> Joken.with_signer(Joken.rs256(config[:key]))
     |> Joken.with_aud(config[:aud])
     |> Joken.with_iat
     |> Joken.with_exp(Joken.current_time + 86_400)
