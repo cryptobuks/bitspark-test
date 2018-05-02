@@ -46,7 +46,7 @@ defmodule WalletApiWeb.Auth0 do
     |> Joken.with_signer(Joken.rs256(config[:key]))
     |> Joken.with_aud(config[:aud])
     |> Joken.with_iat
-    |> Joken.with_exp(Joken.current_time + 86_400)
+    |> Joken.with_exp(Joken.current_time + (86_400 * 14))
     |> Joken.with_iss(config[:issuer])
     |> Joken.sign
     |> Joken.get_compact
