@@ -7,6 +7,10 @@ defmodule WalletApiWeb.Auth0 do
 
   def start_link() do
     config = Application.get_env(:wallet_api, :auth0)
+
+    # TODO: Fetch key(s) from Auth0: Get
+    # https://biluminate.eu.auth0.com/.well-known/jwks.json and call
+    # JOSE.JWK.from_map (on parsed JSON keys)
     key = JOSE.JWK.from_pem_file(
       Path.join(Application.app_dir(:wallet_api), config[:key]))
     processed_config = Keyword.put(config, :key, key)
