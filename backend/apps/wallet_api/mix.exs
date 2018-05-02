@@ -44,6 +44,7 @@ defmodule WalletApi.Mixfile do
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
       {:joken, "~> 1.5"},
+      {:tesla, "1.0.0-beta.1"},
       {:assert_value, "~> 0.8.5", only: :test}
     ]
   end

@@ -11,7 +11,7 @@ defmodule WalletApi.Lightning.Invoice do
   @doc false
   def changeset(invoice, attrs) do
     invoice
-    |> cast(attrs, [:description])
-    |> validate_required([:description])
+    |> cast(attrs, [:description, :msatoshi])
+    |> validate_required([:description, :msatoshi])
   end
 end

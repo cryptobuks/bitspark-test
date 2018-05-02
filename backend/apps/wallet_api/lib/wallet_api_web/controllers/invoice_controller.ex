@@ -6,7 +6,7 @@ defmodule WalletApiWeb.InvoiceController do
   action_fallback WalletApiWeb.FallbackController
 
   def show(conn, %{"id" => id}) do
-    decoded = Lightning.decode_invoice(id)
-    render(conn, "show.json", invoice: decoded)
+    {:ok, payload} = Lightning.decode_invoice(id)
+    render(conn, "show.json", invoice: payload)
   end
 end

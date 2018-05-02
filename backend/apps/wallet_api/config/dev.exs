@@ -1,5 +1,7 @@
 use Mix.Config
 
+port = 4000
+
 # For development, we disable any cache and enable
 # debugging and code reloading.
 #
@@ -7,11 +9,15 @@ use Mix.Config
 # watchers to your application. For example, we use it
 # with brunch.io to recompile .js and .css sources.
 config :wallet_api, WalletApiWeb.Endpoint,
-  http: [port: 4000],
+  http: [port: port],
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
   watchers: []
+
+config :wallet_api, WalletApi.Lightning,
+  lnd_base_url: "http://localhost:#{port}/fakelnd",
+  lnd_macaroon: "foobar"
 
 # ## SSL Support
 #

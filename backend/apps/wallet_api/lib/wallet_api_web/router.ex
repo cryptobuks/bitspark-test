@@ -16,4 +16,13 @@ defmodule WalletApiWeb.Router do
     resources "/wallet/transactions", TransactionController, except: [:new, :edit]
     resources "/wallet/invoice", InvoiceController, except: [:new, :edit]
   end
+
+  if Mix.env in [:dev, :test] do
+    alias FakeLndWeb
+    scope "/fakelnd" do
+      pipe_through [:api]
+
+      forward "/", FakeLndWeb.Router
+    end
+  end
 end

@@ -1,10 +1,16 @@
 use Mix.Config
 
+port = 4001
+
 # We don't run a server during test. If one is required,
 # you can enable the server option below.
 config :wallet_api, WalletApiWeb.Endpoint,
-  http: [port: 4001],
-  server: false
+  http: [port: port],
+  server: true
+
+config :wallet_api, WalletApi.Lightning,
+  lnd_base_url: "http://localhost:#{port}/fakelnd",
+  lnd_macaroon: "foobar"
 
 # Print only warnings and errors during test
 config :logger, level: :warn

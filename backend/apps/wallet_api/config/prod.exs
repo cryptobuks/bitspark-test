@@ -18,6 +18,10 @@ config :wallet_api, WalletApiWeb.Endpoint,
   url: [host: "example.com", port: 80],
   cache_static_manifest: "priv/static/cache_manifest.json"
 
+config :wallet_api, WalletApi.Lightning,
+  lnd_base_url: System.get_env("LND_REST_URL"),
+  lnd_macaroon: System.get_env("LND_REST_MACAROON")
+
 # Do not print debug messages in production
 config :logger, level: :info
 
