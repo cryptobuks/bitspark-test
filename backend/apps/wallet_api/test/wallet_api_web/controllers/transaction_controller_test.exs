@@ -1,4 +1,5 @@
 defmodule WalletApiWeb.TransactionControllerTest do
+  import AssertValue
   use WalletApiWeb.ConnCase
 
   alias WalletApi.Accounts
@@ -48,12 +49,13 @@ defmodule WalletApiWeb.TransactionControllerTest do
       # Show
       conn = with_auth(token, recycle(conn))
       conn = get conn, transaction_path(conn, :show, id)
-      assert json_response(conn, 200)["data"] == %{
-        "id" => id,
-        "state" => "initial",
+      assert_value json_response(conn, 200)["data"] == %{
         "description" => "some description",
+        "id" => id,
         "invoice" => "some invoice",
-        "msatoshi" => 2100000000000000000}
+        "msatoshi" => 2100000000000000000,
+        "state" => "initial"
+      }
     end
 
     test "renders errors when data is invalid", %{conn: conn} do

@@ -43,7 +43,8 @@ defmodule WalletApi.Mixfile do
       {:postgrex, ">= 0.0.0"},
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
-      {:joken, "~> 1.5"}
+      {:joken, "~> 1.5"},
+      {:assert_value, "~> 0.8.5", only: :test}
     ]
   end
 
