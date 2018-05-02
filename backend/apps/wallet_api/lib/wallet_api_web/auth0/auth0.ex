@@ -39,7 +39,7 @@ defmodule WalletApiWeb.Auth0 do
     |> Joken.verify
   end
 
-  def create_token(auth_scopes) do
+  def create_token(auth_scopes \\ %{}) do
     config = get_config()
 
     %Joken.Token{claims: auth_scopes}

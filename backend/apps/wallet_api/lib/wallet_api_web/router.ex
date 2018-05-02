@@ -14,5 +14,6 @@ defmodule WalletApiWeb.Router do
 
     resources "/wallet", WalletController, singleton: true
     resources "/wallet/transactions", TransactionController, except: [:new, :edit]
+    resources "/wallet/invoice", InvoiceController, except: [:new, :edit]
   end
 end
