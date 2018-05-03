@@ -9,9 +9,11 @@ defmodule WalletApi.Repo.Migrations.CreateTransactionStates do
 
     flush()
 
-    WalletApi.Repo.insert!(%TransactionState{id: "approved"})
-    WalletApi.Repo.insert!(%TransactionState{id: "declined"})
-    WalletApi.Repo.insert!(%TransactionState{id: "initial"})
+    {3, nil} = WalletApi.Repo.insert_all(TransactionState, [
+      %{id: "initial"},
+      %{id: "approved"},
+      %{id: "declined"}
+    ])
   end
 
   def down do
