@@ -10,7 +10,7 @@ test:
 	mix test
 
 shell:
-	iex -S mix
+	ERL_AFLAGS="-kernel shell_history enabled" iex -S mix
 
 reset-db:
 	mix do ecto.drop, ecto.create, ecto.migrate
