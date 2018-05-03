@@ -29,5 +29,12 @@
   %{wallet_id: wallet1.id,
     state: "declined",
     description: "Some declined transaction",
-    msatoshi: 100_000_000
+    msatoshi: -100_000_000
+  })
+
+{:ok, _trn2} = WalletApi.Wallets.create_transaction(
+  %{wallet_id: wallet1.id,
+    state: "approved",
+    description: "Some approved transaction",
+    msatoshi: -100_000_000
   })
