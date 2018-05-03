@@ -28,4 +28,9 @@ defmodule WalletApi.Lightning do
       false -> {:error, changeset.errors}
     end
   end
+
+  def pay_invoice(invoice) do
+    %{body: body} = post!("/v1/channels/transactions", %{payment_request: invoice})
+    body
+  end
 end

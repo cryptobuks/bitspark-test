@@ -18,8 +18,43 @@ defmodule FakeLndWeb.Router do
     }
 
     conn
-    |> put_resp_content_type("application/json")
-    |> send_resp(200, Poison.encode!(payload))
+    |> json(200, payload)
+  end
+
+  post "/v1/channels/transactions" do
+    payment_request = conn.body_params["payment_request"]
+
+    case String.slice(payment_request, -3, 3) do
+      "999" -> json(conn, 200, %{payment_error: "UnknownPaymentHash"})
+      _ -> result = Poison.decode!("""
+            {
+              "payment_preimage": "+b9n1eSD0DlPhIdh8JowwMhQfJXEAsxV6RAspa4OJRA=",
+              "payment_route": {
+                "total_time_lock": 1292308,
+                "total_fees": "1",
+                "total_amt": "101",
+                "hops": [
+                  {
+                    "chan_id": "1420515147023712256",
+                    "chan_capacity": "897123",
+                    "amt_to_forward": "100",
+                    "fee": "1",
+                    "expiry": 1292164
+                  },
+                  {
+                    "chan_id": "1417756472375115776",
+                    "chan_capacity": "1000000",
+                    "amt_to_forward": "100",
+                    "expiry": 1292164
+                  }
+                ]
+              }
+            }
+          """)
+
+        conn
+        |> json(200, result)
+    end
   end
 
   def auth(conn, _opts) do
@@ -32,6 +67,8 @@ defmodule FakeLndWeb.Router do
   end
 
   def json(conn, status, x) do
-    conn |> send_resp(status, Poison.encode!(x))
+    conn
+    |> put_resp_content_type("application/json")
+    |> send_resp(status, Poison.encode!(x))
   end
 end
