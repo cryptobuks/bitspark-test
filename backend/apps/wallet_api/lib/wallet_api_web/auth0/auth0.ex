@@ -39,7 +39,7 @@ defmodule WalletApiWeb.Auth0 do
     |> Joken.verify
   end
 
-  def create_token(auth_scopes \\ %{}) do
+  def create_token(auth_scopes \\ %{sub: "testing"}) do
     config = get_config()
 
     %Joken.Token{claims: auth_scopes}
@@ -50,5 +50,9 @@ defmodule WalletApiWeb.Auth0 do
     |> Joken.with_iss(config[:issuer])
     |> Joken.sign
     |> Joken.get_compact
+  end
+
+  def print_testing_token() do
+    IO.puts(create_token(%{sub: "testing"}))
   end
 end
