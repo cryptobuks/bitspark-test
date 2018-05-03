@@ -36,7 +36,27 @@ defmodule WalletApi.Wallets do
       ** (Ecto.NoResultsError)
 
   """
-  def get_wallet!(id), do: Repo.get!(Wallet, id)
+  def get_wallet!(id) do
+    wallet = Repo.get!(Wallet, id)
+
+    %{wallet | balance: get_wallet_balance(wallet)}
+  end
+
+  def get_or_create_wallet!(user) do
+    wallet = case Repo.get_by(Wallet, user_id: user.id) do
+      nil ->
+        {:ok, wallet} = create_wallet(%{"user_id" => user.id})
+        wallet
+      wallet -> wallet
+    end
+
+    %{wallet | balance: get_wallet_balance(wallet)}
+  end
+
+  def get_wallet_balance(wallet) do
+    q = from t in Transaction, select: sum(t.msatoshi), where: t.state == "approved" and t.wallet_id == ^wallet.id
+    Repo.one(q) || 0
+  end
 
   @doc """
   Creates a wallet.

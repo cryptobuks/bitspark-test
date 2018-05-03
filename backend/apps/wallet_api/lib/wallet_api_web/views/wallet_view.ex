@@ -11,6 +11,9 @@ defmodule WalletApiWeb.WalletView do
   end
 
   def render("wallet.json", %{wallet: wallet}) do
-    %{id: wallet.id}
+    %{
+      id: wallet.id,
+      balance: wallet.balance
+    }
   end
 end

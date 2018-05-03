@@ -36,7 +36,7 @@ defmodule WalletApi.WalletsTest do
 
     test "get_wallet!/1 returns the wallet with given id" do
       wallet = wallet_fixture()
-      assert Wallets.get_wallet!(wallet.id) == wallet
+      assert Wallets.get_wallet!(wallet.id) == %{wallet | balance: 0}
     end
 
     test "create_wallet/1 with valid data creates a wallet" do
@@ -59,7 +59,7 @@ defmodule WalletApi.WalletsTest do
     test "update_wallet/2 with invalid data returns error changeset" do
       wallet = wallet_fixture()
       assert {:error, %Ecto.Changeset{}} = Wallets.update_wallet(wallet, @invalid_attrs)
-      assert wallet == Wallets.get_wallet!(wallet.id)
+      assert %{wallet | balance: 0} == Wallets.get_wallet!(wallet.id)
     end
 
     test "delete_wallet/1 deletes the wallet" do

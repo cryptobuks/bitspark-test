@@ -37,6 +37,15 @@ defmodule WalletApi.Accounts do
   """
   def get_user!(id), do: Repo.get!(User, id)
 
+  def login!(sub) do
+    case Repo.get_by(User, sub: sub) do
+      nil ->
+        {:ok, user} = create_user(%{sub: sub})
+        user
+      user -> user
+    end
+  end
+
   @doc """
   Creates a user.
 

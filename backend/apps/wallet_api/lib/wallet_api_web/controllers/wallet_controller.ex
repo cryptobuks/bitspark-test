@@ -1,15 +1,16 @@
 defmodule WalletApiWeb.WalletController do
   use WalletApiWeb, :controller
 
+  alias WalletApi.Accounts
   alias WalletApi.Wallets
   alias WalletApi.Wallets.Wallet
 
   action_fallback WalletApiWeb.FallbackController
 
-  @users_wallet_id "20000000-0000-0000-0000-000000000001"
-
   def show(conn, %{}) do
-    wallet = Wallets.get_wallet!(@users_wallet_id)
+    user = Accounts.login!(conn.assigns.joken_claims["sub"])
+    wallet = Wallets.get_or_create_wallet!(user)
+
     render(conn, "show.json", wallet: wallet)
   end
 

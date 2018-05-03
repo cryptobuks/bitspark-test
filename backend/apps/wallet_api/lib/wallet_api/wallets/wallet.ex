@@ -6,6 +6,7 @@ defmodule WalletApi.Wallets.Wallet do
   @foreign_key_type :binary_id
   schema "wallets" do
     field :user_id, :binary_id
+    field :balance, :integer, virtual: true
 
     timestamps()
   end
