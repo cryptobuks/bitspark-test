@@ -1,0 +1,3 @@
+#!/bin/bash
+
+curl --silent -H "Authorization: Bearer $T" http://localhost:4000/api/$1 | jq '.' -
