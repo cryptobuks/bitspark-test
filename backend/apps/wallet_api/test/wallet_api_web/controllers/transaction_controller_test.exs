@@ -5,8 +5,11 @@ defmodule WalletApiWeb.TransactionControllerTest do
   alias WalletApi.Accounts
   alias WalletApi.Wallets
 
-  @create_attrs %{state: "initial", description: "some description", invoice: "some invoice",
-                  msatoshi: 2100000000000000000}
+  @create_attrs %{
+    state: "initial",
+    description: "some description",
+    invoice: "some invoice",
+    msatoshi: 2100000000000000000}
   @invalid_attrs %{description: nil, invoice: nil, msatoshi: nil}
 
   def fixture(:wallet) do

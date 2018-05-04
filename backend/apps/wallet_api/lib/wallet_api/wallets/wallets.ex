@@ -44,17 +44,20 @@ defmodule WalletApi.Wallets do
 
   def get_or_create_wallet!(user) do
     wallet = case Repo.get_by(Wallet, user_id: user.id) do
-      nil ->
-        {:ok, wallet} = create_wallet(%{"user_id" => user.id})
-        wallet
-      wallet -> wallet
-    end
+               nil ->
+                 {:ok, wallet} = create_wallet(%{"user_id" => user.id})
+                 wallet
+               wallet -> wallet
+             end
 
     %{wallet | balance: get_wallet_balance(wallet)}
   end
 
   def get_wallet_balance(wallet) do
-    q = from t in Transaction, select: sum(t.msatoshi), where: t.state == "approved" and t.wallet_id == ^wallet.id
+    q = from t in Transaction,
+      select: sum(t.msatoshi),
+      where: t.state == "approved" and t.wallet_id == ^wallet.id
+
     Repo.one(q) || 0
   end
 
