@@ -21,7 +21,7 @@ exports.getOrCreateWallet = async function (user) {
   }
 
   // Create new wallet
-  const initialBalance = 5100000000; // 51 mBTC
+  const initialBalance = 510000000; // 5.1 mBTC
 
   const createResult = await pool.query(
     'INSERT INTO wallet (sub, balance) VALUES ($1, $2) RETURNING id',

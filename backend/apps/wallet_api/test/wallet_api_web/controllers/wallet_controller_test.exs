@@ -22,7 +22,7 @@ defmodule WalletApiWeb.WalletControllerTest do
   describe "show" do
     test "returns basic wallet info", %{conn: conn} do
       conn = get with_user(conn), wallet_path(conn, :show)
-      assert %{"id" => _, "balance" => 0} = json_response(conn, 200)["data"]
+      assert %{"id" => _, "balance" => 510000000} = json_response(conn, 200)["data"]
     end
   end
 end

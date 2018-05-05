@@ -46,6 +46,7 @@ defmodule WalletApi.Wallets do
     wallet = case Repo.get_by(Wallet, user_id: user.id) do
                nil ->
                  {:ok, wallet} = create_wallet(%{"user_id" => user.id})
+                 {:ok, _trn} = create_funding_transaction(wallet)
                  wallet
                wallet -> wallet
              end
@@ -58,7 +59,9 @@ defmodule WalletApi.Wallets do
       select: sum(t.msatoshi),
       where: t.state == "approved" and t.wallet_id == ^wallet.id
 
-    Repo.one(q) || 0
+    # SUM of integers in postgresql results in decimal, but we want Integer (we
+    # know it's OK as there are only 21M BTC)
+    Decimal.to_integer(Repo.one(q) || Decimal.new(0))
   end
 
   @doc """
@@ -168,6 +171,18 @@ defmodule WalletApi.Wallets do
 
   """
   def create_transaction(attrs \\ %{}) do
+    %Transaction{}
+    |> Transaction.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def create_funding_transaction(wallet) do
+    attrs = %{
+      wallet_id: wallet.id,
+      description: "Funding transaction",
+      msatoshi: Bitcoin.to_msatoshi({"5.1", :mbtc}),
+      state: "approved"
+    }
     %Transaction{}
     |> Transaction.changeset(attrs)
     |> Repo.insert()
