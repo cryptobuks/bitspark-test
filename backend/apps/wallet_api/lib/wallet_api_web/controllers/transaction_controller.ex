@@ -1,12 +1,11 @@
 defmodule WalletApiWeb.TransactionController do
   use WalletApiWeb, :controller
 
+  alias WalletApi.Accounts
   alias WalletApi.Wallets
   alias WalletApi.Wallets.Transaction
 
   action_fallback WalletApiWeb.FallbackController
-
-  @users_wallet_id "20000000-0000-0000-0000-000000000001"
 
   def index(conn, _params) do
     transactions = Wallets.list_transactions()
@@ -15,8 +14,11 @@ defmodule WalletApiWeb.TransactionController do
 
   # Pay invoice
   def create(conn, %{"invoice" => invoice}) do
+    user = Accounts.login!(conn.assigns.joken_claims["sub"])
+    wallet = Wallets.get_or_create_wallet!(user)
+
     with {:ok, %Transaction{} = transaction} <- Wallets.pay_invoice(
-           @users_wallet_id, invoice) do
+           wallet.id, invoice) do
       conn
       |> put_status(:created)
       |> put_resp_header("location", transaction_path(conn, :show, transaction))

@@ -6,6 +6,7 @@ defmodule WalletApi.Wallets do
   import Ecto.Query, warn: false
   alias WalletApi.Repo
 
+  alias WalletApi.Lightning
   alias WalletApi.Wallets.Wallet
   alias WalletApi.Wallets.Transaction
 
@@ -201,11 +202,13 @@ defmodule WalletApi.Wallets do
 
   """
   def pay_invoice(wallet_id, invoice) do
+    {:ok, payload} = Lightning.decode_invoice(invoice)
+
     transaction_params = %{
       "wallet_id" => wallet_id,
       "invoice" => invoice,
       "state" => "approved",
-      "msatoshi" => 123,
+      "msatoshi" => -payload.msatoshi,
       "description" => "hello"
     }
 

@@ -1,6 +1,11 @@
 defmodule Bitcoin do
   alias Decimal, as: D
 
+  # Conversions
+  def to_satoshi({amount, unit}) do
+    D.div(to_msatoshi({amount, unit}), 1000) |> D.to_integer
+  end
+
   def to_msatoshi({amount, _}) when is_float(amount),
     do: raise("Do not use floats for BTC related amounts")
 
@@ -12,4 +17,23 @@ defmodule Bitcoin do
 
   def to_msatoshi({amount, :mbtc}),
       do: D.mult(amount, 100_000_000) |> D.to_integer
+
+  # Lightning
+  def invoice_satoshi(invoice) do
+    {amount, rest} = Integer.parse(String.slice(invoice, 4, 100))
+    multiplier =
+      case String.slice(rest, 0, 1) do
+        "m" -> "0.001" |> D.new
+        "u" -> "0.000001" |> D.new
+        "n" -> "0.000000001" |> D.new
+        "p" -> "0.000000000001" |> D.new
+        _ -> raise "Unknown invoice amount multiplier"
+      end
+
+    to_satoshi({D.mult(amount, multiplier), :btc})
+  end
+
+  def invoice_msatoshi(invoice) do
+    invoice_satoshi(invoice) * 1000
+  end
 end

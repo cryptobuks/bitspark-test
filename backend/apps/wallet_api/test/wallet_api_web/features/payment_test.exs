@@ -22,4 +22,26 @@ defmodule WalletApiWeb.Features.PaymentTest do
       assert %{"id" => _, "balance" => 510000000} = json_response(conn, 200)["data"]
     end
   end
+
+  describe "transaction" do
+    test "updates wallet balance", %{conn: conn} do
+      token1 = WalletApiWeb.Auth0.create_token(%{sub: @user1_sub})
+
+      # wallet before
+      conn = get with_auth(conn, token1), wallet_path(conn, :show)
+      wallet_before = json_response(conn, 200)["data"]
+
+      # pay invoice
+      invoice = "lntb500u...200"
+      conn = post with_auth(conn, token1), transaction_path(conn, :create),
+        invoice: invoice
+      json_response(conn, 201)
+
+      # wallet after
+      conn = get with_auth(conn, token1), wallet_path(conn, :show)
+      wallet_after = json_response(conn, 200)["data"]
+
+      assert wallet_after["balance"] == wallet_before["balance"] - Bitcoin.invoice_msatoshi(invoice)
+    end
+  end
 end
