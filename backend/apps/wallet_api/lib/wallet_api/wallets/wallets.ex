@@ -212,9 +212,7 @@ defmodule WalletApi.Wallets do
       "description" => "hello"
     }
 
-    %Transaction{}
-    |> Transaction.changeset(transaction_params)
-    |> Repo.insert()
+    create_transaction(transaction_params)
   end
 
   @doc """
