@@ -31,6 +31,9 @@ defmodule WalletApi.Lightning do
 
   def pay_invoice(invoice) do
     %{body: body} = post!("/v1/channels/transactions", %{payment_request: invoice})
-    body
+    case body do
+      %{"payment_preimage" => _} -> {:ok, body}
+      _ -> {:error, body}
+    end
   end
 end

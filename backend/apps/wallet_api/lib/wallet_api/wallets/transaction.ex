@@ -10,6 +10,8 @@ defmodule WalletApi.Wallets.Transaction do
     field :description, :string
     field :invoice, :string
     field :msatoshi, :integer
+    field :processed_at, :naive_datetime
+    field :response, :string
 
     timestamps()
   end
@@ -17,7 +19,8 @@ defmodule WalletApi.Wallets.Transaction do
   @doc false
   def changeset(transaction, attrs) do
     transaction
-    |> cast(attrs, [:wallet_id, :state, :description, :msatoshi, :invoice])
+    |> cast(attrs, [:wallet_id, :state, :description, :msatoshi, :invoice, :response, :processed_at])
     |> validate_required([:wallet_id, :state, :description, :msatoshi])
+    |> foreign_key_constraint(:state)
   end
 end

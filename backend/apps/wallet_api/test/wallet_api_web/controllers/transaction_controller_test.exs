@@ -52,7 +52,8 @@ defmodule WalletApiWeb.TransactionControllerTest do
       # Show
       conn = with_auth(token, recycle(conn))
       conn = get conn, transaction_path(conn, :show, id)
-      assert_value json_response(conn, 200)["data"] == %{
+      data = json_response(conn, 200)["data"]
+      assert_value Map.take(data, ["id", "msatoshi", "state", "invoice", "description"]) == %{
         "description" => "some description",
         "id" => id,
         "invoice" => "some invoice",

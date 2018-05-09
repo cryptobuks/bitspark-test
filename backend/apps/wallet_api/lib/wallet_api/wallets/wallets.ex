@@ -3,6 +3,7 @@ defmodule WalletApi.Wallets do
   The Wallets context.
   """
 
+  require Logger
   import Ecto.Query, warn: false
   alias WalletApi.Repo
 
@@ -204,15 +205,32 @@ defmodule WalletApi.Wallets do
   def pay_invoice(wallet_id, invoice) do
     {:ok, payload} = Lightning.decode_invoice(invoice)
 
-    transaction_params = %{
-      "wallet_id" => wallet_id,
-      "invoice" => invoice,
-      "state" => "approved",
-      "msatoshi" => -payload.msatoshi,
-      "description" => "hello"
-    }
+    # initial
+    {:ok, trn} = create_transaction(
+      %{"wallet_id" => wallet_id,
+        "invoice" => invoice,
+        "state" => "initial",
+        "msatoshi" => -payload.msatoshi,
+        "description" => "hello"})
 
-    create_transaction(transaction_params)
+    # process
+    update =
+      case {_, response} = Lightning.pay_invoice(invoice) do
+        {:ok, _} ->
+          %{state: "approved"}
+
+        {:error, error} ->
+          Logger.error "Failed to process transaction [#{trn.id}]. " <>
+            "Error: #{inspect error}"
+          %{state: "declined"}
+      end
+
+    # update trn with result
+    update_transaction(
+      trn, Enum.into(
+        %{processed_at: NaiveDateTime.utc_now,
+          response: Poison.encode!(response)},
+        update))
   end
 
   @doc """

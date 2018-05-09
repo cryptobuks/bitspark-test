@@ -9,6 +9,8 @@ defmodule WalletApi.Repo.Migrations.CreateTransactions do
       add :description, :text, null: false
       add :msatoshi, :bigint, null: false
       add :invoice, :text
+      add :processed_at, :naive_datetime
+      add :response, :text
 
       timestamps()
     end

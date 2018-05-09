@@ -14,6 +14,8 @@ defmodule WalletApiWeb.TransactionView do
     %{id: transaction.id,
       description: transaction.description,
       state: transaction.state,
+      inserted_at: transaction.inserted_at,
+      processed_at: transaction.processed_at,
       msatoshi: transaction.msatoshi,
       invoice: transaction.invoice}
   end

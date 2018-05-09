@@ -1,0 +1,6 @@
+#!/bin/bash
+
+endpoint=$1
+shift
+
+curl "$@" --silent -H "Authorization: Bearer $T" -H "Content-type: application/json" http://localhost:4000/api/$endpoint | jq '.' -
