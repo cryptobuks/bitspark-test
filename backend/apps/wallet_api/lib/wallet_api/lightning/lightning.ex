@@ -6,6 +6,8 @@ defmodule WalletApi.Lightning do
   plug Tesla.Middleware.BaseUrl, config(:lnd_base_url)
   plug Tesla.Middleware.Headers, [{"grpc-metadata-macaroon", config(:lnd_macaroon)}]
   plug Tesla.Middleware.JSON, engine: Poison
+  plug Tesla.Middleware.Timeout, timeout: 120_000 #ms
+  plug Tesla.Middleware.Logger
 
   alias WalletApi.Lightning.Invoice
 
