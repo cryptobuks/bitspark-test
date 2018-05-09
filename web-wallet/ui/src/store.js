@@ -99,7 +99,11 @@ const actions = {
   },
   loginFailure: ({ commit }, payload) => {
     commit('loginFailure', payload)
-    router.push('/')
+
+    // Payment page supports non-authorized user so stay there
+    if (router.currentRoute.name !== 'PayInvoice') {
+      router.push('/')
+    }
   },
   loginSuccess: ({ commit, state }, payload) => {
     const returnTo = state.returnTo
