@@ -2,6 +2,10 @@ defmodule WalletApi.Wallets.Transaction do
   use Ecto.Schema
   import Ecto.Changeset
 
+  def initial, do: "initial"
+  def approved, do: "approved"
+  def declined, do: "declined"
+
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   schema "transactions" do

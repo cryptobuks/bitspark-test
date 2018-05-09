@@ -59,7 +59,9 @@ defmodule WalletApi.Wallets do
   def get_wallet_balance(wallet) do
     q = from t in Transaction,
       select: sum(t.msatoshi),
-      where: t.state == "approved" and t.wallet_id == ^wallet.id
+      where: t.state in ^[
+        Transaction.approved, Transaction.initial
+      ] and t.wallet_id == ^wallet.id
 
     # SUM of integers in postgresql results in decimal, but we want Integer (we
     # know it's OK as there are only 21M BTC)
@@ -213,23 +215,31 @@ defmodule WalletApi.Wallets do
         "msatoshi" => -payload.msatoshi,
         "description" => "hello"})
 
+    # check balance
+    %{balance: balance} = get_wallet!(wallet_id)
+
     # process
-    update =
-      case {_, response} = Lightning.pay_invoice(invoice) do
-        {:ok, _} ->
-          %{state: "approved"}
+    update = if balance < 0 do
+      Logger.info "Failed to process transaction [#{trn.id}]. " <>
+        "Error: Non-sufficient funds"
+      %{state: Transaction.declined, response: "NSF"}
+    else
+      case Lightning.pay_invoice(invoice) do
+        {:ok, payload} ->
+          %{state: Transaction.approved, response: payload}
 
         {:error, error} ->
           Logger.error "Failed to process transaction [#{trn.id}]. " <>
             "Error: #{inspect error}"
-          %{state: "declined"}
+          %{state: Transaction.declined, response: error}
       end
+    end
 
     # update trn with result
     update_transaction(
       trn, Enum.into(
         %{processed_at: NaiveDateTime.utc_now,
-          response: Poison.encode!(response)},
+          response: Poison.encode!(update.response)},
         update))
   end
 

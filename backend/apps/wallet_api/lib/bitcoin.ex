@@ -20,6 +20,7 @@ defmodule Bitcoin do
 
   # Lightning
   def invoice_satoshi(invoice) do
+    # https://github.com/lightningnetwork/lightning-rfc/blob/master/11-payment-encoding.md
     {amount, rest} = Integer.parse(String.slice(invoice, 4, 100))
     multiplier =
       case String.slice(rest, 0, 1) do

@@ -1,4 +1,5 @@
 defmodule WalletApiWeb.Features.PaymentTest do
+  import AssertValue
   import ExUnit.CaptureLog
   require Logger
 
@@ -65,6 +66,33 @@ defmodule WalletApiWeb.Features.PaymentTest do
       end)
 
       assert log =~ "UnknownPaymentHash"
+
+      # wallet after
+      conn = get with_auth(conn, token1), wallet_path(conn, :show)
+      wallet_after = json_response(conn, 200)["data"]
+
+      assert wallet_after["balance"] == wallet_before["balance"]
+    end
+  end
+
+  describe "non-sufficient funds" do
+    test "results in declined transaction", %{conn: conn} do
+      token1 = WalletApiWeb.Auth0.create_token(%{sub: @user1_sub})
+
+      # wallet before
+      conn = get with_auth(conn, token1), wallet_path(conn, :show)
+      wallet_before = json_response(conn, 200)["data"]
+
+      assert wallet_before["balance"] < Bitcoin.to_msatoshi({6, :mbtc})
+
+      # try to pay invoice -> declined
+      invoice = "lntb6m...200" # 6 mBTC
+      conn = post with_auth(conn, token1), transaction_path(conn, :create),
+        invoice: invoice
+      data = json_response(conn, 201)["data"]
+
+      assert_value Map.take(data, ["msatoshi", "state"]) == %{
+        "msatoshi" => -600000000, "state" => "declined"}
 
       # wallet after
       conn = get with_auth(conn, token1), wallet_path(conn, :show)
