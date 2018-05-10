@@ -22,9 +22,6 @@ services:
     build: ../backend/
     container_name: backend
     restart: always
-    user: 1005:1006  # bitspark:bitspark
-    volumes:
-      - "/mnt:/mnt"
     expose:
       - "4000"
     networks:
