@@ -25,7 +25,7 @@ seed:
 	mix run apps/wallet_api/priv/repo/seeds.exs
 
 token:
-	@mix run -e "WalletApiWeb.Auth0.print_testing_token"
+	@mix run -e "WalletApiWeb.Auth0.print_random_token"
 
 routes:
 	@mix phx.routes WalletApiWeb.Router

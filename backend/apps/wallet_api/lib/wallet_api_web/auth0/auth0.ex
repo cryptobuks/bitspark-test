@@ -55,4 +55,8 @@ defmodule WalletApiWeb.Auth0 do
   def print_testing_token() do
     IO.puts(create_token(%{sub: "testing"}))
   end
+
+  def print_random_token() do
+    IO.puts(create_token(%{sub: Utils.random_string(32)}))
+  end
 end

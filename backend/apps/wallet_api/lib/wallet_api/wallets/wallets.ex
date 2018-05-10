@@ -146,6 +146,15 @@ defmodule WalletApi.Wallets do
     Repo.all(Transaction)
   end
 
+  def list_transactions(%Wallet{} = wallet) do
+    q = from t in Transaction,
+      select: t,
+      where: t.wallet_id == ^wallet.id,
+      order_by: [desc: t.inserted_at]
+
+    Repo.all(q)
+  end
+
   @doc """
   Gets a single transaction.
 

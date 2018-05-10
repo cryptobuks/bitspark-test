@@ -1,5 +1,6 @@
 defmodule WalletApiWeb.Features.PaymentTest do
   import AssertValue
+  import Utils, only: [canonicalize: 1]
   import ExUnit.CaptureLog
   require Logger
 
@@ -23,7 +24,7 @@ defmodule WalletApiWeb.Features.PaymentTest do
     test "is created (with funding balance) for each new user (unknown sub) who access API", %{conn: conn} do
       token1 = WalletApiWeb.Auth0.create_token(%{sub: @user1_sub})
       conn = get with_auth(conn, token1), wallet_path(conn, :show)
-      assert %{"id" => _, "balance" => 510000000} = json_response(conn, 200)["data"]
+      assert_value canonicalize(json_response(conn, 200)["data"]) == %{"balance" => %{"msatoshi" => 510000000}, "id" => "<UUID>"}
     end
   end
 
@@ -45,7 +46,7 @@ defmodule WalletApiWeb.Features.PaymentTest do
       conn = get with_auth(conn, token1), wallet_path(conn, :show)
       wallet_after = json_response(conn, 200)["data"]
 
-      assert wallet_after["balance"] == wallet_before["balance"] - Bitcoin.invoice_msatoshi(invoice)
+      assert_value [before: wallet_before["balance"], after: wallet_after["balance"]] == [before: %{"msatoshi" => 510000000}, after: %{"msatoshi" => 460000000}]
     end
   end
 
@@ -83,22 +84,19 @@ defmodule WalletApiWeb.Features.PaymentTest do
       conn = get with_auth(conn, token1), wallet_path(conn, :show)
       wallet_before = json_response(conn, 200)["data"]
 
-      assert wallet_before["balance"] < Bitcoin.to_msatoshi({6, :mbtc})
+      assert_value wallet_before["balance"] == %{"msatoshi" => 510000000}
 
       # try to pay invoice -> declined
       invoice = "lntb6m...200" # 6 mBTC
       conn = post with_auth(conn, token1), transaction_path(conn, :create),
         invoice: invoice
-      data = json_response(conn, 201)["data"]
-
-      assert_value Map.take(data, ["msatoshi", "state"]) == %{
-        "msatoshi" => -600000000, "state" => "declined"}
+      assert_value Map.take(json_response(conn, 201)["data"], ["state"]) == %{"state" => "declined"}
 
       # wallet after
       conn = get with_auth(conn, token1), wallet_path(conn, :show)
       wallet_after = json_response(conn, 200)["data"]
 
-      assert wallet_after["balance"] == wallet_before["balance"]
+      assert_value [before: wallet_before["balance"], after: wallet_after["balance"]] == [before: %{"msatoshi" => 510000000}, after: %{"msatoshi" => 510000000}]
     end
   end
 end

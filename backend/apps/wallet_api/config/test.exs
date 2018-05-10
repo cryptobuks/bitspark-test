@@ -17,6 +17,8 @@ config :logger, level: :warn
 
 # Configure your database
 config :wallet_api, WalletApi.Repo,
+  timeout: :infinity,
+  ownership_timeout: :infinity,
   adapter: Ecto.Adapters.Postgres,
   username: "postgres",
   password: "postgres",

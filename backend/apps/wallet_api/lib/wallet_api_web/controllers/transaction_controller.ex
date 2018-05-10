@@ -8,7 +8,10 @@ defmodule WalletApiWeb.TransactionController do
   action_fallback WalletApiWeb.FallbackController
 
   def index(conn, _params) do
-    transactions = Wallets.list_transactions()
+    user = Accounts.login!(conn.assigns.joken_claims["sub"])
+    wallet = Wallets.get_or_create_wallet!(user)
+
+    transactions = Wallets.list_transactions(wallet)
     render(conn, "index.json", transactions: transactions)
   end
 

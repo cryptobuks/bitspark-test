@@ -1,5 +1,6 @@
 defmodule WalletApiWeb.TransactionControllerTest do
   import AssertValue
+  import Utils, only: [canonicalize: 1]
   use WalletApiWeb.ConnCase
 
   alias WalletApi.Accounts
@@ -19,7 +20,7 @@ defmodule WalletApiWeb.TransactionControllerTest do
   end
 
   def fixture(:token) do
-    WalletApiWeb.Auth0.create_token(%{})
+    WalletApiWeb.Auth0.create_token()
   end
 
   def with_auth(token, conn) do
@@ -31,10 +32,11 @@ defmodule WalletApiWeb.TransactionControllerTest do
   end
 
   describe "index" do
-    test "lists all transactions", %{conn: conn} do
+    test "lists all transactions (new wallet contains funding transaction only)", %{conn: conn} do
       token = fixture(:token)
       conn = get with_auth(token, conn), transaction_path(conn, :index)
-      assert json_response(conn, 200)["data"] == []
+      data = json_response(conn, 200)["data"]
+      assert_value canonicalize(data) == [%{"description" => "Funding transaction", "id" => "<UUID>", "inserted_at" => "<TIMESTAMP>", "invoice" => nil, "msatoshi" => 510000000, "processed_at" => nil, "state" => "approved"}]
     end
   end
 

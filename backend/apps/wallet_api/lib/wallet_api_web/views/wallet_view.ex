@@ -13,7 +13,9 @@ defmodule WalletApiWeb.WalletView do
   def render("wallet.json", %{wallet: wallet}) do
     %{
       id: wallet.id,
-      balance: wallet.balance
+      balance: %{
+        msatoshi: wallet.balance
+      }
     }
   end
 end

@@ -1,4 +1,6 @@
 defmodule WalletApiWeb.WalletControllerTest do
+  import AssertValue
+  import Utils, only: [canonicalize: 1]
   use WalletApiWeb.ConnCase
 
   alias WalletApi.Accounts
@@ -22,7 +24,7 @@ defmodule WalletApiWeb.WalletControllerTest do
   describe "show" do
     test "returns basic wallet info", %{conn: conn} do
       conn = get with_user(conn), wallet_path(conn, :show)
-      assert %{"id" => _, "balance" => 510000000} = json_response(conn, 200)["data"]
+      assert_value canonicalize(json_response(conn, 200)["data"]) == %{"balance" => %{"msatoshi" => 510000000}, "id" => "<UUID>"}
     end
   end
 end
