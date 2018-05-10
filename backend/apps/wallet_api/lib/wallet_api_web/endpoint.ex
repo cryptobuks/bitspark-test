@@ -35,6 +35,7 @@ defmodule WalletApiWeb.Endpoint do
     key: "_wallet_api_key",
     signing_salt: "+GCFUVEp"
 
+  plug CORSPlug, origin: "*"
   plug WalletApiWeb.Router
 
   @doc """
