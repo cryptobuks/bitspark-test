@@ -45,6 +45,8 @@ services:
       - "./Caddyfile:/etc/Caddyfile"
     networks:
       - web
+    environment:
+      - ACME_AGREE=true
 
   database:
     container_name: database
