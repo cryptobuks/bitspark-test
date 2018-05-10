@@ -222,7 +222,7 @@ defmodule WalletApi.Wallets do
         "invoice" => invoice,
         "state" => "initial",
         "msatoshi" => -payload.msatoshi,
-        "description" => "hello"})
+        "description" => payload.description})
 
     # check balance
     %{balance: balance} = get_wallet!(wallet_id)
