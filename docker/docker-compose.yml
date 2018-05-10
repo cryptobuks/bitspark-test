@@ -18,6 +18,25 @@ services:
       - PORT=8080
       - PGHOST=database
 
+  backend:
+    build: ../backend/
+    container_name: backend
+    restart: always
+    user: 1005:1006  # bitspark:bitspark
+    volumes:
+      - "/mnt:/mnt"
+    expose:
+      - "4000"
+    networks:
+      - web
+    environment:
+      - PORT=4000
+      - LND_REST_URL=https://bit-1.biluminate.net:29735
+      - LND_REST_MACAROON=${LND_REST_MACAROON}
+      - SECRET_KEY_BASE=${SECRET_KEY_BASE}
+      - PGHOST=database
+      - PGDATABASE=wallet_api_prod
+
   proxy:
     image: abiosoft/caddy
     container_name: caddy

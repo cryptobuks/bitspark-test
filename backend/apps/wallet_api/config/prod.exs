@@ -22,6 +22,9 @@ config :wallet_api, WalletApi.Lightning,
   lnd_base_url: System.get_env("LND_REST_URL"),
   lnd_macaroon: System.get_env("LND_REST_MACAROON")
 
+config :wallet_api, :auth0,
+  key: System.get_env("AUTH0_KEY") || "priv/auth/prod.pem"
+
 # Do not print debug messages in production
 config :logger, level: :info
 
@@ -65,4 +68,14 @@ config :logger, level: :info
 
 # Finally import the config/prod.secret.exs
 # which should be versioned separately.
-import_config "prod.secret.exs"
+config :wallet_api, WalletApiWeb.Endpoint,
+  secret_key_base: System.get_env("SECRET_KEY_BASE")
+
+# Configure your database
+config :wallet_api, WalletApi.Repo,
+  adapter: Ecto.Adapters.Postgres,
+  username: System.get_env("PGUSER") || "postgres",
+  password: System.get_env("PGPASSWORD") || "postgres",
+  database: System.get_env("PGDATABASE") || "postgres",
+  hostname: System.get_env("PGHOST") || "localhost",
+  pool_size: 15
