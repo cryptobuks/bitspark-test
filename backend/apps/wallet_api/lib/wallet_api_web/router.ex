@@ -12,9 +12,9 @@ defmodule WalletApiWeb.Router do
   scope "/api", WalletApiWeb do
     pipe_through [:api, :auth]
 
-    resources "/wallet", WalletController, singleton: true
-    resources "/wallet/transactions", TransactionController, except: [:new, :edit]
-    resources "/wallet/invoice", InvoiceController, except: [:new, :edit]
+    resources "/wallet", WalletController, singleton: true, only: [:show]
+    resources "/wallet/transactions", TransactionController, only: [:index, :show, :create]
+    resources "/wallet/invoice", InvoiceController, only: [:show]
   end
 
   if Mix.env in [:dev, :test] do

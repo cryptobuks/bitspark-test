@@ -26,3 +26,6 @@ seed:
 
 token:
 	@mix run -e "WalletApiWeb.Auth0.print_testing_token"
+
+routes:
+	@mix phx.routes WalletApiWeb.Router
