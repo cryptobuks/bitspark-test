@@ -64,14 +64,16 @@ export class API {
   }
 
   getInvoiceInfo (invoice) {
-    return fetch('/api/payment/invoice/info?invoice=' + invoice)
+    return fetch('/api/wallet/invoice/' + invoice, {
+      headers: new Headers({
+        'Authorization': 'Bearer ' + this.accessToken,
+        'Content-Type': 'application/json'
+      })
+    })
       .then(assertHttpOk)
       .then(r => r.json())
       .then(r => {
-        if (r.status !== 'OK') {
-          throw new Error(r.error)
-        }
-        return r.payload
+        return r.data
       })
   }
 }
