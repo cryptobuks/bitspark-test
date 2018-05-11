@@ -21,7 +21,7 @@ export class API {
   }
 
   getWalletInfo () {
-    return fetch('/api/wallet/info', {
+    return fetch('/api/wallet', {
       headers: new Headers({
         'Authorization': 'Bearer ' + this.accessToken,
         'Content-Type': 'application/json'

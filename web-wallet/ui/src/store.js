@@ -24,7 +24,7 @@ const mutations = {
     }
   },
   walletInfo (state, walletInfo) {
-    state.wallet = walletInfo
+    state.wallet = walletInfo.data
   },
   beforeLogin (state, payload) {
     state.returnTo = payload.returnTo
