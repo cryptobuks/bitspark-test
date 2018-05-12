@@ -9,7 +9,7 @@ function assertHttpOk (res) {
   if (res.status === 401) {
     throw new NotAuthorizedError('Not Authorized')
   }
-  if (res.status !== 200) {
+  if (![200, 201].includes(res.status)) {
     throw new Error('Request failed: ' + res.status + ' ' + res.statusText)
   }
   return res
@@ -41,7 +41,7 @@ export class API {
   }
 
   payInvoice (invoice) {
-    return fetch('/api/payment/invoice/pay', {
+    return fetch('/api/wallet/transactions', {
       method: 'POST',
       cache: 'no-cache',
       mode: 'cors',
@@ -56,10 +56,10 @@ export class API {
       .then(assertHttpOk)
       .then(r => r.json())
       .then(r => {
-        if (r.status !== 'OK') {
-          throw new Error(r.error)
+        if (r.data.state !== 'approved') {
+          throw new Error(r.data.state)
         }
-        return r.payload
+        return r.data
       })
   }
 
