@@ -31,13 +31,14 @@ export class API {
   }
 
   getTransactions () {
-    return fetch('/api/transactions', {
+    return fetch('/api/wallet/transactions', {
       headers: new Headers({
         'Authorization': 'Bearer ' + this.accessToken,
         'Content-Type': 'application/json'
       })
     }).then(assertHttpOk)
       .then(r => r.json())
+      .then(r => r.data)
   }
 
   payInvoice (invoice) {
