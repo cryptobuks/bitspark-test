@@ -74,6 +74,6 @@ cd web-wallet && docker-compose up
 ### Release
 
 ```
-ssh -A maio@bit-1.biluminate.net
-make -C bitspark-test/docker run
+ssh -A bitspark@bit-1.biluminate.net
+make release
 ```
