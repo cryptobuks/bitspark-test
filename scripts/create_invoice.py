@@ -47,7 +47,7 @@ if AMOUNT > 16000000 or AMOUNT < 1:
 	raise RuntimeError("<amount> must be divisible by > 0 and <= 16 000 000")
 
 #CREATE_INVOICE = "/mnt/data/lightning/lightning/cli/lightning-cli --lightning-dir=/mnt/data/lightning/data_testnet invoice " + str(AMOUNT) + " " + NAME + "#" + str(ID) + " 1440"
-CREATE_INVOICE = "/mnt/data/lnd/lndbin/lncli --lnddir /mnt/data/lnd/data2_testnet --rpcserver=localhost:19736 --macaroonpath /mnt/data/lnd/data2_testnet/admin.macaroon addinvoice --memo=\"" + NAME + "#" + str(ID) + "\" --amt=" + str(AMOUNT) + " --expiry=604800"
+CREATE_INVOICE = "/mnt/data/lnd/lndbin/lncli --lnddir /mnt/data/lnd/data2_testnet --rpcserver=localhost:19736 --macaroonpath /mnt/data/lnd/data2_testnet/admin.macaroon addinvoice --memo=\"" + NAME + "#" + str(ID) + "\" --amt=" + str(AMOUNT) + " --expiry=2592000"
 
 process = subprocess.Popen( CREATE_INVOICE.split( ), stdout=subprocess.PIPE )
 invoice_output, invoice_error = process.communicate( )
@@ -62,7 +62,7 @@ INVOICE=json.loads(invoice_output)
 
 print "LN payment: " + str(INVOICE["pay_req"])
 
-LNS = 'https://bit-1.biluminate.net/#/pay/' + str(INVOICE["pay_req"])
+LNS = 'https://testpay.biluminate.com/#/invoice/' + str(INVOICE["pay_req"])
 print "Biluminate URL: " + str(LNS)
 
 RESULT=Shorten(LNS)
