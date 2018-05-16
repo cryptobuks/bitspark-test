@@ -6,7 +6,7 @@ defmodule WalletApiWeb.Router do
   end
 
   pipeline :auth do
-    plug Joken.Plug, verify: &WalletApiWeb.Auth0.verify_function/0
+    plug Joken.Plug, verify: &WalletApiWeb.Auth0.verify_function/0, on_error: &__MODULE__.auth_on_error/2
   end
 
   # Wallet API without auth (only safe handlers here)
@@ -32,5 +32,9 @@ defmodule WalletApiWeb.Router do
 
       forward "/", FakeLndWeb.Router
     end
+  end
+
+  def auth_on_error(conn, message) do
+    {conn, %{"errors" => %{"detail" => message}}}
   end
 end
