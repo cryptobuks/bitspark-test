@@ -9,12 +9,20 @@ defmodule WalletApiWeb.Router do
     plug Joken.Plug, verify: &WalletApiWeb.Auth0.verify_function/0
   end
 
-  scope "/api", WalletApiWeb do
+  # Wallet API without auth (only safe handlers here)
+  scope "/api/wallet", WalletApiWeb do
+    pipe_through [:api]
+
+    resources "/invoice", InvoiceController, only: [:show]
+  end
+
+  # With auth
+  scope "/api/wallet", WalletApiWeb do
     pipe_through [:api, :auth]
 
-    resources "/wallet", WalletController, singleton: true, only: [:show]
-    resources "/wallet/transactions", TransactionController, only: [:index, :show, :create]
-    resources "/wallet/invoice", InvoiceController, only: [:show]
+    resources "/", WalletController, singleton: true, only: [:show]
+    resources "/transactions", TransactionController, only: [:index, :show, :create]
+    resources "/invoice", InvoiceController, only: [:show]
   end
 
   if Mix.env in [:dev, :test] do
