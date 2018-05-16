@@ -31,7 +31,7 @@ bit-1.biluminate.net {
 
 testpay.biluminate.com {
     tls marian.schubert@gmail.com
-    proxy / backend:4000 {
+    proxy / pay-redir:3000 {
         transparent
     }
 }

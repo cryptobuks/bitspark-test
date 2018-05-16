@@ -1,5 +1,14 @@
 version: '2'
 services:
+  pay-redir:
+    build: ../web-wallet/pay-redir/
+    container_name: pay-redir
+    restart: always
+    expose:
+      - "3000"
+    networks:
+      - web
+
   web-wallet:
     build: ../web-wallet/
     container_name: web-wallet
