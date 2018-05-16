@@ -19,6 +19,13 @@ defmodule Bitcoin do
       do: D.mult(amount, 100_000_000) |> D.to_integer
 
   # Lightning
+  def is_invoice(s) do
+    cond do
+      not String.starts_with?(s, "lntb") -> false
+      true -> true
+    end
+  end
+
   def invoice_satoshi(invoice) do
     # https://github.com/lightningnetwork/lightning-rfc/blob/master/11-payment-encoding.md
     {amount, rest} = Integer.parse(String.slice(invoice, 4, 100))

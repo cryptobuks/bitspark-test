@@ -6,11 +6,11 @@ defmodule WalletApiWeb.ErrorViewTest do
 
   test "renders 404.json" do
     assert render(WalletApiWeb.ErrorView, "404.json", []) ==
-           %{errors: %{detail: "Not Found"}}
+           %{error: %{detail: "Not Found"}}
   end
 
   test "renders 500.json" do
     assert render(WalletApiWeb.ErrorView, "500.json", []) ==
-           %{errors: %{detail: "Internal Server Error"}}
+           %{error: %{detail: "Internal Server Error"}}
   end
 end

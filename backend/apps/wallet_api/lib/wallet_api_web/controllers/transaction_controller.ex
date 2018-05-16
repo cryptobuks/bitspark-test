@@ -1,4 +1,5 @@
 defmodule WalletApiWeb.TransactionController do
+  require Logger
   use WalletApiWeb, :controller
 
   alias WalletApi.Accounts
@@ -17,6 +18,11 @@ defmodule WalletApiWeb.TransactionController do
 
   # Pay invoice
   def create(conn, %{"invoice" => invoice}) do
+    unless Bitcoin.is_invoice(invoice) do
+      Logger.warn "Invalid invoice '#{invoice}' given."
+      raise WalletApiWeb.InvalidInvoice, invoice: invoice
+    end
+
     user = Accounts.login!(conn.assigns.joken_claims["sub"])
     wallet = Wallets.get_or_create_wallet!(user)
 
