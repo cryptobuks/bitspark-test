@@ -10,7 +10,7 @@ port = 4000
 # with brunch.io to recompile .js and .css sources.
 config :wallet_api, WalletApiWeb.Endpoint,
   http: [port: port],
-  debug_errors: true,
+  debug_errors: false,
   code_reloader: true,
   check_origin: false,
   watchers: []
