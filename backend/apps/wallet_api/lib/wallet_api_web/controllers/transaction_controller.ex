@@ -18,6 +18,8 @@ defmodule WalletApiWeb.TransactionController do
 
   # Pay invoice
   def create(conn, %{"invoice" => invoice}) do
+    invoice = String.downcase(invoice)
+
     unless Bitcoin.is_invoice(invoice) do
       Logger.warn "Invalid invoice '#{invoice}' given."
       raise WalletApiWeb.InvalidInvoice, invoice: invoice
