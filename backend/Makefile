@@ -18,8 +18,12 @@ reset-db:
 seed-db:
 	mix run apps/wallet/priv/repo/seeds.exs
 
+run-db:
+	docker rm -f wallet_pg > /dev/null 2>&1 || true
+	docker run --detach -p 5432:5432 --env POSTGRES_DB=wallet_dev --name wallet_pg postgres:10.3
+
 connect-db:
-	psql -h localhost wallet_api_dev postgres
+	docker exec -it wallet_pg psql wallet_dev postgres
 
 seed:
 	mix run apps/wallet/priv/repo/seeds.exs
