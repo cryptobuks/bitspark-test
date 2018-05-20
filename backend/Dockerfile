@@ -11,8 +11,10 @@ ENV MIX_ENV prod
 ENV PORT ${PORT:-4000}
 EXPOSE $PORT
 
+COPY mix.lock ./
 COPY mix.exs ./
-COPY apps/wallet_api/mix.exs ./apps/wallet_api/
+COPY apps/wallet/mix.exs ./apps/wallet/
+COPY apps/wallet_web/mix.exs ./apps/wallet_web/
 
 RUN mix deps.get --only prod
 RUN mix deps.compile

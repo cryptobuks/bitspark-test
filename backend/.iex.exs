@@ -1,5 +1,5 @@
 import Ecto.Query, warn: false
 
-alias WalletApiWeb.{Auth0}
-alias WalletApi.{Repo, Accounts, Wallets}
-alias WalletApi.Wallets.{Transaction}
+alias WalletWeb.{Auth0}
+alias Wallet.{Repo, Accounts, Wallets}
+alias Wallet.Wallets.{Transaction}

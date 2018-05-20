@@ -16,16 +16,16 @@ reset-db:
 	mix do ecto.drop, ecto.create, ecto.migrate
 
 seed-db:
-	mix run apps/wallet_api/priv/repo/seeds.exs
+	mix run apps/wallet/priv/repo/seeds.exs
 
 connect-db:
 	psql -h localhost wallet_api_dev postgres
 
 seed:
-	mix run apps/wallet_api/priv/repo/seeds.exs
+	mix run apps/wallet/priv/repo/seeds.exs
 
 token:
-	@mix run -e "WalletApiWeb.Auth0.print_random_token"
+	@mix run -e "WalletWeb.Auth0.print_random_token"
 
 routes:
-	@mix phx.routes WalletApiWeb.Router
+	@mix phx.routes WalletWeb.Router
