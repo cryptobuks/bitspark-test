@@ -1,23 +1,10 @@
 version: '2'
 services:
-  pay-redir:
-    build: ../web-wallet/pay-redir/
-    container_name: pay-redir
-    restart: always
-    expose:
-      - "3000"
-    networks:
-      - web
-
   web-wallet:
     build: ../web-wallet/
     container_name: web-wallet
     restart: always
     user: 1005:1006  # bitspark:bitspark
-    volumes:
-      - "/mnt:/mnt"
-    expose:
-      - "8080"
     networks:
       - web
     environment:
