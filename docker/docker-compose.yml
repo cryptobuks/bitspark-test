@@ -32,16 +32,18 @@ services:
     container_name: backend
     restart: always
     expose:
-      - "4000"
+      - "4000" # wallet API
+      - "5000" # pay WEB
     networks:
       - web
     environment:
-      - PORT=4000
+      - WALLET_PORT=4000
       - LND_REST_URL=https://bit-1.biluminate.net:29735
       - LND_REST_MACAROON=${LND_REST_MACAROON}
       - SECRET_KEY_BASE=${SECRET_KEY_BASE}
       - PGHOST=database
       - PGDATABASE=wallet_api_prod
+      - PAY_PORT=5000
 
   proxy:
     image: abiosoft/caddy

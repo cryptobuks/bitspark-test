@@ -1,19 +1,21 @@
-defmodule WalletWeb.Endpoint do
-  use Phoenix.Endpoint, otp_app: :wallet_web
+defmodule PayWeb.Endpoint do
+  use Phoenix.Endpoint, otp_app: :pay_web
 
-  socket "/socket", WalletWeb.UserSocket
+  socket "/socket", PayWeb.UserSocket
 
   # Serve at "/" the static files from "priv/static" directory.
   #
   # You should set gzip to true if you are running phoenix.digest
   # when deploying your static files in production.
   plug Plug.Static,
-    at: "/", from: :wallet_web, gzip: false,
+    at: "/", from: :pay_web, gzip: false,
     only: ~w(css fonts images js favicon.ico robots.txt)
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.
   if code_reloading? do
+    socket "/phoenix/live_reload/socket", Phoenix.LiveReloader.Socket
+    plug Phoenix.LiveReloader
     plug Phoenix.CodeReloader
   end
 
@@ -33,11 +35,10 @@ defmodule WalletWeb.Endpoint do
   # Set :encryption_salt if you would also like to encrypt it.
   plug Plug.Session,
     store: :cookie,
-    key: "_wallet_web_key",
-    signing_salt: "rw7g+GPD"
+    key: "_pay_web_key",
+    signing_salt: "dIgw1oGn"
 
-  plug CORSPlug, origin: "*"
-  plug WalletWeb.Router
+  plug PayWeb.Router
 
   @doc """
   Callback invoked for dynamically configuring the endpoint.
@@ -47,7 +48,7 @@ defmodule WalletWeb.Endpoint do
   """
   def init(_key, config) do
     if config[:load_from_system_env] do
-      port = System.get_env("WALLET_PORT") || raise "expected the WALLET_PORT environment variable to be set"
+      port = System.get_env("PAY_PORT") || raise "expected the PAY_PORT environment variable to be set"
       {:ok, Keyword.put(config, :http, [:inet6, port: port])}
     else
       {:ok, config}
