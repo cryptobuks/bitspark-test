@@ -10,8 +10,8 @@ services:
     volumes:
       - ./:/app
     environment:
-      - LND_REST_URL=http://localhost:8081
-      - LND_REST_MACAROON=foobaroon
+      - WALLET_LND_REST_URL=http://localhost:8081
+      - WALLET_LND_REST_MACAROON=foobaroon
       - PGHOST=database
     command: "make -C /app dev"
 

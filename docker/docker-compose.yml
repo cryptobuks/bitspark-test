@@ -9,8 +9,8 @@ services:
       - web
     environment:
       - HTTP_LOG_FORMAT=tiny
-      - LND_REST_URL=https://bit-1.biluminate.net:29735
-      - LND_REST_MACAROON=${LND_REST_MACAROON}
+      - WALLET_LND_REST_URL=https://bit-1.biluminate.net:29735
+      - WALLET_LND_REST_MACAROON=${WALLET_LND_REST_MACAROON}
       - PORT=8080
       - PGHOST=database
 
@@ -25,8 +25,8 @@ services:
       - web
     environment:
       - WALLET_PORT=4000
-      - LND_REST_URL=https://bit-1.biluminate.net:29735
-      - LND_REST_MACAROON=${LND_REST_MACAROON}
+      - WALLET_LND_REST_URL=https://bit-1.biluminate.net:29735
+      - WALLET_LND_REST_MACAROON=${WALLET_LND_REST_MACAROON}
       - SECRET_KEY_BASE=${SECRET_KEY_BASE}
       - PGHOST=database
       - PGDATABASE=wallet_api_prod

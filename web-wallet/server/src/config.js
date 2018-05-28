@@ -2,8 +2,8 @@
 exports.httpLogFormat = process.env.HTTP_LOG_FORMAT
 
 // LND
-exports.lndRestUrl = process.env.LND_REST_URL
-exports.lndRestMacaroon = process.env.LND_REST_MACAROON
+exports.lndRestUrl = process.env.WALLET_LND_REST_URL
+exports.lndRestMacaroon = process.env.WALLET_LND_REST_MACAROON
 
 // Database
 var db = {

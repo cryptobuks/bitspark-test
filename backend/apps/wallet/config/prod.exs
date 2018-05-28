@@ -1,8 +1,8 @@
 use Mix.Config
 
 config :wallet, Lightning,
-  lnd_base_url: System.get_env("LND_REST_URL"),
-  lnd_macaroon: System.get_env("LND_REST_MACAROON")
+  lnd_base_url: System.get_env("WALLET_LND_REST_URL"),
+  lnd_macaroon: System.get_env("WALLET_LND_REST_MACAROON")
 
 # Configure your database
 config :wallet, Wallet.Repo,
