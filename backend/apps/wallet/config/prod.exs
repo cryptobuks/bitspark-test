@@ -1,6 +1,6 @@
 use Mix.Config
 
-config :wallet, Wallet.Lightning,
+config :wallet, Lightning,
   lnd_base_url: System.get_env("LND_REST_URL"),
   lnd_macaroon: System.get_env("LND_REST_MACAROON")
 

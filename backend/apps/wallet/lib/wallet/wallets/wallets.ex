@@ -7,7 +7,7 @@ defmodule Wallet.Wallets do
   import Ecto.Query, warn: false
   alias Wallet.Repo
 
-  alias Wallet.Lightning
+  alias Lightning
   alias Wallet.Wallets
 
   @doc """
@@ -213,7 +213,7 @@ defmodule Wallet.Wallets do
 
   """
   def pay_invoice(wallet_id, invoice) do
-    {:ok, payload} = Lightning.decode_invoice(invoice)
+    {:ok, payload} = Lightning.decode_invoice(Application.get_env(:wallet, Lightning), invoice)
 
     # initial
     {:ok, trn} = create_transaction(
@@ -232,7 +232,7 @@ defmodule Wallet.Wallets do
         "Error: Non-sufficient funds"
       %{state: Wallets.Transaction.declined, response: "NSF"}
     else
-      case Lightning.pay_invoice(invoice) do
+      case Lightning.pay_invoice(Application.get_env(:wallet, Lightning), invoice) do
         {:ok, payload} ->
           %{state: Wallets.Transaction.approved, response: payload}
 

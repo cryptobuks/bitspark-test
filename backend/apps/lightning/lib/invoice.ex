@@ -1,4 +1,4 @@
-defmodule Wallet.Lightning.Invoice do
+defmodule Lightning.Invoice do
   use Ecto.Schema
   import Ecto.Changeset
 

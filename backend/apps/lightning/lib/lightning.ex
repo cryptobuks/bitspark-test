@@ -1,4 +1,4 @@
-defmodule Wallet.Lightning do
+defmodule Lightning do
   @moduledoc """
   The Lnd context.
   """
@@ -7,23 +7,21 @@ defmodule Wallet.Lightning do
   plug Tesla.Middleware.Timeout, timeout: 120_000 #ms
   plug Tesla.Middleware.Logger
 
-  alias Wallet.Lightning.Invoice
+  alias Lightning.Invoice
 
-  def config(key) do
-    Application.get_env(:wallet, Wallet.Lightning)
-    |> Keyword.get(key)
-  end
+  def client(config) do
+    base_url = Keyword.get(config, :lnd_base_url)
+    macaroon = Keyword.get(config, :lnd_macaroon)
 
-  def client() do
     Tesla.build_client([
-      {Tesla.Middleware.BaseUrl, config(:lnd_base_url)},
-      {Tesla.Middleware.Headers, [{"grpc-metadata-macaroon", config(:lnd_macaroon)}]}
+      {Tesla.Middleware.BaseUrl, base_url},
+      {Tesla.Middleware.Headers, [{"grpc-metadata-macaroon", macaroon}]}
     ])
   end
 
-  def decode_invoice(invoice) do
-    %{body: body} = client() |> get!("/v1/payreq/#{invoice}")
-    changeset = Wallet.Lightning.Invoice.changeset(
+  def decode_invoice(config, invoice) do
+    %{body: body} = client(config) |> get!("/v1/payreq/#{invoice}")
+    changeset = Lightning.Invoice.changeset(
       %Invoice{},
       %{
         "description": body["description"],
@@ -36,8 +34,8 @@ defmodule Wallet.Lightning do
     end
   end
 
-  def pay_invoice(invoice) do
-    %{body: body} = client() |> post!("/v1/channels/transactions", %{payment_request: invoice})
+  def pay_invoice(config, invoice) do
+    %{body: body} = client(config) |> post!("/v1/channels/transactions", %{payment_request: invoice})
     case body do
       %{"payment_preimage" => _} -> {:ok, body}
       _ -> {:error, body}
