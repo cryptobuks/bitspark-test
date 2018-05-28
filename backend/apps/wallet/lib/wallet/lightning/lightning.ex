@@ -3,8 +3,6 @@ defmodule Wallet.Lightning do
   The Lnd context.
   """
   use Tesla
-  plug Tesla.Middleware.BaseUrl, config(:lnd_base_url)
-  plug Tesla.Middleware.Headers, [{"grpc-metadata-macaroon", config(:lnd_macaroon)}]
   plug Tesla.Middleware.JSON, engine: Poison
   plug Tesla.Middleware.Timeout, timeout: 120_000 #ms
   plug Tesla.Middleware.Logger
@@ -16,8 +14,15 @@ defmodule Wallet.Lightning do
     |> Keyword.get(key)
   end
 
+  def client() do
+    Tesla.build_client([
+      {Tesla.Middleware.BaseUrl, config(:lnd_base_url)},
+      {Tesla.Middleware.Headers, [{"grpc-metadata-macaroon", config(:lnd_macaroon)}]}
+    ])
+  end
+
   def decode_invoice(invoice) do
-    %{body: body} = get!("/v1/payreq/#{invoice}")
+    %{body: body} = client() |> get!("/v1/payreq/#{invoice}")
     changeset = Wallet.Lightning.Invoice.changeset(
       %Invoice{},
       %{
@@ -32,7 +37,7 @@ defmodule Wallet.Lightning do
   end
 
   def pay_invoice(invoice) do
-    %{body: body} = post!("/v1/channels/transactions", %{payment_request: invoice})
+    %{body: body} = client() |> post!("/v1/channels/transactions", %{payment_request: invoice})
     case body do
       %{"payment_preimage" => _} -> {:ok, body}
       _ -> {:error, body}
