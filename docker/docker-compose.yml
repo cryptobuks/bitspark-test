@@ -55,8 +55,6 @@ services:
       - database-volume:/var/lib/postgresql
     networks:
       - web
-    ports:
-      - "5432:5432"
 
 volumes:
   database-volume:
