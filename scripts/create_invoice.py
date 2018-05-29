@@ -8,7 +8,7 @@
 #
 # Returns a QR code that contains an URL shortened with the Google URL Shortener service (http://goo.gl).
 # This goo.gl URL then in turn leads to:
-# https://bit-1.biluminate.net/#/pay/<LN invoice string>
+# https://testwallet.biluminate.com/#/pay/<LN invoice string>
 
 import sys
 import json

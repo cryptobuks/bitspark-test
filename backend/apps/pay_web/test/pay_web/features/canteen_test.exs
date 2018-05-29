@@ -12,7 +12,7 @@ defmodule Pay.Features.PaymentTest do
       conn = head conn, "/baguette"
 
       assert_value canonicalize(get_resp_header(conn, "lightning-invoice")) == ["<INVOICE>"]
-      assert_value canonicalize(get_resp_header(conn, "location")) == ["https://bit-1.biluminate.net/#/pay/<INVOICE>"]
+      assert_value canonicalize(get_resp_header(conn, "location")) == ["https://testwallet.biluminate.com/#/pay/<INVOICE>"]
     end
   end
 end

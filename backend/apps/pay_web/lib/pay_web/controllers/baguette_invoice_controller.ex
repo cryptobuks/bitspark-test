@@ -7,6 +7,6 @@ defmodule PayWeb.BaguetteInvoiceController do
     conn =
       conn
       |> put_resp_header("lightning-invoice", invoice)
-    redirect conn, external: "https://bit-1.biluminate.net/#/pay/#{invoice}"
+    redirect conn, external: "https://testwallet.biluminate.com/#/pay/#{invoice}"
   end
 end

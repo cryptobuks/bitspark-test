@@ -45,5 +45,5 @@ router.onReady(() => {
 
 navigator.registerProtocolHandler(
   'web+lightning',
-  'bit-1.biluminate.net/#/pay/%s',
+  'testwallet.biluminate.com/#/pay/%s',
   'Lightning handler')
