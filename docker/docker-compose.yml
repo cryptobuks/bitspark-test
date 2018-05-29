@@ -73,6 +73,8 @@ services:
     container_name: splunk
     image: splunk/splunk
     restart: always
+    networks:
+      - web
     volumes:
       - splunk-etc-volume:/opt/splunk/etc
       - splunk-var-volume:/opt/splunk/var
