@@ -17,6 +17,7 @@ defmodule Utils do
 
   def canonicalize(x) when is_bitstring(x) do
     x
+    |> String.replace(~r/lntb[A-z0-9]+/, "<INVOICE>")
     |> String.replace(~r/\d{4}-\d{2}-\d{2}.\d{2}:\d{2}:\d{2}\.\d+Z/, "<TIMESTAMPZ>")
     |> String.replace(~r/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d+/, "<TIMESTAMP>")
     |> String.replace(~r"\w{8}-\w{4}-\w{4}-\w{4}-\w{12}", "<UUID>")
