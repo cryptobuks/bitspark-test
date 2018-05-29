@@ -22,4 +22,4 @@ export PATH=$PATH:/mnt/data/lnd/lndbin
     --externalip=35.204.151.181:9736 \
     --listen=127.0.0.1:9736 \
     --rpclisten=127.0.0.1:19736 \
-    --restlisten=127.0.0.1:29736
+    --restlisten=0.0.0.0:29736
