@@ -3,11 +3,13 @@ defmodule Bitcoin do
 
   # Conversions
   def to_satoshi({amount, unit}) do
-    D.div(to_msatoshi({amount, unit}), 1000) |> D.to_integer
+    D.div(to_msatoshi({amount, unit}), 1000) |> D.round |> D.to_integer
   end
 
   def to_msatoshi({amount, _}) when is_float(amount),
     do: raise("Do not use floats for BTC related amounts")
+
+  def to_msatoshi({amount, :msatoshi}), do: amount
 
   def to_msatoshi({amount, unit}) when (is_integer(amount) or is_bitstring(amount)),
     do: to_msatoshi({D.new(amount), unit})
