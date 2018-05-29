@@ -36,3 +36,10 @@ testpay.biluminate.com {
         transparent
     }
 }
+
+splunk.biluminate.com {
+    tls marian.schubert@gmail.com
+    proxy / splunk:8000 {
+        transparent
+    }
+}

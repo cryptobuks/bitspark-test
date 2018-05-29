@@ -4,7 +4,7 @@ x-logging:
   &default-logging
   driver: syslog
   options:
-    syslog-address: "tcp+tls://logs2.papertrailapp.com:29083"
+    syslog-address: "tcp://splunk:1234"
     tag: "{{.Name}}/{{.ID}}"
 
 services:
@@ -61,7 +61,6 @@ services:
 
   database:
     container_name: database
-    restart: always
     image: postgres:10.3
     restart: always
     volumes:
@@ -70,8 +69,21 @@ services:
       - web
     logging: *default-logging
 
+  splunk:
+    container_name: splunk
+    image: splunk/splunk
+    restart: always
+    volumes:
+      - splunk-etc-volume:/opt/splunk/etc
+      - splunk-var-volume:/opt/splunk/var
+    environment:
+      - SPLUNK_START_ARGS=--accept-license --answer-yes --no-prompt
+      - SPLUNK_USER=root
+
 volumes:
   database-volume:
+  splunk-etc-volume:
+  splunk-var-volume:
 
 networks:
   web:
