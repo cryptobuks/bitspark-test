@@ -2,7 +2,7 @@ defmodule PayWeb.BaguetteInvoiceController do
   use PayWeb, :controller
 
   def index(conn, _params) do
-    invoice = Pay.Canteen.create_invoice(:baguette)
+    {:ok, invoice} = Canteen.create_invoice(:baguette)
 
     conn =
       conn

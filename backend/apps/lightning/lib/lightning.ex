@@ -44,6 +44,16 @@ defmodule Lightning do
     end
   end
 
+  def create_invoice(config, %{description: description, msatoshi: msatoshi}) do
+    %{body: body} =
+      client(config)
+      |> post!("/v1/invoices", %{memo: description, value: Bitcoin.to_satoshi({msatoshi, :msatoshi})})
+    case body do
+      %{"payment_request" => invoice} -> {:ok, invoice}
+      _ -> {:error, body}
+    end
+  end
+
   def pay_invoice(config, invoice) do
     %{body: body} = client(config) |> post!("/v1/channels/transactions", %{payment_request: invoice})
     case body do

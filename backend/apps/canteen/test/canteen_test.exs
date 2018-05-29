@@ -1,0 +1,2 @@
+defmodule CanteenTest do
+end

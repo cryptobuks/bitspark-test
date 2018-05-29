@@ -43,6 +43,7 @@ defmodule PayWeb.Mixfile do
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.11"},
       {:pay, in_umbrella: true},
+      {:canteen, in_umbrella: true},
       {:cowboy, "~> 1.0"}
     ]
   end

@@ -23,6 +23,16 @@ defmodule FakeLndWeb.Router do
     |> json(200, payload)
   end
 
+  post "/v1/invoices" do
+    payload = %{
+      "payment_request" => "lntb1230n1pdselh0pp5nlmxmjhf6w7uy4sqrwe4tputzd5m2y9a22p7l2dvxrxtfc8aq3dqdqdgfskwat9w36x2cqzys4gyv0cd7kg0wa54h4h5x9d75303rpks50d47fc26hahw9wv3z68kslw3x2xx6ghcf5ld77u0q6sx20y0y4het8kfgauamspjwn4s6zcpv36uz6",
+      "r_hash" => "n/ZtyunTvcJWABuzVYeLE2m1EL1Sg++prDDMtOD9BFo="
+    }
+
+    conn
+    |> json(200, payload)
+  end
+
   post "/v1/channels/transactions" do
     invoice = conn.body_params["payment_request"]
     total_amt = Bitcoin.invoice_satoshi(invoice)

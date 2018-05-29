@@ -31,6 +31,8 @@ services:
       - PGHOST=database
       - PGDATABASE=wallet_api_prod
       - PAY_PORT=5000
+      - CANTEEN_LND_REST_URL=https://bit-1.biluminate.net:19735
+      - CANTEEN_LND_REST_MACAROON=${CANTEEN_LND_REST_MACAROON}
 
   proxy:
     image: abiosoft/caddy
