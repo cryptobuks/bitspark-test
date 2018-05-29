@@ -4,7 +4,7 @@ x-logging:
   &default-logging
   driver: syslog
   options:
-    syslog-address: "tcp://splunk:1234"
+    syslog-address: "udp://splunk:1234"
     tag: "{{.Name}}/{{.ID}}"
 
 services:
