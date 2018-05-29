@@ -1,10 +1,19 @@
-version: '3'
+version: '2.1'
+
+x-logging:
+  &default-logging
+  driver: syslog
+  options:
+    syslog-address: "tcp+tls://logs2.papertrailapp.com:29083"
+    tag: "{{.Name}}/{{.ID}}"
+
 services:
   web-wallet:
     build: ../web-wallet/
     container_name: web-wallet
     restart: always
     user: 1005:1006  # bitspark:bitspark
+    logging: *default-logging
     networks:
       - web
     environment:
@@ -23,6 +32,7 @@ services:
       - "5000" # pay WEB
     networks:
       - web
+    logging: *default-logging
     environment:
       - WALLET_PORT=4000
       - WALLET_LND_REST_URL=https://bit-1.biluminate.net:29735
@@ -45,6 +55,7 @@ services:
       - "./Caddyfile:/etc/Caddyfile"
     networks:
       - web
+    logging: *default-logging
     environment:
       - ACME_AGREE=true
 
@@ -57,15 +68,10 @@ services:
       - database-volume:/var/lib/postgresql
     networks:
       - web
+    logging: *default-logging
 
 volumes:
   database-volume:
 
 networks:
   web:
-
-logging:
-  driver: syslog
-  options:
-    syslog-address: "tcp+tls://logs2.papertrailapp.com:29083"
-    tag: "{{.Name}}/{{.ID}}"
