@@ -10,7 +10,6 @@ x-logging:
 services:
   web-wallet:
     build: ../web-wallet/
-    container_name: web-wallet
     restart: always
     user: 1005:1006  # bitspark:bitspark
     logging: *default-logging
@@ -25,7 +24,6 @@ services:
 
   backend:
     build: ../backend/
-    container_name: backend
     restart: always
     expose:
       - "4000" # wallet API
@@ -46,7 +44,6 @@ services:
 
   proxy:
     image: abiosoft/caddy
-    container_name: caddy
     restart: always
     ports:
       - "80:80"
@@ -60,7 +57,6 @@ services:
       - ACME_AGREE=true
 
   database:
-    container_name: database
     image: postgres:10.3
     restart: always
     volumes:
