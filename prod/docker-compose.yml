@@ -39,7 +39,7 @@ services:
       - WALLET_LND_REST_MACAROON=${WALLET_LND_REST_MACAROON}
       - SECRET_KEY_BASE=${SECRET_KEY_BASE}
       - PGHOST=database
-      - PGDATABASE=wallet_api_prod
+      - PGDATABASE=wallet_prod
       - PAY_PORT=5000
       - CANTEEN_LND_REST_URL=https://bit-1.biluminate.net:29736
       - CANTEEN_LND_REST_MACAROON=${CANTEEN_LND_REST_MACAROON}
