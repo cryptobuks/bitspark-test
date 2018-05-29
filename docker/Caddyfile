@@ -1,4 +1,5 @@
-bit-1.biluminate.net {
+bit-1.biluminate.net,
+testwallet.biluminate.com {
     tls marian.schubert@gmail.com
 
     # Legacy
