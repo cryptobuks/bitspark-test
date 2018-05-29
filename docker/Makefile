@@ -13,7 +13,7 @@ up:
 	git tag -f current
 
 logs:
-	docker-compose logs --timestamps --follow web-wallet backend
+	papertrail --group biluminate --follow
 
 shell:
 	docker-compose exec backend iex -S mix
