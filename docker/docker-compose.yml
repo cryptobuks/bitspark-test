@@ -63,3 +63,9 @@ volumes:
 
 networks:
   web:
+
+logging:
+  driver: syslog
+  options:
+    syslog-address: "tcp+tls://logs2.papertrailapp.com:29083"
+    tag: "{{.Name}}/{{.ID}}"
