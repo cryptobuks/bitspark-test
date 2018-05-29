@@ -15,5 +15,8 @@ up:
 logs:
 	docker-compose logs --timestamps --follow web-wallet backend
 
+shell:
+	docker-compose exec backend iex -S mix
+
 stop:
 	docker-compose -f docker-compose.yml stop

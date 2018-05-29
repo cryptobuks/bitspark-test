@@ -19,6 +19,16 @@ defmodule Lightning do
     ])
   end
 
+  def xget!(config, path) do
+    client(config)
+    |> get!(path)
+  end
+
+  def xpost!(config, path, data) do
+    client(config)
+    |> post!(path, data)
+  end
+
   def decode_invoice(config, invoice) do
     %{body: body} = client(config) |> get!("/v1/payreq/#{invoice}")
     changeset = Lightning.Invoice.changeset(
