@@ -213,7 +213,7 @@ defmodule Wallet.Wallets do
 
   """
   def pay_invoice(wallet_id, invoice) do
-    {:ok, payload} = Lightning.decode_invoice(Application.get_env(:wallet, Lightning), invoice)
+    {:ok, payload} = Lightning.decode_invoice(Wallet.lightning_config, invoice)
 
     # initial
     {:ok, trn} = create_transaction(
@@ -232,7 +232,7 @@ defmodule Wallet.Wallets do
         "Error: Non-sufficient funds"
       %{state: Wallets.Transaction.declined, response: "NSF"}
     else
-      case Lightning.pay_invoice(Application.get_env(:wallet, Lightning), invoice) do
+      case Lightning.pay_invoice(Wallet.lightning_config, invoice) do
         {:ok, payload} ->
           %{state: Wallets.Transaction.approved, response: payload}
 
