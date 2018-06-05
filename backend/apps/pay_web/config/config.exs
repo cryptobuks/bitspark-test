@@ -17,6 +17,10 @@ config :pay_web, PayWeb.Endpoint,
   pubsub: [name: PayWeb.PubSub,
            adapter: Phoenix.PubSub.PG2]
 
+# Configures the endpoint
+config :pay_web, PayWeb.InvoiceController,
+  wallet_base_url: System.get_env("PAY_WALLET_URL") || "https://testwallet.biluminate.com"
+
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",

@@ -2,7 +2,7 @@ version: '2.1'
 
 x-logging:
   &default-logging
-  driver: ${LOGGING_DRIVER}
+  driver: syslog
   options:
     syslog-address: "tcp+tls://logs2.papertrailapp.com:29083"
     tag: "{{.Name}}/{{.ID}}"
@@ -23,7 +23,10 @@ services:
       - PGHOST=database
 
   backend:
-    build: ../backend/
+    build:
+      context: ../backend/
+      args:
+        - FAKE_LND_ENABLED=${FAKE_LND_ENABLED}
     restart: always
     expose:
       - "4000" # wallet API
@@ -39,6 +42,7 @@ services:
       - PGHOST=database
       - PGDATABASE=wallet_prod
       - PAY_PORT=5000
+      - PAY_WALLET_URL=${PAY_WALLET_URL:-https://testwallet.biluminate.com}
       - CANTEEN_LND_REST_URL=${CANTEEN_LND_REST_URL}
       - CANTEEN_LND_REST_MACAROON=${CANTEEN_LND_REST_MACAROON}
 
