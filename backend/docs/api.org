@@ -1,0 +1,89 @@
+#+PROPERTY: header-args :session api :results output :exports both
+
+* API
+#+BEGIN_SRC shell :results output silent :exports none
+  export T=`make -s -C .. token`
+  alias GET='../bin/http-req'
+  function POST {
+    ../bin/http-req "$1" -X POST -d "$2"
+  }
+#+END_SRC
+
+** Wallet info
+#+BEGIN_SRC shell
+GET /api/wallet
+#+END_SRC
+
+#+RESULTS:
+: {
+:   "data": {
+:     "id": "6fb7bdd1-0cb1-4ee5-b66e-7b98ffc07686",
+:     "balance": {
+:       "msatoshi": 510000000
+:     }
+:   }
+: }
+
+** Invoice info
+#+BEGIN_SRC shell :results output :session api
+GET /api/wallet/invoice/lntb1500n1pd0c66dpp5p8rpzxck9u7umfl9u7dqratj8rlfthe29xl6ejhwt2exuaxfpftqdqvg9jxgg8zn2sscqzysyv8kgctq7haghaus4wqd262mxr9342mvp23gdsv6vmgkce9zgshjd0av06dq3xpe8cy6fucnj454smkqxuetyvu3h5jggx2w8ethlvcp6g3ldq
+#+END_SRC
+
+#+RESULTS:
+: {
+:   "data": {
+:     "msatoshi": 150000,
+:     "description": "Foobar #ldq"
+:   }
+: }
+
+** Process transaction (invoice)
+#+BEGIN_SRC shell :results output :session api
+POST /api/wallet/transactions '{"invoice": "lntb1500n1pd0c66dpp5p8rpzxck9u7umfl9u7dqratj8rlfthe29xl6ejhwt2exuaxfpftqdqvg9jxgg8zn2sscqzysyv8kgctq7haghaus4wqd262mxr9342mvp23gdsv6vmgkce9zgshjd0av06dq3xpe8cy6fucnj454smkqxuetyvu3h5jggx2w8ethlvcp6g3ldq"}'
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+{
+  "data": {
+    "state": "approved",
+    "processed_at": "2018-06-05T18:20:53.443614",
+    "msatoshi": -150000,
+    "invoice": "lntb1500n1pd0c66dpp5p8rpzxck9u7umfl9u7dqratj8rlfthe29xl6ejhwt2exuaxfpftqdqvg9jxgg8zn2sscqzysyv8kgctq7haghaus4wqd262mxr9342mvp23gdsv6vmgkce9zgshjd0av06dq3xpe8cy6fucnj454smkqxuetyvu3h5jggx2w8ethlvcp6g3ldq",
+    "inserted_at": "2018-06-05T18:20:53.417470",
+    "id": "8e6ea090-904b-4330-b465-adc2f0a52ae5",
+    "description": "Foobar #ldq"
+  }
+}
+#+end_example
+
+** List transactions
+#+BEGIN_SRC shell :results output :session api
+GET /api/wallet/transactions
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+{
+  "data": [
+    {
+      "state": "approved",
+      "processed_at": "2018-06-05T18:20:53.443614",
+      "msatoshi": -150000,
+      "invoice": "lntb1500n1pd0c66dpp5p8rpzxck9u7umfl9u7dqratj8rlfthe29xl6ejhwt2exuaxfpftqdqvg9jxgg8zn2sscqzysyv8kgctq7haghaus4wqd262mxr9342mvp23gdsv6vmgkce9zgshjd0av06dq3xpe8cy6fucnj454smkqxuetyvu3h5jggx2w8ethlvcp6g3ldq",
+      "inserted_at": "2018-06-05T18:20:53.417470",
+      "id": "8e6ea090-904b-4330-b465-adc2f0a52ae5",
+      "description": "Foobar #ldq"
+    },
+    {
+      "state": "approved",
+      "processed_at": null,
+      "msatoshi": 510000000,
+      "invoice": null,
+      "inserted_at": "2018-06-05T18:20:53.281016",
+      "id": "a84a179f-f5fe-4c1e-93fb-d8e76f657171",
+      "description": "Funding transaction"
+    }
+  ]
+}
+#+end_example

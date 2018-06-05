@@ -1,0 +1,108 @@
+Marian Schubert
+
+
+Table of Contents
+─────────────────
+
+1 API
+.. 1.1 Wallet info
+.. 1.2 Invoice info
+.. 1.3 Process transaction (invoice)
+.. 1.4 List transactions
+
+
+
+
+
+1 API
+═════
+
+1.1 Wallet info
+───────────────
+
+  ┌────
+  │ GET /api/wallet
+  └────
+
+  ┌────
+  │ {
+  │   "data": {
+  │     "id": "df3ef91b-f3fd-480a-9024-4e715398874b",
+  │     "balance": {
+  │       "msatoshi": 510000000
+  │     }
+  │   }
+  │ }
+  └────
+
+
+1.2 Invoice info
+────────────────
+
+  ┌────
+  │ GET /api/wallet/invoice/lntb1500n1pd0c66dpp5p8rpzxck9u7umfl9u7dqratj8rlfthe29xl6ejhwt2exuaxfpftqdqvg9jxgg8zn2sscqzysyv8kgctq7haghaus4wqd262mxr9342mvp23gdsv6vmgkce9zgshjd0av06dq3xpe8cy6fucnj454smkqxuetyvu3h5jggx2w8ethlvcp6g3ldq
+  └────
+
+  ┌────
+  │ {
+  │   "data": {
+  │     "msatoshi": 150000,
+  │     "description": "Foobar #ldq"
+  │   }
+  │ }
+  └────
+
+
+1.3 Process transaction (invoice)
+─────────────────────────────────
+
+  ┌────
+  │ POST /api/wallet/transactions '{"invoice": "lntb1500n1pd0c66dpp5p8rpzxck9u7umfl9u7dqratj8rlfthe29xl6ejhwt2exuaxfpftqdqvg9jxgg8zn2sscqzysyv8kgctq7haghaus4wqd262mxr9342mvp23gdsv6vmgkce9zgshjd0av06dq3xpe8cy6fucnj454smkqxuetyvu3h5jggx2w8ethlvcp6g3ldq"}'
+  └────
+
+  ┌────
+  │ {
+  │   "data": {
+  │     "state": "approved",
+  │     "processed_at": "2018-06-05T18:24:00.678791",
+  │     "msatoshi": -150000,
+  │     "invoice": "lntb1500n1pd0c66dpp5p8rpzxck9u7umfl9u7dqratj8rlfthe29xl6ejhwt2exuaxfpftqdqvg9jxgg8zn2sscqzysyv8kgctq7haghaus4wqd262mxr9342mvp23gdsv6vmgkce9zgshjd0av06dq3xpe8cy6fucnj454smkqxuetyvu3h5jggx2w8ethlvcp6g3ldq",
+  │     "inserted_at": "2018-06-05T18:24:00.654554",
+  │     "id": "c14627fb-70a5-410b-b411-2538e47550d0",
+  │     "description": "Foobar #ldq"
+  │   }
+  │ }
+  └────
+
+
+1.4 List transactions
+─────────────────────
+
+  ┌────
+  │ GET /api/wallet/transactions
+  └────
+
+  ┌────
+  │ {
+  │   "data": [
+  │     {
+  │       "state": "approved",
+  │       "processed_at": "2018-06-05T18:24:00.678791",
+  │       "msatoshi": -150000,
+  │       "invoice": "lntb1500n1pd0c66dpp5p8rpzxck9u7umfl9u7dqratj8rlfthe29xl6ejhwt2exuaxfpftqdqvg9jxgg8zn2sscqzysyv8kgctq7haghaus4wqd262mxr9342mvp23gdsv6vmgkce9zgshjd0av06dq3xpe8cy6fucnj454smkqxuetyvu3h5jggx2w8ethlvcp6g3ldq",
+  │       "inserted_at": "2018-06-05T18:24:00.654554",
+  │       "id": "c14627fb-70a5-410b-b411-2538e47550d0",
+  │       "description": "Foobar #ldq"
+  │     },
+  │     {
+  │       "state": "approved",
+  │       "processed_at": null,
+  │       "msatoshi": 510000000,
+  │       "invoice": null,
+  │       "inserted_at": "2018-06-05T18:24:00.514875",
+  │       "id": "f29431e3-e0b5-4880-9cdc-bd949595a5fb",
+  │       "description": "Funding transaction"
+  │     }
+  │   ]
+  │ }
+  └────
