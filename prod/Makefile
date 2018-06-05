@@ -1,3 +1,7 @@
+export LOGGING_DRIVER=syslog
+export WALLET_LND_REST_URL=https://bit-1.c.bitspark-195811.internal:29735
+export CANTEEN_LND_REST_URL=https://bit-1.c.bitspark-195811.internal:29736
+
 run:
 	git tag -f prev current
 	git pull
