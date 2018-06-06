@@ -16,6 +16,9 @@ up:
 	docker-compose build
 	docker-compose up -d
 
+restart-proxy:
+	docker-compose restart proxy
+
 db:
 	docker-compose exec database createdb -U postgres wallet_prod
 
