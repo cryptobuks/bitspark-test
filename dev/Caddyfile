@@ -37,3 +37,9 @@ pay.localhost:80 {
         transparent
     }
 }
+
+splunk.localhost:80 {
+    proxy / splunk:8000 {
+        transparent
+    }
+}

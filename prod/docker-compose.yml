@@ -1,18 +1,10 @@
 version: '2.1'
 
-x-logging:
-  &default-logging
-  driver: syslog
-  options:
-    syslog-address: "tcp+tls://logs2.papertrailapp.com:29083"
-    tag: "{{.Name}}/{{.ID}}"
-
 services:
   web-wallet:
     build: ../web-wallet/
     restart: always
     user: 1005:1006  # bitspark:bitspark
-    logging: *default-logging
     networks:
       - web
     environment:
@@ -33,7 +25,6 @@ services:
       - "5000" # pay WEB
     networks:
       - web
-    logging: *default-logging
     environment:
       - WALLET_PORT=4000
       - WALLET_LND_REST_URL=${WALLET_LND_REST_URL}
@@ -56,7 +47,6 @@ services:
       - "./Caddyfile:/etc/Caddyfile"
     networks:
       - web
-    logging: *default-logging
     environment:
       - ACME_AGREE=true
 
@@ -67,10 +57,33 @@ services:
       - database-volume:/var/lib/postgresql
     networks:
       - web
-    logging: *default-logging
+
+  logspout:
+    image: gliderlabs/logspout:v3.2.5
+    command: 'syslog://splunk:1514,syslog+tls://logs2.papertrailapp.com:29083'
+    networks:
+      - web
+    environment:
+      - SYSLOG_FORMAT=rfc3164
+    volumes:
+      - "/var/run/docker.sock:/tmp/docker.sock"
+
+  splunk:
+    image: splunk/splunk
+    restart: always
+    volumes:
+      - splunk-etc-volume:/opt/splunk/etc
+      - splunk-var-volume:/opt/splunk/var
+    networks:
+      - web
+    environment:
+      - SPLUNK_START_ARGS=--accept-license --answer-yes --no-prompt
+      - SPLUNK_USER=root
 
 volumes:
   database-volume:
+  splunk-etc-volume:
+  splunk-var-volume:
 
 networks:
   web:
