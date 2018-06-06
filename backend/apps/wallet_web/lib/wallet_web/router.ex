@@ -35,6 +35,6 @@ defmodule WalletWeb.Router do
   end
 
   def auth_on_error(conn, message) do
-    {conn, %{"errors" => %{"detail" => message}}}
+    {conn, %{"error" => %{"detail" => message}}}
   end
 end
