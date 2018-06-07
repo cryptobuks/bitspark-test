@@ -2,3 +2,4 @@ node_modules
 debug.log
 .DS_Store
 backend/deps
+backend/_build
