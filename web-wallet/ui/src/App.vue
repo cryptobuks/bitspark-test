@@ -2,7 +2,7 @@
   <v-app id="app">
     <v-layout column fill-height>
       <v-toolbar dark color="primary">
-        <v-toolbar-title>BiLuminate Wallet</v-toolbar-title>
+        <v-toolbar-title>Biluminate Wallet</v-toolbar-title>
         <v-spacer></v-spacer>
         <v-btn flat icon><v-icon>mdi-account</v-icon></v-btn>
       </v-toolbar>

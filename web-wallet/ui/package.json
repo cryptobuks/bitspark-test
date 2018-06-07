@@ -1,7 +1,7 @@
 {
   "name": "web-wallet",
   "version": "1.0.0",
-  "description": "BiLuminate Wallet",
+  "description": "Biluminate Wallet",
   "author": "Marian Schubert <marian.schubert@gmail.com>",
   "private": true,
   "scripts": {

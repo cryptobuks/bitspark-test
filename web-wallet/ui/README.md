@@ -1,6 +1,6 @@
 # web-wallet
 
-> BiLuminate Wallet
+> Biluminate Wallet
 
 ## Build Setup
 
