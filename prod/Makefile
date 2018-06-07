@@ -21,5 +21,8 @@ logs:
 shell:
 	docker-compose exec backend iex -S mix
 
+bash:
+	bash
+
 stop:
 	docker-compose -f docker-compose.yml stop
