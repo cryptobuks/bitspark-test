@@ -43,6 +43,8 @@ testpay.biluminate.com {
 }
 
 splunk.biluminate.com {
+    basicauth / admin {$SPLUNK_PASSWORD}
+
     tls marian.schubert@gmail.com
     proxy / splunk:8000 {
         transparent
