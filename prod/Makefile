@@ -15,6 +15,9 @@ up:
 	docker-compose -f docker-compose.yml up -d
 	git tag -f current
 
+restart-proxy:
+	docker-compose restart proxy
+
 logs:
 	papertrail --group biluminate --follow
 
