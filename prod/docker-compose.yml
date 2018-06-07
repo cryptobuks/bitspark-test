@@ -49,6 +49,7 @@ services:
       - web
     environment:
       - ACME_AGREE=true
+      - SPLUNK_PASSWORD=${SPLUNK_PASSWORD}
 
   database:
     image: postgres:10.3
