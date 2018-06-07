@@ -60,7 +60,7 @@ services:
 
   logspout:
     image: gliderlabs/logspout:v3.2.5
-    command: 'syslog://splunk:1514,syslog+tls://logs2.papertrailapp.com:29083'
+    command: ${LOGS_DST:-syslog://splunk:1514,syslog+tls://logs2.papertrailapp.com:29083}
     networks:
       - web
     environment:

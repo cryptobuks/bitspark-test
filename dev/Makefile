@@ -1,3 +1,5 @@
+export LOGS_DST=syslog://splunk:1514
+
 export FAKE_LND_ENABLED=1
 
 export PAY_WALLET_URL=http://wallet.localhost
