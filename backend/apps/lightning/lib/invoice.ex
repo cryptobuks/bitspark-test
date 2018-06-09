@@ -7,6 +7,7 @@ defmodule Lightning.Invoice do
     field :description, :string
     field :msatoshi, :integer
     field :dst_pub_key, :string
+    field :dst_alias, :string
   end
 
   @doc false

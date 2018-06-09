@@ -9,7 +9,8 @@ defmodule WalletWeb.InvoiceView do
   def render("invoice.json", %{invoice: invoice}) do
     %{
       description: invoice.description,
-      msatoshi: invoice.msatoshi
+      msatoshi: invoice.msatoshi,
+      dst_alias: invoice.dst_alias
     }
   end
 end

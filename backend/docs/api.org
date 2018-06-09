@@ -33,6 +33,7 @@ GET /api/wallet/invoice/lntb1500n1pd0c66dpp5p8rpzxck9u7umfl9u7dqratj8rlfthe29xl6
 : {
 :   "data": {
 :     "msatoshi": 150000,
+:     "dst_alias": "Barbaz #039",
 :     "description": "Foobar #ldq"
 :   }
 : }

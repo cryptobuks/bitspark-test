@@ -45,6 +45,17 @@ defmodule Lightning do
     end
   end
 
+  def get_node_info(config, node_pub_key) do
+    %{body: body} =
+      client(config)
+      |> get!("/v1/graph/node/#{node_pub_key}")
+    case body do
+      %{"node" => node} ->
+        {:ok, %{alias: node["alias"]}}
+      _ -> {:error, body}
+    end
+  end
+
   def create_invoice(config, %{description: description, msatoshi: msatoshi}) do
     %{body: body} =
       client(config)
