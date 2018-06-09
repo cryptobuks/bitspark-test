@@ -6,12 +6,13 @@ defmodule Lightning.Invoice do
   schema "invoices" do
     field :description, :string
     field :msatoshi, :integer
+    field :dst_pub_key, :string
   end
 
   @doc false
   def changeset(invoice, attrs) do
     invoice
-    |> cast(attrs, [:description, :msatoshi])
-    |> validate_required([:description, :msatoshi])
+    |> cast(attrs, [:description, :msatoshi, :dst_pub_key, :dst_alias])
+    |> validate_required([:description, :msatoshi, :dst_pub_key])
   end
 end
