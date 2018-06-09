@@ -244,11 +244,17 @@ defmodule Wallet.Wallets do
     end
 
     # update trn with result
-    update_transaction(
-      trn, Enum.into(
-        %{processed_at: NaiveDateTime.utc_now,
-          response: Poison.encode!(update.response)},
-        update))
+    with {:ok, processed_transaction} <- update_transaction(trn, Enum.into(
+                  %{processed_at: NaiveDateTime.utc_now,
+                    response: Poison.encode!(update.response)},
+                  update))
+    do
+      Wallet.Log.processed_transaction(processed_transaction)
+      {:ok, processed_transaction}
+    else
+      err -> err
+    end
+
   end
 
   @doc """
