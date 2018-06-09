@@ -19,6 +19,7 @@ defmodule PayWeb.Router do
     get "/", PageController, :index
     get "/lntb*invoice", InvoiceController, :index
     get "/baguette", InvoiceController, :baguette
+    get "/piccolo", InvoiceController, :piccolo
   end
 
   # Other scopes may use custom stacks.

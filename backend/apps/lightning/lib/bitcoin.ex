@@ -20,6 +20,9 @@ defmodule Bitcoin do
   def to_msatoshi({amount, :mbtc}),
       do: D.mult(amount, 100_000_000) |> D.to_integer
 
+  def to_msatoshi({amount, :satoshi}),
+    do: D.mult(amount, 1_000) |> D.to_integer
+
   # Lightning
   def is_invoice(s) do
     cond do
