@@ -21,8 +21,8 @@ require('vuetify/dist/vuetify.min.css')
 require('mdi/fonts/materialdesignicons-webfont.ttf')
 require('mdi/css/materialdesignicons.min.css')
 
-/* eslint-disable no-new */
-window.app = new Vue({
+/* eslint-disable no-new, no-unused-vars */
+var app = new Vue({
   el: '#app',
   router,
   store,
@@ -32,6 +32,8 @@ window.app = new Vue({
     auth.init()
   }
 })
+
+// window.app = app
 
 router.beforeEach((to, from, next) => {
   store.dispatch('navigate', {to, from}).then(() => next())
