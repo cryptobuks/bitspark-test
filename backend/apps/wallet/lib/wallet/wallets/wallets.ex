@@ -192,7 +192,7 @@ defmodule Wallet.Wallets do
     attrs = %{
       wallet_id: wallet.id,
       description: "Funding transaction",
-      msatoshi: Bitcoin.to_msatoshi({"5.1", :mbtc}),
+      msatoshi: Bitcoin.to_msatoshi({"10", :mbtc}),
       state: "approved"
     }
     %Wallets.Transaction{}

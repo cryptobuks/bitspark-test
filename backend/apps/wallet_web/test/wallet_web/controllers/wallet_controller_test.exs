@@ -24,7 +24,7 @@ defmodule WalletWeb.WalletControllerTest do
   describe "show" do
     test "returns basic wallet info", %{conn: conn} do
       conn = get with_user(conn), wallet_path(conn, :show)
-      assert_value canonicalize(json_response(conn, 200)["data"]) == %{"balance" => %{"msatoshi" => 510000000}, "id" => "<UUID>"}
+      assert_value canonicalize(json_response(conn, 200)["data"]) == %{"balance" => %{"msatoshi" => 1000000000}, "id" => "<UUID>"}
     end
   end
 end

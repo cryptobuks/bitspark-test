@@ -15,7 +15,7 @@ defmodule Canteen do
     |> Lightning.create_invoice(
       %{
         description: "🍔 Lunch Special",
-        msatoshi: Bitcoin.to_msatoshi({"0.15", :mbtc})
+        msatoshi: Bitcoin.to_msatoshi({"1.5", :mbtc})
       })
   end
 
@@ -24,7 +24,7 @@ defmodule Canteen do
     |> Lightning.create_invoice(
       %{
         description: "☕ Coffee",
-        msatoshi: Bitcoin.to_msatoshi({"0.05", :mbtc})
+        msatoshi: Bitcoin.to_msatoshi({"0.5", :mbtc})
       })
   end
 
