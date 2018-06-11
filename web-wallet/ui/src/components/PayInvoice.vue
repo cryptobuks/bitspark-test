@@ -37,12 +37,12 @@
               <v-card-text>
                 <template v-if="emoji">
                   <template v-if="emojiStart">
-                    <div class="display-2">{{ emoji }}</div>
+                    <div class="display-2 mb-2">{{ emoji }}</div>
                     {{ descriptionWithoutEmoji }}
                   </template>
                   <template v-else>
                     {{ descriptionWithoutEmoji }}
-                    <div class="display-2">{{ emoji }}</div>
+                    <div class="display-2 mt-2">{{ emoji }}</div>
                   </template>
                 </template>
                 <template v-else>
