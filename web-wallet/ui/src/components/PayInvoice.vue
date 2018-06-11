@@ -110,9 +110,7 @@ export default {
       const description = this.invoiceInfo.payload.description
       const emojis = description.match(emojiRe)
 
-      window.d = this.invoiceInfo.payload.description
-      window.emojis = emojis
-      if (emojis.length !== 1) {
+      if (!emojis || emojis.length !== 1) {
         return
       }
 
