@@ -2,7 +2,7 @@
   <v-app id="app">
     <v-layout column fill-height>
       <v-toolbar dark color="primary">
-        <v-toolbar-title>Biluminate Wallet</v-toolbar-title>
+        <v-toolbar-title>Bi<span style="color: #FFC80A">luminate</span></v-toolbar-title>
         <v-spacer></v-spacer>
         <v-btn flat icon><v-icon>mdi-account</v-icon></v-btn>
       </v-toolbar>
@@ -63,5 +63,9 @@ header span {
   font-weight: 400;
   box-sizing: border-box;
   padding-top: 16px;
+}
+
+.toolbar {
+  background: linear-gradient(90deg, #2E3654 0%, #2E3654 13.87%, #F06493 100%);
 }
 </style>
