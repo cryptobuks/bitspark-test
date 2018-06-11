@@ -40,7 +40,7 @@
               <v-footer height="auto" class="transparent mt-5">
                 <v-layout row v-if="!user">
                   <v-flex xs12 text-xs-center>
-                    <LoginButton label="Login & Pay" flat  color="primary" />
+                    <LoginButton label="Login & Pay" flat  color="primary" icon="" />
                   </v-flex>
                 </v-layout>
                 <v-layout row v-else>
