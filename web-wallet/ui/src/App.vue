@@ -2,7 +2,7 @@
 <v-app id="app">
   <v-layout column fill-height>
     <v-toolbar dark>
-      <v-toolbar-title>Bi<span style="color: #FFC80A">luminate</span></v-toolbar-title>
+      <v-toolbar-title><img class="logo" alt="Biluminate" src="/static/img/logo.svg"></v-toolbar-title>
     </v-toolbar>
     <router-view></router-view>
   </v-layout>
@@ -61,6 +61,10 @@ header span {
   font-weight: 400;
   box-sizing: border-box;
   padding-top: 16px;
+}
+
+.logo {
+  vertical-align: middle;
 }
 
 .toolbar {
