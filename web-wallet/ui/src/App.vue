@@ -65,6 +65,7 @@ header span {
 
 .logo {
   vertical-align: middle;
+  height: 30px;
 }
 
 .toolbar {
