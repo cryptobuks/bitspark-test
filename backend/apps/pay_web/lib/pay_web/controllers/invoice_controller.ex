@@ -11,17 +11,13 @@ defmodule PayWeb.InvoiceController do
     redirect conn, external: wallet_url("/#/pay/#{invoice}")
   end
 
-  def piccolo(conn, _params) do
-    {:ok, invoice} = Canteen.create_invoice(:piccolo)
+  def piccolo(conn, _params), do: item(conn, :piccolo)
+  def baguette(conn, _params), do: item(conn, :baguette)
+  def coffee(conn, _params), do: item(conn, :coffee)
+  def alacarte(conn, _params), do: item(conn, :alacarte)
 
-    conn =
-      conn
-      |> put_resp_header("lightning-invoice", invoice)
-    redirect conn, external: wallet_url("/#/pay/#{invoice}")
-  end
-
-  def baguette(conn, _params) do
-    {:ok, invoice} = Canteen.create_invoice(:baguette)
+  def item(conn, item_type) do
+    {:ok, invoice} = Canteen.create_invoice(item_type)
 
     conn =
       conn
