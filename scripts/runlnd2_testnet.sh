@@ -10,7 +10,7 @@ export PATH=$PATH:/mnt/data/lnd/lndbin
 /mnt/data/lnd/lndbin/lnd \
     --lnddir=/mnt/data/lnd/data2_testnet \
     --logdir=/mnt/data/lnd/logs2 \
-    --alias=bilum2 \
+    --alias=Canteen \
     --color=#00FF00 \
     --bitcoin.active \
     --bitcoin.node=bitcoind \
