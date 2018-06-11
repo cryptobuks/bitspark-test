@@ -21,7 +21,7 @@ defmodule PayWeb.Router do
     get "/piccolo", InvoiceController, :piccolo
     get "/baguette", InvoiceController, :baguette
     get "/coffee", InvoiceController, :coffee
-    get "/alacarte", InvoiceController, :alacarte
+    get "/lunch-special", InvoiceController, :lunch_special
   end
 
   # Other scopes may use custom stacks.

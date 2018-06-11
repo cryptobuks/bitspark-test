@@ -14,7 +14,7 @@ defmodule PayWeb.InvoiceController do
   def piccolo(conn, _params), do: item(conn, :piccolo)
   def baguette(conn, _params), do: item(conn, :baguette)
   def coffee(conn, _params), do: item(conn, :coffee)
-  def alacarte(conn, _params), do: item(conn, :alacarte)
+  def lunch_special(conn, _params), do: item(conn, :lunch_special)
 
   def item(conn, item_type) do
     {:ok, invoice} = Canteen.create_invoice(item_type)

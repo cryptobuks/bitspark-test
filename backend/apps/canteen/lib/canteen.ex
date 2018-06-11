@@ -10,11 +10,11 @@ defmodule Canteen do
       })
   end
 
-  def create_invoice(:alacarte) do
+  def create_invoice(:lunch_special) do
     lightning_config()
     |> Lightning.create_invoice(
       %{
-        description: "🍔 À la carte",
+        description: "🍔 Lunch Special",
         msatoshi: Bitcoin.to_msatoshi({"0.15", :mbtc})
       })
   end
