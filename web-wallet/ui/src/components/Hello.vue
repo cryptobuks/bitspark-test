@@ -4,10 +4,10 @@
       <v-flex xs12>
         <LoginButton v-if="!user" />
         <div v-else>
-          <h1 class="mb-5">Welcome Your Wallet</h1>
-          <p>
+          <h1 class="mb-5">Available balance</h1>
+          <h2>
             <Amount :msatoshi="balance && balance.msatoshi" />
-          </p>
+          </h2>
         </div>
       </v-flex>
     </v-layout>

@@ -12,7 +12,7 @@ Vue.config.productionTip = false
 // https://material.io/color/#!/?view.left=0&view.right=0&primary.color=9CCC65&secondary.color=EF9A9A
 Vue.use(Vuetify, {
   theme: {
-    primary: '#9ccc65',
+    primary: '#ffc80a',
     secondary: '#e57373',
     accent: '#90caf9'
   }

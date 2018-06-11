@@ -1,5 +1,5 @@
 <template>
-  <span v-if="msatoshi !== undefined"><strong class="display-2">{{ mbtc }}</strong> <span class="caption">mBTC</span></span>
+  <span v-if="msatoshi !== undefined"><span class="unit">mBTC</span> <span class="amount">{{ mbtc }}</span></span>
   <span v-else>Unknown</span>
 </template>
 
@@ -14,3 +14,13 @@ export default {
   }
 }
 </script>
+
+<style>
+  .unit {
+    color: #ADADAD;
+  }
+
+  .amount {
+    color: #4A4A4A;
+  }
+</style>

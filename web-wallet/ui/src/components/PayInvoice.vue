@@ -29,7 +29,7 @@
                   </v-layout>
                   <v-layout row text-xs-center class="my-4">
                     <v-flex xs12>
-                      <Amount :msatoshi="invoiceInfo.payload.msatoshi" />
+                      <strong class="title"><Amount :msatoshi="invoiceInfo.payload.msatoshi" /></strong>
                     </v-flex>
                   </v-layout>
                 </v-container>
@@ -38,13 +38,17 @@
                 {{ invoiceInfo.payload.description }}
               </v-card-text>
               <v-footer height="auto" class="transparent mt-5">
-                <v-layout row>
-                  <v-flex xs6 text-xs-right class="pr-3">
+                <v-layout row v-if="!user">
+                  <v-flex xs12 text-xs-center>
+                    <LoginButton label="Login & Pay" flat  color="primary" />
+                  </v-flex>
+                </v-layout>
+                <v-layout row v-else>
+                  <v-flex xs6 text-xs-right>
                     <v-btn flat color="grey lighten-2" to="/">Cancel</v-btn>
                   </v-flex>
-                  <v-flex xs6 text-xs-left class="pl-3">
-                    <LoginButton v-if="!user" flat />
-                    <v-btn v-else flat color="primary" v-on:click="processPayment(invoice)">&nbsp;<v-icon left class="mr-2">mdi-check-circle</v-icon>Pay&nbsp;</v-btn>
+                  <v-flex xs6 text-xs-left>
+                    <v-btn flat color="primary" v-on:click="processPayment(invoice)"><v-icon left class="mr-2">mdi-check-circle</v-icon>Confirm</v-btn>
                   </v-flex>
                 </v-layout>
               </v-footer>
