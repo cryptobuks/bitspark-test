@@ -116,7 +116,7 @@ export default {
 
       const emoji = emojis[0]
 
-      return (description.startsWith(emoji) || description.startsWith(emoji)) ? emoji : null
+      return (description.startsWith(emoji) || description.endsWith(emoji)) ? emoji : null
     },
     emojiStart () {
       return this.emoji && this.invoiceInfo.payload.description.startsWith(this.emoji)
