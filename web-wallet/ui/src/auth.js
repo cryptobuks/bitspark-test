@@ -6,6 +6,12 @@ var lock = new Auth0Lock(
   'VNuKB9PX4R6v27ltkqjhe68X5NSH8pND', 'biluminate.eu.auth0.com',
   {
     autoclose: true,
+    theme: {
+      logo: 'https://biluminate.com/android-icon-192x192.png'
+    },
+    languageDictionary: {
+      title: 'Biluminate'
+    },
     auth: {
       params: {
         audience: 'https://biluminate.net/auth'
