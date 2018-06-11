@@ -1,5 +1,5 @@
 {
-  "name": "Biluminate Wallet",
+  "name": "Biluminate",
   "short_name": "Biluminate",
   "icons": [
     {
@@ -16,5 +16,5 @@
   "start_url": "/index.html",
   "display": "standalone",
   "background_color": "#000000",
-  "theme_color": "#9ccc65"
+  "theme_color": "#2e3654"
 }
