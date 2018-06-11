@@ -64,6 +64,6 @@ header span {
 }
 
 .toolbar {
-  background: linear-gradient(90deg, #2E3654 0%, #2E3654 13.87%, #F06493 100%);
+  background: linear-gradient(90deg, #2E3654 0%, #323655 50%, #584062 100%);
 }
 </style>
