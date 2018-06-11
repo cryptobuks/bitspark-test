@@ -1,14 +1,14 @@
 <template>
-  <v-app id="app">
-    <v-layout column fill-height>
-      <v-toolbar dark color="primary">
-        <v-toolbar-title>Bi<span style="color: #FFC80A">luminate</span></v-toolbar-title>
-        <v-spacer></v-spacer>
-        <v-btn flat icon><v-icon>mdi-account</v-icon></v-btn>
-      </v-toolbar>
-      <router-view></router-view>
-    </v-layout>
-  </v-app>
+<v-app id="app">
+  <v-layout column fill-height>
+    <v-toolbar dark color="primary">
+      <v-toolbar-title>Bi<span style="color: #FFC80A">luminate</span></v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-btn flat icon><v-icon>mdi-account</v-icon></v-btn>
+    </v-toolbar>
+    <router-view></router-view>
+  </v-layout>
+</v-app>
 </template>
 
 <script>
