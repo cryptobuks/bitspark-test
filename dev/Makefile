@@ -26,6 +26,7 @@ logs:
 
 db:
 	docker-compose exec database createdb -U postgres wallet_prod
+	docker-compose restart backend
 
 shell:
 	docker-compose exec backend iex -S mix
