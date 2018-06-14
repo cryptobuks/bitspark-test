@@ -1,4 +1,5 @@
 const express = require('express')
+const helmet = require('helmet')
 const morgan = require('morgan')
 const app = express()
 const cors = require('cors')
@@ -11,6 +12,7 @@ if (config.httpLogFormat) {
   app.use(morgan(config.httpLogFormat))
 }
 
+app.use(helmet({frameguard: {action: 'deny'}}))
 app.use(express.static(process.env.PUBLIC_DIR || '../ui/dist'))
 app.use(cors());
 app.use(bodyParser.json())
