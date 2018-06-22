@@ -188,11 +188,11 @@ defmodule Wallet.Wallets do
     |> Repo.insert()
   end
 
-  def create_funding_transaction(wallet) do
+  def create_funding_transaction(wallet, opts \\ []) do
     attrs = %{
       wallet_id: wallet.id,
-      description: "Funding transaction",
-      msatoshi: Bitcoin.to_msatoshi({"10", :mbtc}),
+      description: Keyword.get(opts, :description, "Funding transaction"),
+      msatoshi: Bitcoin.to_msatoshi(Keyword.get(opts, :amount, {"10", :mbtc})),
       state: "approved"
     }
     %Wallets.Transaction{}
