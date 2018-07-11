@@ -67,9 +67,7 @@ You should have one ;)
 
 ### Local development
 
-```
-cd web-wallet && docker-compose up
-```
+TODO
 
 ### Release
 
