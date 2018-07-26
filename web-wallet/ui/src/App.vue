@@ -1,19 +1,23 @@
 <template>
+
 <v-app id="app">
   <v-layout column fill-height>
-    <v-toolbar dark>
-      <v-toolbar-title><img class="logo" alt="Biluminate" src="/static/img/logo.svg"></v-toolbar-title>
-    </v-toolbar>
+    <MainMenu />
     <router-view></router-view>
   </v-layout>
 </v-app>
+
 </template>
 
 <script>
+import MainMenu from './components/mainMenu/MainMenu'
 import { mapGetters } from 'vuex'
 
 export default {
   name: 'app',
+  components: {
+    MainMenu
+  },
   computed: {
     initials: function () {
       if (!this.user) return null
@@ -61,6 +65,17 @@ header span {
   font-weight: 400;
   box-sizing: border-box;
   padding-top: 16px;
+}
+
+a {
+  text-decoration: none;
+  color: #fff !important;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+  cursor: pointer;
+}
+a:hover {
+  opacity: 1;
 }
 
 .logo {
