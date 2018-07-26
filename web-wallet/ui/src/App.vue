@@ -69,13 +69,12 @@ header span {
 
 a {
   text-decoration: none;
-  color: #fff !important;
-  opacity: 0.6;
-  transition: opacity 0.2s;
+  color: #ccc !important;
+  transition: color 0.2s;
   cursor: pointer;
 }
 a:hover {
-  opacity: 1;
+  color: #fff !important;
 }
 
 .logo {
