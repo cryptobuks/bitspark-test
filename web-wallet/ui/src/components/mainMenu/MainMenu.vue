@@ -12,13 +12,13 @@
 
         <v-container slot="extension" class="white--text sub-menu" text-xs-center>
             <v-layout row wrap>
-                <v-flex class="sub-menu-item" xs4>
+                <v-flex class="sub-menu-item" xs4 lg2 offset-lg3>
                     <router-link to="/history">History</router-link>
                 </v-flex>
-                <v-flex class="sub-menu-item" xs4>
+                <v-flex class="sub-menu-item" xs4 lg2>
                     <router-link to="/">Balance</router-link>
                 </v-flex>
-                <v-flex class="sub-menu-item" xs4>
+                <v-flex class="sub-menu-item" xs4 lg2>
                     <router-link to="/subscription">Subscriptions</router-link>
                 </v-flex>
             </v-layout>
@@ -39,6 +39,7 @@ export default {
 }
 .sub-menu {
   padding: 0px;
+  margin-bottom: 0;
 }
 .sub-menu-item a {
   width: 100%;
