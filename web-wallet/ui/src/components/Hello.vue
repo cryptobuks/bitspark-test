@@ -24,6 +24,7 @@ export default {
   components: { LoginButton, Amount },
   created () {
     this.$store.dispatch('fetchUserInfo')
+    this.$store.dispatch('fetchTransactions')
   },
   watch: {
     user: function () {

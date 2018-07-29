@@ -11,7 +11,8 @@ const state = {
   accessToken: undefined,
   returnTo: undefined,
   wallet: undefined,
-  invoices: {}
+  invoices: {},
+  transactions: {}
 }
 
 const mutations = {
@@ -25,6 +26,9 @@ const mutations = {
   },
   walletInfo (state, walletInfo) {
     state.wallet = walletInfo.data
+  },
+  transactions (state, transactions) {
+    state.transactions = transactions
   },
   beforeLogin (state, payload) {
     state.returnTo = payload.returnTo
@@ -85,6 +89,13 @@ const actions = {
       .then(r => commit('walletInfo', r))
       .catch(err => commit('apiError', err))
   },
+  fetchTransactions: ({ commit, getters: { api, user } }) => {
+    if (!user) return null
+
+    return api.getTransactions()
+      .then(r => commit('transactions', r))
+      .catch(err => commit('apiError', err))
+  },
   navigate: ({ dispatch, state }, { to, from }) => {
   },
   beforeLogin: ({ commit }, payload) => {
@@ -142,6 +153,9 @@ const getters = {
   balance: state => state.wallet && state.wallet.balance,
   getInvoiceInfo (state) {
     return (invoice) => state.invoices[invoice]
+  },
+  getTransactions (state) {
+    return state.transactions
   }
 }
 
