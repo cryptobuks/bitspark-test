@@ -9,6 +9,7 @@
             <Amount :msatoshi="balance && balance.msatoshi" />
           </h2>
         </div>
+        <FabButton />
       </v-flex>
     </v-layout>
   </v-container>
@@ -16,12 +17,17 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import FabButton from '@/components/controls/FabButton'
 import LoginButton from '@/components/LoginButton'
 import Amount from '@/components/Amount'
 
 export default {
   name: 'hello',
-  components: { LoginButton, Amount },
+  components: {
+    FabButton,
+    LoginButton,
+    Amount
+  },
   created () {
     this.$store.dispatch('fetchUserInfo')
     this.$store.dispatch('fetchTransactions')

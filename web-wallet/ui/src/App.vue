@@ -2,8 +2,8 @@
 
 <v-app id="app">
   <v-layout column fill-height>
-    <MainMenu />
     
+    <MainMenu />
     <router-view></router-view>
     
   </v-layout>
@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import MainMenu from './components/mainMenu/MainMenu'
+import MainMenu from './components/controls/MainMenu'
 import { mapGetters } from 'vuex'
 
 export default {
