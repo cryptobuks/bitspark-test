@@ -3,7 +3,9 @@
 <v-app id="app">
   <v-layout column fill-height>
     <MainMenu />
+    
     <router-view></router-view>
+    
   </v-layout>
 </v-app>
 
@@ -82,7 +84,4 @@ a:hover {
   height: 30px;
 }
 
-.toolbar {
-  background: linear-gradient(90deg, #2E3654 0%, #323655 50%, #584062 100%);
-}
 </style>

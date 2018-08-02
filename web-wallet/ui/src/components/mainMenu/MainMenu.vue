@@ -1,61 +1,55 @@
 <template>
-    <v-toolbar dark class="nav">
-        <v-toolbar-title>
-            <img class="logo" alt="Biluminate" src="/static/img/logo.svg">
-        </v-toolbar-title>
-        
-        <v-spacer></v-spacer>
 
-        <v-btn icon>
-            <v-icon>more_vert</v-icon>
-        </v-btn>
+    <v-toolbar dark tabs grow>
+      <v-toolbar-title>
+        <img class="logo" alt="Biluminate" src="/static/img/logo.svg">
+      </v-toolbar-title>
 
-        <v-container slot="extension" class="white--text sub-menu" text-xs-center>
-            <v-layout row wrap>
-                <v-flex class="sub-menu-item" xs4 lg2 offset-lg3>
-                    <router-link to="/history">History</router-link>
-                </v-flex>
-                <v-flex class="sub-menu-item" xs4 lg2>
-                    <router-link to="/">Balance</router-link>
-                </v-flex>
-                <v-flex class="sub-menu-item" xs4 lg2>
-                    <router-link to="/subscription">Subscriptions</router-link>
-                </v-flex>
-            </v-layout>
-        </v-container>
+      <v-spacer></v-spacer>
 
+      <v-btn icon>
+        <v-icon>more_vert</v-icon>
+      </v-btn>
+
+      <v-tabs class="bi-tabs" slot="extension" centered grow slider-color="yellow">
+        <v-tab class="bi-tab" :to="{ path:'/history' }">
+          <span>History</span>
+        </v-tab>
+        <v-tab class="bi-tab" :to="{ path:'/' }">
+          <span>Balance</span>
+        </v-tab>
+        <v-tab class="bi-tab" :to="{ path:'/subscription' }">
+          <span>Subscription</span>
+        </v-tab>
+      </v-tabs>
     </v-toolbar>
+    
 </template>
 
 <script>
 export default {
-  name: 'MainMenu'
+  name: 'MainMenu',
+  data () {
+    return {
+      model: 'tab-2'
+    }
+  }
 }
 </script>
 
 <style>
-.nav {
-  background: linear-gradient(to right, #2f3655, #574062);
+.toolbar {
+  background: linear-gradient(90deg, #2E3654 0%, #323655 50%, #584062 100%);
 }
-.sub-menu {
-  padding: 0px;
-  margin-bottom: 0;
+.tabs, .tabs__bar {
+  background-color: transparent !important;
 }
-.sub-menu-item a {
-  width: 100%;
-  display: block;
-  padding: 18px 10px;
+.bi-tabs {
+  max-width: 500px;
+  margin: auto;
+}
+.tabs span {
   font-size: 11px;
-  letter-spacing: 0.6px;
-  text-transform: uppercase;
-  border-bottom: 4px solid transparent;
-  transition: border 0.2s;
-}
-.sub-menu-item a.router-link-exact-active {
-  color: #fff !important;
-  border-bottom: 4px solid #ffc80a;
-}
-.sub-menu-item:hover {
-  opacity: 1;
+  min-width: 80px;
 }
 </style>
