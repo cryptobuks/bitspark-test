@@ -14,7 +14,9 @@ Vue.use(Vuetify, {
   theme: {
     primary: '#ffc80a',
     secondary: '#e57373',
-    accent: '#90caf9'
+    accent: '#90caf9',
+    grey: '#9b9b9b',
+    yellow: '#ffc80a'
   }
 })
 require('vuetify/dist/vuetify.min.css')
