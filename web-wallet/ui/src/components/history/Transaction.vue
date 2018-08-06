@@ -1,33 +1,35 @@
 <template>
   <div class="transaction">
-    <img src="static/img/icons/favicon-96x96.png">
+    <v-icon x-large color="grey">account_circle</v-icon>
     <div class="transaction-info">
-      <h2>Heading</h2>
-      <p>{{ transaction.description }}</p>
-      <div class="details">
-        <span v-if="transaction.state === 'approved'" class="approved">
-          <v-icon>check_circle_outline</v-icon> Completed
-        </span>
-      </div>
+      <h2 class="mb-1">Dummy Heading</h2>
+      <p>Transaction description</p>
+      <TransactionState :state="transaction.state" />
     </div>
+    <TransactionAmount :msatoshi="transaction.msatoshi"/>
   </div>
 </template>
 
 <script>
+import TransactionAmount from '@/components/history/TransactionAmount'
+import TransactionState from '@/components/history/TransactionState'
+
 export default {
   name: 'name',
-  props: ['transaction'],
-  created () {
-    console.log(this.transaction)
-  }
+  components: {
+    TransactionAmount,
+    TransactionState
+  },
+  props: ['transaction']
 }
 </script>
 
 <style>
 .transaction {
   display: flex;
-  align-items: center;
-  padding: 5px;
+  align-items: flex-start;
+  padding: 15px;
+  border-bottom: 1px solid rgba(151, 151, 151, 0.2);
 }
 .transaction img {
   width: 45px;
@@ -35,28 +37,21 @@ export default {
   margin: 4px 10px;
 }
 .transaction-info {
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  margin: 0 5px;
+  margin: 0 17px;
 }
 .transaction-info h2 {
-  font-size: 15px;
+  font-size: 17px;
+  color: #545555;
   font-weight: normal;
 }
 .transaction-info p {
+  text-transform: none;
   margin-bottom: 0px;
   font-size: 12px;
-}
-.details span {
-  display: flex;
-  align-items: center;
-  font-size: 10px;
-}
-.details span.approved, .details i {
-  color: #689F38 !important;
-}
-.details span.approved {
-  text-transform: uppercase;
+  letter-spacing: 0.3px;
 }
 </style>
