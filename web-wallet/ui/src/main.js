@@ -15,6 +15,7 @@ Vue.use(Vuetify, {
     primary: '#ffc80a',
     secondary: '#e57373',
     accent: '#90caf9',
+    darkGrey: '#4a4a4a',
     grey: '#9b9b9b',
     yellow: '#ffc80a'
   }

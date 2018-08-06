@@ -73,6 +73,12 @@ header span {
   padding-top: 16px;
 }
 
+p {
+  font-size: 12px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
 a {
   text-decoration: none;
   color: #ccc !important;

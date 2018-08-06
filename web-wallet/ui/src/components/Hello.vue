@@ -1,10 +1,10 @@
 <template>
-  <v-container fill-height fluid>
+  <v-container fluid>
     <v-layout align-center justify-center text-xs-center>
       <v-flex xs12>
         <LoginButton v-if="!user" />
         <div v-else>
-          <h1 class="mb-5">Available balance</h1>
+          <p class="mb-1 mt-1">Available balance</p>
           <h2>
             <Amount :msatoshi="balance && balance.msatoshi" />
           </h2>
@@ -42,3 +42,7 @@ export default {
   }
 }
 </script>
+ 
+<style>
+  
+</style>
