@@ -1,6 +1,8 @@
 defmodule Lightning do
   @moduledoc """
   The Lnd context.
+
+  LND REST API: https://api.lightning.community/rest/index.html
   """
   use Tesla
   plug Tesla.Middleware.JSON, engine: Poison
