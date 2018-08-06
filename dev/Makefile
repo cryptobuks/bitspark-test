@@ -24,6 +24,9 @@ restart-proxy:
 logs:
 	docker-compose logs --follow
 
+connect-db:
+	docker-compose exec database psql wallet_prod postgres
+
 db:
 	docker-compose exec database createdb -U postgres wallet_prod
 	docker-compose restart backend
