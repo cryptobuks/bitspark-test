@@ -4,7 +4,7 @@
       <v-flex xs12>
         <LoginButton v-if="!user" />
         <div v-else>
-          <p class="mb-1 mt-1">Available balance</p>
+          <p class="mb-1 mt-2">Available balance</p>
           <h2>
             <Amount :msatoshi="balance && balance.msatoshi" />
           </h2>
