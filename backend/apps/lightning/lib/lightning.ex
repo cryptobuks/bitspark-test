@@ -59,6 +59,23 @@ defmodule Lightning do
     end
   end
 
+  @doc """
+  Get list of invoices from LND database.
+
+      Wallet.lightning_config |> Lightning.get_invoices()
+
+  """
+  def get_invoices(config, pending_only \\ false) do
+    url = if pending_only do
+      "/v1/invoices?pending_only=1"
+    else
+      "/v1/invoices"
+    end
+
+    %{body: body} = client(config) |> get!(url)
+    body |> Map.get("invoices")
+  end
+
   def get_node_info(config, node_pub_key) do
     %{body: body} =
       client(config)
