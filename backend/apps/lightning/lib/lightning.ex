@@ -21,11 +21,23 @@ defmodule Lightning do
     ])
   end
 
+  @doc """
+  Issue GET request to given LND.
+
+      Wallet.lightning_config |> Lightning.xget!("/v1/getinfo")
+
+  """
   def xget!(config, path) do
     client(config)
     |> get!(path)
   end
 
+  @doc """
+  Issue POST request to given LND.
+
+      Wallet.lightning_config |> Lightning.xpost!("/v1/invoices", %{memo: "...description", value: 12345, receipt: Base.encode64("...receipt")})
+
+  """
   def xpost!(config, path, data) do
     client(config)
     |> post!(path, data)
