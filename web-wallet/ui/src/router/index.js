@@ -7,6 +7,9 @@ import PayInvoice from '@/components/PayInvoice'
 import HistoryPage from '@/components/pages/History'
 import Balance from '@/components/pages/Balance'
 import Subscription from '@/components/pages/Subscription'
+import Faq from '@/components/pages/Faq'
+import About from '@/components/pages/About'
+import WalletRoadmap from '@/components/pages/WalletRoadmap'
 
 Vue.use(Router)
 
@@ -42,6 +45,21 @@ export default new Router({
       path: '/subscription',
       name: 'Subscription',
       component: Subscription
+    },
+    {
+      path: '/faq',
+      name: 'Faq',
+      component: Faq
+    },
+    {
+      path: '/roadmap',
+      name: 'Roadmap',
+      component: WalletRoadmap
+    },
+    {
+      path: '/about',
+      name: 'About',
+      component: About
     }
   ]
 })

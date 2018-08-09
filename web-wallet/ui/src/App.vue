@@ -93,5 +93,10 @@ a:hover {
   vertical-align: middle;
   height: 30px;
 }
+.bi-iframe {
+  border: none;
+  height: 100%;
+  width: 100%;
+}
 
 </style>

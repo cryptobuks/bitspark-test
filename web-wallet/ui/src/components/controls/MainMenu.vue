@@ -1,14 +1,17 @@
 <template>
   <div>
-    
+
     <v-toolbar dark tabs grow>
-      <v-toolbar-side-icon v-if="this.user" @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+      <v-toolbar-side-icon v-if="this.user && !(this.routesWithoutMenu.indexOf($route.name) > -1 )" @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+      <v-btn icon v-if="this.routesWithoutMenu.indexOf($route.name) > -1" @click="$router.go(-1)">
+        <v-icon>arrow_back</v-icon>
+      </v-btn>
 
       <v-toolbar-title>
         <img class="logo" alt="Biluminate" src="/static/img/logo.svg">
       </v-toolbar-title>
 
-      <v-tabs v-if="this.user" class="bi-tabs" slot="extension" centered grow slider-color="yellow">
+      <v-tabs v-if="this.user && !(this.routesWithoutMenu.indexOf($route.name) > -1 )" class="bi-tabs" slot="extension" centered grow slider-color="yellow">
         <v-tab class="bi-tab" :to="{ path:'/history' }">
           <span class="grey--text">History</span>
         </v-tab>
@@ -39,7 +42,7 @@
       <v-list class="pt-0">
         <v-divider></v-divider>
 
-        <v-list-tile class="bi-list-tile">
+        <v-list-tile class="bi-list-tile" :to="{ path:'/faq' }">
           <v-list-tile-content>
             <v-list-tile-title class="bi-list-tile-title grey--text">FAQ</v-list-tile-title>
           </v-list-tile-content>
@@ -47,7 +50,7 @@
             <v-icon color="grey">keyboard_arrow_right</v-icon>
           </v-list-tile-action>
         </v-list-tile>
-        <v-list-tile class="bi-list-tile">
+        <v-list-tile class="bi-list-tile" :to="{ path:'/about' }">
           <v-list-tile-content>
             <v-list-tile-title class="bi-list-tile-title grey--text">About</v-list-tile-title>
           </v-list-tile-content>
@@ -55,7 +58,7 @@
             <v-icon color="grey">keyboard_arrow_right</v-icon>
           </v-list-tile-action>
         </v-list-tile>
-        <v-list-tile class="bi-list-tile">
+        <v-list-tile class="bi-list-tile" :to="{ path:'/roadmap' }">
           <v-list-tile-content>
             <v-list-tile-title class="bi-list-tile-title grey--text">Wallet Roadmap</v-list-tile-title>
           </v-list-tile-content>
@@ -90,6 +93,7 @@ export default {
   },
   data () {
     return {
+      routesWithoutMenu: ['Faq', 'Roadmap', 'About'],
       drawer: null
     }
   }
@@ -154,6 +158,9 @@ export default {
 .bi-list-tile-title {
   font-size: 12px;
   text-transform: uppercase;
+}
+.list__tile--link:hover {
+  background: none !important;
 }
 
 @media (min-width: 1100px) {
