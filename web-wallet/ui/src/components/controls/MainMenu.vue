@@ -155,4 +155,10 @@ export default {
   font-size: 12px;
   text-transform: uppercase;
 }
+
+@media (min-width: 1100px) {
+  .toolbar__extension {
+    margin-top: -45px;
+  }
+}  
 </style>
