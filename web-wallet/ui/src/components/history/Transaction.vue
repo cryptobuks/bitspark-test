@@ -50,7 +50,7 @@ export default {
 }
 .transaction-info p {
   text-transform: none;
-  margin-bottom: 0px;
+  margin-bottom: 0;
   font-size: 12px;
   letter-spacing: 0.3px;
 }

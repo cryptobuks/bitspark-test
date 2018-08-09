@@ -1,7 +1,7 @@
 <template>
   <v-container class="subscriptions" fill-height fluid>
     <v-layout align-center justify-center text-xs-center>
-      <v-flex xs12 text-xs-center>
+      <v-flex xs12 lg6 text-xs-center>
         <img class="mb-5" src="static/img/subscriptions.svg" />
         <p class="mt-2">
           In the final release, this is where we'll show you subscriptions and standing orders (if you have any) <br><br> 

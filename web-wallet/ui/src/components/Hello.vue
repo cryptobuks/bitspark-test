@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <v-layout align-center justify-center text-xs-center>
-      <v-flex xs12>
+      <v-flex xs12 lg6>
         <LoginButton v-if="!user" />
         <div v-else>
           <p class="mb-1 mt-2">Available balance</p>
