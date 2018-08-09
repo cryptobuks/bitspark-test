@@ -1,5 +1,5 @@
 <template>
-  <v-btn v-if="this.user" color="yellow" absolute bottom right fab @click="handleOnCLick()">
+  <v-btn v-if="this.user" color="yellow" fixed bottom right fab @click="handleOnCLick()">
     <v-icon>add</v-icon>
   </v-btn>  
 </template>
