@@ -24,6 +24,14 @@ const mutations = {
       state.returnTo = undefined
     }
   },
+  clearStore (state) {
+    state.user = undefined
+    state.accessToken = undefined
+    state.returnTo = undefined
+    state.wallet = undefined
+    state.invoices = {}
+    state.transaction = {}
+  },
   walletInfo (state, walletInfo) {
     state.wallet = walletInfo.data
   },
@@ -82,6 +90,9 @@ const mutations = {
 }
 
 const actions = {
+  logout: ({ commit }) => {
+    commit('clearStore')
+  },
   fetchUserInfo: ({ commit, getters: { api, user } }) => {
     if (!user) return null
 

@@ -8,7 +8,7 @@
       </v-btn>
 
       <v-toolbar-title>
-        <img class="logo" alt="Biluminate" src="/static/img/logo.svg">
+        <img class="logo" alt="Biluminate" src="/static/img/biluminate-logo.svg">
       </v-toolbar-title>
 
       <v-tabs v-if="this.user && !(this.routesWithoutMenu.indexOf($route.name) > -1 )" class="bi-tabs" slot="extension" centered grow slider-color="yellow">
@@ -66,7 +66,7 @@
             <v-icon color="grey">keyboard_arrow_right</v-icon>
           </v-list-tile-action>
         </v-list-tile>
-        <v-list-tile class="bi-list-tile">
+        <v-list-tile class="bi-list-tile" @click="handleLogoutOnClick">
           <v-list-tile-action>
             <v-icon small color="grey">power_settings_new</v-icon>
           </v-list-tile-action>
@@ -82,19 +82,25 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'MainMenu',
   computed: {
-    ...mapGetters([
-      'user'
-    ])
+    ...mapGetters(['user'])
   },
   data () {
     return {
       routesWithoutMenu: ['Faq', 'Roadmap', 'About'],
       drawer: null
+    }
+  },
+  methods: {
+    ...mapActions(['logout']),
+    handleLogoutOnClick () {
+      this.drawer = null
+      this.logout()
+      this.$router.push({ path: '/' })
     }
   }
 }
@@ -106,6 +112,9 @@ export default {
 }
 .tabs, .tabs__bar {
   background-color: transparent !important;
+}
+.logo {
+  width: 180px;
 }
 .bi-tabs {
   max-width: 500px;
