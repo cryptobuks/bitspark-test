@@ -1,6 +1,6 @@
 <template>
-  <v-btn v-if="!flat" v-bind:color="color" large v-on:click="doLogin">{{label || 'Login'}}<v-icon right v-if="icon">{{icon}}</v-icon></v-btn>
-  <v-btn v-else flat v-bind:color="color" v-on:click="doLogin">{{label || 'Login'}}<v-icon right v-if="icon">{{icon}}</v-icon></v-btn>
+  <v-btn class="bi-login-button yellow" v-if="!this.bigScreen" large v-on:click="doLogin" block>{{label || 'Login'}}</v-btn>
+  <v-btn class="bi-login-button-big-screen yellow" mt-5 v-else large v-on:click="doLogin">{{label || 'Login'}}</v-btn>
 </template>
 
 <script>
@@ -9,16 +9,39 @@ import auth from '../auth'
 export default {
   props: {
     label: String,
-    flat: Boolean,
     icon: {
       type: String,
       default: 'mdi-account'
-    },
-    color: String
+    }
   },
   name: 'LoginButton',
+  computed: {
+    bigScreen () {
+      debugger
+      return this.$vuetify.breakpoint.name === 'lg' || this.$vuetify.breakpoint.name === 'xl'
+    }
+  },
   methods: {
     doLogin: auth.doLogin
   }
 }
 </script>
+
+<style>
+.bi-login-button {
+  height: 56px;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  margin: 0;
+  border-radius: 0px;
+  font-size: 17px;
+  text-transform: uppercase;
+}
+.bi-login-button-big-screen {
+  margin-top: 100px;
+  min-width: 200px;
+  font-size: 18px;
+}
+</style>

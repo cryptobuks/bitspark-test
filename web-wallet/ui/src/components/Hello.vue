@@ -2,8 +2,8 @@
   <v-container fluid>
     <v-layout align-center justify-center text-xs-center>
       <v-flex xs12 lg6>
-        <LoginButton v-if="!user" />
-        <div v-else>
+        <LoginOverlay v-if="!user" />
+        <div class="balance" v-else>
           <p class="mb-1 mt-2">Available balance</p>
           <h2>
             <Amount :msatoshi="balance && balance.msatoshi" />
@@ -18,14 +18,14 @@
 <script>
 import { mapGetters } from 'vuex'
 import FabButton from '@/components/controls/FabButton'
-import LoginButton from '@/components/LoginButton'
+import LoginOverlay from '@/components/login/LoginOverlay'
 import Amount from '@/components/Amount'
 
 export default {
   name: 'hello',
   components: {
     FabButton,
-    LoginButton,
+    LoginOverlay,
     Amount
   },
   created () {
@@ -44,5 +44,9 @@ export default {
 </script>
  
 <style>
-  
+@media (min-width: 1100px) {
+  .balance {
+    margin-top: 100px;
+  }
+}  
 </style>
