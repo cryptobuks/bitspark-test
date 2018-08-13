@@ -1,5 +1,5 @@
 <template>
-  <v-speed-dial fixed v-model="fab" :bottom="true" :right="true" :direction="'top'" :transition="'scale-transition'">
+  <v-speed-dial v-if="this.user" fixed v-model="fab" :bottom="true" :right="true" :direction="'top'" :transition="'scale-transition'">
       <v-btn color="yellow" slot="activator" v-model="fab" fab>
         <v-icon>add</v-icon>
         <v-icon>close</v-icon>
@@ -21,6 +21,11 @@ import { mapGetters } from 'vuex'
 
 export default {
   name: 'FabButton',
+  data () {
+    return {
+      fab: false
+    }
+  },
   computed: {
     ...mapGetters(['user'])
   },
