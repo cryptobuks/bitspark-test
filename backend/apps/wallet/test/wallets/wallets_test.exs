@@ -1,4 +1,6 @@
 defmodule Wallet.WalletsTest do
+  import AssertValue
+  import Utils, only: [canonicalize: 1]
   use Wallet.DataCase
 
   alias Wallet.Accounts
@@ -135,6 +137,31 @@ defmodule Wallet.WalletsTest do
     test "change_transaction/1 returns a transaction changeset" do
       transaction = transaction_fixture()
       assert %Ecto.Changeset{} = Wallets.change_transaction(transaction)
+    end
+  end
+
+  describe "wallet - claimable transactions" do
+    test "create_claimable_transaction!/2 with valid data creates a transaction with token" do
+      wallet = create_wallet()
+      Wallets.create_funding_transaction(wallet)
+
+      assert %Wallets.Transaction{} = transaction = Wallets.create_claimable_transaction!(
+        wallet, amount: {1, :satoshi}, description: "foo")
+
+      assert_value canonicalize(transaction) == %{
+        claim_token: "<CLAIMTOKEN>",
+        claimed_by: nil,
+        description: "foo",
+        id: "<UUID>",
+        inserted_at: "<NAIVEDATETIME>",
+        invoice: nil,
+        msatoshi: -1000,
+        processed_at: nil,
+        response: nil,
+        state: "initial",
+        updated_at: "<NAIVEDATETIME>",
+        wallet_id: "<UUID>"
+      }
     end
   end
 end

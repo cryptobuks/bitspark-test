@@ -201,6 +201,47 @@ defmodule Wallet.Wallets do
   end
 
   @doc """
+  Create transaction claimable by providing claim token.
+
+  ## Examples
+
+  iex> create_claimable_transaction!(wallet, amount: {10, :satoshi})
+  %Transaction{}
+
+  """
+  def create_claimable_transaction!(wallet, opts \\ []) do
+    msatoshi = Bitcoin.to_msatoshi(Keyword.get(opts, :amount))
+    if msatoshi < 0 do
+      raise ArgumentError, message: "Amount has to be positive"
+    end
+
+    attrs = %{
+      wallet_id: wallet.id,
+      # TODO: Localization
+      description: Keyword.get(opts, :description),
+      claim_token: "ct" <> Utils.random_string(32),
+      msatoshi: -msatoshi,
+      state: "initial"
+    }
+    {:ok, trn} = %Wallets.Transaction{}
+    |> Wallets.Transaction.changeset(attrs)
+    |> Repo.insert()
+
+    # check balance
+    %{balance: balance} = get_wallet!(wallet.id)
+
+    if balance < 0 do
+      {:ok, declined_transaction} = update_transaction(
+        trn, %{processed_at: NaiveDateTime.utc_now,
+               state: Wallets.Transaction.declined,
+               response: "NSF"})
+      declined_transaction
+    else
+      trn
+    end
+  end
+
+  @doc """
   Pay lightning invoice.
 
   ## Examples
