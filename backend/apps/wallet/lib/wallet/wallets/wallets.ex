@@ -170,6 +170,10 @@ defmodule Wallet.Wallets do
   """
   def get_transaction!(id), do: Repo.get!(Wallets.Transaction, id)
 
+  def get_transaction_by_token!(token) do
+    %Wallets.Transaction{} = Repo.get_by(Wallets.Transaction, claim_token: token)
+  end
+
   @doc """
   Creates a transaction.
 
@@ -209,7 +213,7 @@ defmodule Wallet.Wallets do
   %Transaction{}
 
   """
-  def create_claimable_transaction!(wallet, opts \\ []) do
+  def create_claimable_transaction!(%Wallets.Wallet{} = wallet, opts \\ []) do
     msatoshi = Bitcoin.to_msatoshi(Keyword.get(opts, :amount))
     if msatoshi < 0 do
       raise ArgumentError, message: "Amount has to be positive"
@@ -239,6 +243,28 @@ defmodule Wallet.Wallets do
     else
       trn
     end
+  end
+
+  def claim_transaction!(%Wallets.Wallet{} = wallet, token) do
+    src_trn = get_transaction_by_token!(token)
+
+    {:ok, %Wallets.Transaction{} = dst_trn} = Repo.transaction(fn ->
+      {:ok, dst_trn} = create_transaction(
+      %{"wallet_id" => wallet.id,
+        "state" => "approved",
+        "msatoshi" => -src_trn.msatoshi,
+        "processed_at" => NaiveDateTime.utc_now,
+        "description" => src_trn.description})
+
+      {:ok, _} = update_transaction(
+        src_trn,
+        %{processed_at: NaiveDateTime.utc_now,
+          state: Wallets.Transaction.approved,
+          claimed_by: dst_trn.id})
+      dst_trn
+    end)
+
+    dst_trn
   end
 
   @doc """

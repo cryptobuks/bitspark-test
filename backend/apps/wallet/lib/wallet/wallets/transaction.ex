@@ -27,7 +27,7 @@ defmodule Wallet.Wallets.Transaction do
   @doc false
   def changeset(transaction, attrs) do
     transaction
-    |> cast(attrs, [:wallet_id, :state, :description, :msatoshi, :invoice, :response, :processed_at, :claim_token])
+    |> cast(attrs, [:wallet_id, :state, :description, :msatoshi, :invoice, :response, :processed_at, :claim_token, :claimed_by])
     |> validate_required([:wallet_id, :state, :description, :msatoshi])
     |> foreign_key_constraint(:state)
     |> foreign_key_constraint(:claimed_by)

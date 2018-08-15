@@ -79,8 +79,8 @@ defmodule Wallet.WalletsTest do
     @update_attrs %{state: "approved", description: "some updated description", invoice: "some updated invoice", msatoshi: 43}
     @invalid_attrs %{state: nil, description: nil, invoice: nil, msatoshi: nil}
 
-    def create_wallet() do
-      {:ok, user} = Accounts.create_user(%{sub: "xyz"})
+    def create_wallet(sub \\ "xyz") do
+      {:ok, user} = Accounts.create_user(%{sub: sub})
       {:ok, wallet} = Wallets.create_wallet(%{user_id: user.id})
       wallet
     end
@@ -162,6 +162,29 @@ defmodule Wallet.WalletsTest do
         updated_at: "<NAIVEDATETIME>",
         wallet_id: "<UUID>"
       }
+    end
+
+    test "claimable transaction should be claimable" do
+      src_wallet = create_wallet("sub1")
+      Wallets.create_funding_transaction(src_wallet)
+
+      # Source transaction
+      src_trn = Wallets.create_claimable_transaction!(
+        src_wallet, amount: {1000, :msatoshi}, description: "foo")
+
+      # Claim
+      dst_wallet = create_wallet("sub2")
+      dst_trn = Wallets.claim_transaction!(dst_wallet, src_trn.claim_token)
+
+      # Wallet balances are updated correctly
+      assert_value canonicalize(Wallets.get_wallet!(dst_wallet.id) |> Map.take([:balance])) == %{balance: 1000}
+      assert_value canonicalize(Wallets.get_wallet!(src_wallet.id) |> Map.take([:balance])) == %{balance: 999999000}
+
+      src_trn_after = Wallets.get_transaction!(src_trn.id)
+      assert_value canonicalize(src_trn_after |> Map.take([:claimed_by, :processed_at, :state])) == %{claimed_by: "<UUID>", processed_at: "<NAIVEDATETIME>", state: "approved"}
+      assert src_trn_after.claimed_by == dst_trn.id
+
+      assert_value (canonicalize(dst_trn) |> Map.take([:description, :processed_at, :state, :msatoshi])) == %{description: "foo", msatoshi: 1000, processed_at: "<NAIVEDATETIME>", state: "approved"}
     end
   end
 end
