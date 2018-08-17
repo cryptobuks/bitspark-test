@@ -1,7 +1,7 @@
 <template>
   <div>
 
-    <v-toolbar dark tabs grow>
+    <v-toolbar dark tabs grow fixed>
       <v-toolbar-side-icon v-if="this.user && !(this.routesWithoutMenu.indexOf($route.name) > -1 )" @click.stop="drawer = !drawer"></v-toolbar-side-icon>
       <v-btn icon v-if="this.routesWithoutMenu.indexOf($route.name) > -1" @click="$router.go(-1)">
         <v-icon>arrow_back</v-icon>
@@ -24,10 +24,10 @@
       </v-tabs>
     </v-toolbar>
 
-    <v-navigation-drawer v-if="this.user" class="bi-navigation-drawer" v-model="drawer" dark absolute temporary>
+    <v-navigation-drawer v-if="this.user" class="bi-navigation-drawer" v-model="drawer" dark temporary fixed>
       <v-list class="bi-drawer-heading pa-1 pt-3 pb-3">
         <v-list-tile avatar>
-          <v-list-tile-avatar>    
+          <v-list-tile-avatar>
             <v-icon v-if="!this.user.picture" x-large class="bi-icon">account_circle</v-icon>
             <img v-else v-bind:src="this.user.picture" />
           </v-list-tile-avatar>
@@ -110,10 +110,14 @@ export default {
 .toolbar {
   background: linear-gradient(90deg, #2e3654 0%, #2e3654 50%, #584062 100%);
 }
-.tabs, .tabs__bar {
+.bi-bigger-toolbar {
+  height: 88px;
+}
+.tabs,
+.tabs__bar {
   background-color: transparent !important;
 }
-.toolbar__content>.btn:first-child {
+.toolbar__content > .btn:first-child {
   margin-left: 17px;
 }
 .logo {
@@ -145,7 +149,12 @@ export default {
   overflow-y: hidden;
 }
 .bi-drawer-heading {
-  background: linear-gradient(90deg, #2E3654 0%, #323655 50%, #584062 100%) !important;
+  background: linear-gradient(
+    90deg,
+    #2e3654 0%,
+    #323655 50%,
+    #584062 100%
+  ) !important;
 }
 .bi-list-tile {
   padding: 6px 15px 6px 10px;
@@ -153,9 +162,15 @@ export default {
   cursor: pointer;
 }
 .bi-list-tile:hover {
-  background: linear-gradient(90deg, #2E3654 0%, #323655 50%, #584062 100%) !important;
+  background: linear-gradient(
+    90deg,
+    #2e3654 0%,
+    #323655 50%,
+    #584062 100%
+  ) !important;
 }
-.bi-list-tile:hover i, .bi-list-tile:hover .bi-list-tile-title  {
+.bi-list-tile:hover i,
+.bi-list-tile:hover .bi-list-tile-title {
   color: #fff !important;
 }
 .bi-name {
@@ -174,10 +189,15 @@ export default {
 .list__tile--link:hover {
   background: none !important;
 }
-
-@media (min-width: 960px) {
-  .toolbar__extension {
-    margin-top: -45px;
+@media (min-width: 1264px) {
+  .toolbar {
+    height: 89px;
   }
-}  
+  .toolbar__content {
+    height: 89px !important;
+  }
+  .toolbar__extension {
+    margin-top: -47px; 
+  }
+}
 </style>
