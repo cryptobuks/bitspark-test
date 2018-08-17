@@ -178,7 +178,7 @@ defmodule Wallet.WalletsTest do
 
     test "claimable transaction should be claimable" do
       src_wallet = create_wallet("sub1")
-      Wallets.create_funding_transaction(src_wallet)
+      Wallets.create_funding_transaction(src_wallet, amount: {1000, :msatoshi})
 
       # Source transaction
       src_trn = Wallets.create_claimable_transaction!(
@@ -189,8 +189,8 @@ defmodule Wallet.WalletsTest do
       dst_trn = Wallets.claim_transaction!(dst_wallet, src_trn.claim_token)
 
       # Wallet balances are updated correctly
+      assert_value canonicalize(Wallets.get_wallet!(src_wallet.id) |> Map.take([:balance])) == %{balance: 0}
       assert_value canonicalize(Wallets.get_wallet!(dst_wallet.id) |> Map.take([:balance])) == %{balance: 1000}
-      assert_value canonicalize(Wallets.get_wallet!(src_wallet.id) |> Map.take([:balance])) == %{balance: 999999000}
 
       src_trn_after = Wallets.get_transaction!(src_trn.id)
       assert_value canonicalize(src_trn_after |> Map.take([:claimed_by, :processed_at, :state])) == %{claimed_by: "<UUID>", processed_at: "<NAIVEDATETIME>", state: "approved"}
