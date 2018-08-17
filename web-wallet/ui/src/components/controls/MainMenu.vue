@@ -2,13 +2,19 @@
   <div>
 
     <v-toolbar dark tabs grow fixed v-if="this.user">
-      <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+      <v-toolbar-side-icon @click.stop="drawer = !drawer" v-if="!(this.routesWithoutMenuSlider.indexOf($route.name) > -1)"></v-toolbar-side-icon>
+      <v-btn icon v-if="this.routesWithoutMenu.indexOf($route.name) > -1" @click="$router.go(-1)">
+        <v-icon>arrow_back</v-icon>
+      </v-btn>
 
-      <v-toolbar-title>
+      <v-toolbar-title v-if="!(this.routesWithoutMenuSlider.indexOf($route.name) > -1)">
         <img class="logo" alt="Biluminate" src="/static/img/biluminate-logo.svg">
       </v-toolbar-title>
+      <v-toolbar-title v-else class="bi-central-heading">
+        <h1>{{ heading }}</h1>
+      </v-toolbar-title>
 
-      <v-tabs :hide-slider="(this.routesWithoutMenuSlider.indexOf($route.name) > -1 )" class="bi-tabs" slot="extension" centered grow slider-color="yellow">
+      <v-tabs v-if="!(this.routesWithoutMenuSlider.indexOf($route.name) > -1)" :hide-slider="(this.routesWithoutMenuSlider.indexOf($route.name) > -1 )" class="bi-tabs" slot="extension" centered grow slider-color="yellow">
         <v-tab class="bi-tab" :to="{ path:'/history' }">
           <span class="grey--text">History</span>
         </v-tab>
@@ -83,13 +89,20 @@ import { mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'MainMenu',
-  computed: {
-    ...mapGetters(['user'])
-  },
   data () {
     return {
-      routesWithoutMenuSlider: ['Faq', 'About', 'Roadmap'],
+      routesWithoutMenuSlider: ['Faq', 'About', 'Roadmap', 'Send'],
+      routesWithoutMenu: ['Send'],
       drawer: null
+    }
+  },
+  computed: {
+    ...mapGetters(['user']),
+    heading () {
+      switch (this.$route.name) {
+        case 'Send': return 'Send / Pay'
+        default: return 'Biluminate'
+      }
     }
   },
   methods: {
@@ -110,6 +123,21 @@ export default {
 .bi-bigger-toolbar {
   height: 88px;
 }
+.logo {
+  width: 180px;
+}
+
+.bi-central-heading {
+  width: 100%;
+  text-align: center;
+  margin-left: -40px;
+}
+.bi-central-heading h1{
+  font-size: 13px;
+  font-weight: normal;
+  text-transform: uppercase;
+}
+
 .tabs,
 .tabs__bar {
   background-color: transparent !important;
@@ -117,9 +145,7 @@ export default {
 .toolbar__content > .btn:first-child {
   margin-left: 17px;
 }
-.logo {
-  width: 180px;
-}
+
 .bi-tabs {
   max-width: 500px;
   margin: auto;
@@ -141,6 +167,7 @@ export default {
 .tabs__slider {
   height: 4px;
 }
+
 .bi-navigation-drawer {
   background-color: #282b3d !important;
   overflow-y: hidden;

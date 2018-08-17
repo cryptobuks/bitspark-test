@@ -7,12 +7,12 @@
         <v-icon>close</v-icon>
       </v-btn>
 
-      <div class="bi-menuitem-container">
+      <router-link to="send" tag="div" class="bi-menuitem-container">
         <span class="bi-menuitem-desc charcoalGrey--text">Send/Pay</span>
         <v-btn fab dark small color="blue" class="bi-fab-menu-button">
           <v-icon class="bi-icon-send">arrow_upward</v-icon>
         </v-btn>
-      </div>
+      </router-link>
       <div class="bi-menuitem-container">
         <span class="bi-menuitem-desc charcoalGrey--text">Scan QR Code</span>
         <v-btn fab dark small color="grey" class="bi-fab-menu-button">
@@ -64,8 +64,8 @@ export default {
 .bi-fab-menu-button {
   width: 45px !important;
   height: 45px !important;
-  margin-top: 9px;
-  margin-bottom: 9px;
+  margin-top: 6px;
+  margin-bottom: 6px;
 }
 .bi-icon-send {
   transform: rotate(45deg);
@@ -77,6 +77,9 @@ export default {
   display: flex;
   align-items: center;
   width: 364px;
+  cursor: pointer;
+  margin-top: 3px;
+  margin-bottom: 3px;
 }
 .bi-menuitem-desc {
   height: 26px;
@@ -88,6 +91,7 @@ export default {
   font-size: 11px;
   font-weight: bold;
   text-transform: uppercase;
+  text-align: center;
 }
 .bi-fab-overlay {
   z-index: 3;

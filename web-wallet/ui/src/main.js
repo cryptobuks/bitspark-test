@@ -17,7 +17,10 @@ Vue.use(Vuetify, {
     accent: '#90caf9',
     darkGrey: '#4a4a4a',
     grey: '#9b9b9b',
-    yellow: '#ffc80a'
+    charcoalGrey: '#434350',
+    yellow: '#ffc80a',
+    blue: '#4a90e2',
+    green: '#68ba42'
   }
 })
 require('vuetify/dist/vuetify.min.css')
@@ -39,7 +42,7 @@ var app = new Vue({
 // window.app = app
 
 router.beforeEach((to, from, next) => {
-  store.dispatch('navigate', {to, from}).then(() => next())
+  store.dispatch('navigate', { to, from }).then(() => next())
 })
 
 router.onReady(() => {
