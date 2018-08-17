@@ -113,6 +113,9 @@ export default {
 .tabs, .tabs__bar {
   background-color: transparent !important;
 }
+.toolbar__content>.btn:first-child {
+  margin-left: 17px;
+}
 .logo {
   width: 180px;
 }

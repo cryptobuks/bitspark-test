@@ -47,6 +47,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   color: #9b9b9b;
   letter-spacing: 0.7px;
+  background-color: #fff;
 }
 
 main {
@@ -97,6 +98,10 @@ a:hover {
   border: none;
   height: 100%;
   width: 100%;
+}
+.bi-container {
+  margin: 0;
+  padding: 0;
 }
 
 </style>
