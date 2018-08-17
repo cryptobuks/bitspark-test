@@ -1,19 +1,33 @@
 <template>
-  <v-speed-dial v-if="this.user" fixed v-model="fab" :bottom="true" :right="true" :direction="'top'" :transition="'scale-transition'">
+  <div>
+    <v-speed-dial v-if="this.user" fixed v-model="fab" :bottom="true" :right="true" :direction="'top'" :transition="'scale-transition'">
+
       <v-btn color="yellow" slot="activator" v-model="fab" fab>
         <v-icon>add</v-icon>
         <v-icon>close</v-icon>
       </v-btn>
-      <v-btn fab dark small color="green"> 
-        <v-icon class="bi-icon-send">arrow_upward</v-icon>
-      </v-btn>
-      <v-btn fab dark small color="red">
-        <v-icon class="bi-icon-recieve">arrow_upward</v-icon>
-      </v-btn>
-      <v-btn fab dark small color="red">
-        <v-icon class="bi-icon-recieve">arrow_upward</v-icon>
-      </v-btn>
+
+      <div class="bi-menuitem-container">
+        <span class="bi-menuitem-desc charcoalGrey--text">Send/Pay</span>
+        <v-btn fab dark small color="blue" class="bi-fab-menu-button">
+          <v-icon class="bi-icon-send">arrow_upward</v-icon>
+        </v-btn>
+      </div>
+      <div class="bi-menuitem-container">
+        <span class="bi-menuitem-desc charcoalGrey--text">Scan QR Code</span>
+        <v-btn fab dark small color="grey" class="bi-fab-menu-button">
+          <v-icon class="bi-icon-recieve">arrow_upward</v-icon>
+        </v-btn>
+      </div>
+      <div class="bi-menuitem-container">
+        <span class="bi-menuitem-desc charcoalGrey--text">Recieve/Deposit</span>
+        <v-btn fab dark small color="green" class="bi-fab-menu-button">
+          <v-icon class="bi-icon-recieve">arrow_upward</v-icon>
+        </v-btn>
+      </div>
     </v-speed-dial>
+    <div v-if="this.user && this.fab" class="bi-fab-overlay" @click="fab=false"></div>
+  </div>
 </template>
 
 <script>
@@ -33,18 +47,56 @@ export default {
     handleOnCLick () {
       console.log('Handle on click.')
     }
+  },
+  watch: {
+
   }
 }
 </script>
 
 <style>
+.speed-dial {
+  z-index: 100;
+}
 .btn--bottom.btn--absolute {
   bottom: 16px;
 }
+.bi-fab-menu-button {
+  width: 45px !important;
+  height: 45px !important;
+  margin-top: 9px;
+  margin-bottom: 9px;
+}
 .bi-icon-send {
-  transform: rotate(225deg);
+  transform: rotate(45deg);
 }
 .bi-icon-recieve {
-  transform: rotate(45deg);
+  transform: rotate(225deg);
+}
+.bi-menuitem-container {
+  display: flex;
+  align-items: center;
+  width: 364px;
+}
+.bi-menuitem-desc {
+  height: 26px;
+  min-width: 140px;
+  margin-right: 10px;
+  background-color: #d8d8d8;
+  border-radius: 5px;
+  padding: 5px 14px;
+  font-size: 11px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+.bi-fab-overlay {
+  z-index: 3;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: #000;
+  opacity: 0.5;
 }
 </style>
