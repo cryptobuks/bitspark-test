@@ -106,7 +106,7 @@ a:hover {
 }
 @media (max-width: 1264px) {
   .bi-container {
-    margin-top: 114px;
+    margin-top: 104px;
   }
 }
 </style>

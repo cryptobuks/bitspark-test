@@ -56,7 +56,7 @@ export default {
 
 <style>
 .speed-dial {
-  z-index: 100;
+  z-index: 4;
 }
 .btn--bottom.btn--absolute {
   bottom: 16px;

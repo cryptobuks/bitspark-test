@@ -2,19 +2,19 @@
   <div>
 
     <v-toolbar dark tabs grow fixed v-if="this.user">
-      <v-toolbar-side-icon @click.stop="drawer = !drawer" v-if="!(this.routesWithoutMenuSlider.indexOf($route.name) > -1)"></v-toolbar-side-icon>
+      <v-toolbar-side-icon @click.stop="drawer = !drawer" v-if="!(this.routesWithoutMenu.indexOf($route.name) > -1)"></v-toolbar-side-icon>
       <v-btn icon v-if="this.routesWithoutMenu.indexOf($route.name) > -1" @click="$router.go(-1)">
         <v-icon>arrow_back</v-icon>
       </v-btn>
 
-      <v-toolbar-title v-if="!(this.routesWithoutMenuSlider.indexOf($route.name) > -1)">
+      <v-toolbar-title v-if="!(this.routesWithoutMenu.indexOf($route.name) > -1)">
         <img class="logo" alt="Biluminate" src="/static/img/biluminate-logo.svg">
       </v-toolbar-title>
-      <v-toolbar-title v-else class="bi-central-heading">
+      <v-toolbar-title v-if="this.routesWithoutMenu.indexOf($route.name) > -1" class="bi-central-heading">
         <h1>{{ heading }}</h1>
       </v-toolbar-title>
 
-      <v-tabs v-if="!(this.routesWithoutMenuSlider.indexOf($route.name) > -1)" :hide-slider="(this.routesWithoutMenuSlider.indexOf($route.name) > -1 )" class="bi-tabs" slot="extension" centered grow slider-color="yellow">
+      <v-tabs v-if="!(this.routesWithoutMenu.indexOf($route.name) > -1)" :hide-slider="(this.routesWithoutMenuSlider.indexOf($route.name) > -1 )" class="bi-tabs" slot="extension" centered grow slider-color="yellow">
         <v-tab class="bi-tab" :to="{ path:'/history' }">
           <span class="grey--text">History</span>
         </v-tab>
