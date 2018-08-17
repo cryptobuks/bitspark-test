@@ -176,6 +176,23 @@ defmodule Wallet.WalletsTest do
       }
     end
 
+    test "create_claimable_transaction!/2 fails if wallet doesn't have enough funds" do
+      wallet = create_wallet()
+      Wallets.create_funding_transaction(wallet, amount: {1000, :msatoshi})
+      src_trn = Wallets.create_claimable_transaction!(wallet, amount: {1001, :msatoshi}, description: "foo")
+
+      # It should be declined
+      assert_value canonicalize(src_trn |> Map.take([:state, :response])) == %{response: "NSF", state: "declined"}
+      assert_value canonicalize(Wallets.get_wallet!(wallet.id) |> Map.take([:balance])) == %{balance: 1000}
+
+      # And not claimable
+      dst_wallet = create_wallet("dst")
+      assert_raise RuntimeError, "Can't claim this transaction", fn ->
+        Wallets.claim_transaction!(dst_wallet, src_trn.claim_token)
+      end
+      assert_value canonicalize(Wallets.get_wallet!(dst_wallet.id) |> Map.take([:balance])) == %{balance: 0}
+    end
+
     test "claimable transaction should be claimable" do
       src_wallet = create_wallet("sub1")
       Wallets.create_funding_transaction(src_wallet, amount: {1000, :msatoshi})
@@ -216,7 +233,7 @@ defmodule Wallet.WalletsTest do
     Wallets.claim_transaction!(dst_wallet, src_trn.claim_token)
 
     # Claim #2
-    assert_raise RuntimeError, "Failed to claim transaction (already claimed?)", fn ->
+    assert_raise RuntimeError, "Can't claim this transaction", fn ->
       Wallets.claim_transaction!(dst_wallet, src_trn.claim_token)
     end
   end

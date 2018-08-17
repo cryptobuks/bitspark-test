@@ -225,7 +225,7 @@ defmodule Wallet.Wallets do
       description: Keyword.get(opts, :description),
       claim_token: "ct" <> Utils.random_string(32),
       msatoshi: -msatoshi,
-      state: "initial"
+      state: Wallets.Transaction.initial
     }
     {:ok, trn} = %Wallets.Transaction{}
     |> Wallets.Transaction.changeset(attrs)
@@ -248,6 +248,10 @@ defmodule Wallet.Wallets do
   def claim_transaction!(%Wallets.Wallet{} = wallet, token) do
     src_trn = get_transaction_by_token!(token)
 
+    if src_trn.state != Wallets.Transaction.initial do
+      raise "Can't claim this transaction"
+    end
+
     {:ok, %Wallets.Transaction{} = dst_trn} = Repo.transaction(
       fn ->
         case create_transaction(
@@ -265,7 +269,7 @@ defmodule Wallet.Wallets do
               claimed_by: dst_trn.id})
             dst_trn
           {:error, _} ->
-            raise "Failed to claim transaction (already claimed?)"
+            raise "Can't claim this transaction (already claimed?)"
         end
       end
     )
