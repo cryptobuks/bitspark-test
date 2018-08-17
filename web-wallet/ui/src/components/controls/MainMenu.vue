@@ -2,16 +2,13 @@
   <div>
 
     <v-toolbar dark tabs grow fixed>
-      <v-toolbar-side-icon v-if="this.user && !(this.routesWithoutMenu.indexOf($route.name) > -1 )" @click.stop="drawer = !drawer"></v-toolbar-side-icon>
-      <v-btn icon v-if="this.routesWithoutMenu.indexOf($route.name) > -1" @click="$router.go(-1)">
-        <v-icon>arrow_back</v-icon>
-      </v-btn>
+      <v-toolbar-side-icon v-if="this.user" @click.stop="drawer = !drawer"></v-toolbar-side-icon>
 
       <v-toolbar-title>
         <img class="logo" alt="Biluminate" src="/static/img/biluminate-logo.svg">
       </v-toolbar-title>
 
-      <v-tabs v-if="this.user && !(this.routesWithoutMenu.indexOf($route.name) > -1 )" class="bi-tabs" slot="extension" centered grow slider-color="yellow">
+      <v-tabs v-if="this.user" :hide-slider="(this.routesWithoutMenuSlider.indexOf($route.name) > -1 )" class="bi-tabs" slot="extension" centered grow slider-color="yellow">
         <v-tab class="bi-tab" :to="{ path:'/history' }">
           <span class="grey--text">History</span>
         </v-tab>
@@ -91,7 +88,7 @@ export default {
   },
   data () {
     return {
-      routesWithoutMenu: ['Faq', 'Roadmap', 'About'],
+      routesWithoutMenuSlider: ['Faq', 'About', 'Roadmap'],
       drawer: null
     }
   },
@@ -190,6 +187,9 @@ export default {
   background: none !important;
 }
 @media (min-width: 1264px) {
+  .tabs span {
+    font-size: 12px;
+  }
   .toolbar {
     height: 89px;
   }
@@ -197,7 +197,7 @@ export default {
     height: 89px !important;
   }
   .toolbar__extension {
-    margin-top: -47px; 
+    margin-top: -47px;
   }
 }
 </style>

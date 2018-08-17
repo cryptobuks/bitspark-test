@@ -1,13 +1,13 @@
 <template>
 
-<v-app id="app">
-  <v-layout column fill-height>
-    
-    <MainMenu />
-    <router-view></router-view>
-    
-  </v-layout>
-</v-app>
+  <v-app id="app">
+    <v-layout column fill-height>
+
+      <MainMenu />
+      <router-view></router-view>
+
+    </v-layout>
+  </v-app>
 
 </template>
 
@@ -42,7 +42,7 @@ body {
 }
 
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #9b9b9b;
@@ -59,7 +59,7 @@ header {
   margin: 0;
   height: 56px;
   padding: 0 16px 0 24px;
-  background-color: #35495E;
+  background-color: #35495e;
   color: #ffffff;
 }
 
@@ -68,7 +68,7 @@ header span {
   position: relative;
   font-size: 20px;
   line-height: 1;
-  letter-spacing: .02em;
+  letter-spacing: 0.02em;
   font-weight: 400;
   box-sizing: border-box;
   padding-top: 16px;
@@ -102,6 +102,11 @@ a:hover {
 .bi-container {
   margin: 0;
   padding: 0;
+  margin-top: 89px;
 }
-
+@media (max-width: 1264px) {
+  .bi-container {
+    margin-top: 114px;
+  }
+}
 </style>

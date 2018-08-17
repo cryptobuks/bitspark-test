@@ -1,5 +1,5 @@
 <template>
-  <v-container class="transactions" fill-height fluid>
+  <v-container class="bi-container" fill-height fluid>
     <v-layout align-center justify-center>
       <v-flex xs12 lg6>
         <Transaction v-for="transaction in transactions" v-bind:key="transaction.id" :transaction="transaction"></Transaction>
@@ -34,9 +34,10 @@ export default {
 }
 </script>
 
-<style>
-.transactions {
-  margin-top: 89px;
-  padding: 0;
+<style scoped>
+@media (max-width: 960px) {
+  .bi-container {
+    margin-top: 104px;
+  }
 }
 </style>

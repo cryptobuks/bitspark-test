@@ -1,5 +1,5 @@
 <template>
-  <v-container class="subscriptions" fill-height fluid>
+  <v-container class="bi-container subscriptions" fill-height fluid>
     <v-layout align-center justify-center text-xs-center>
       <v-flex xs12 lg6 text-xs-center>
         <img class="mb-5" src="static/img/subscriptions.svg" />

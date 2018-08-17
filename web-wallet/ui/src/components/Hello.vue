@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid>
+  <v-container class="bi-container" fluid>
     <v-layout align-center justify-center text-xs-center>
       <v-flex xs12 lg6>
         <LoginOverlay v-if="!user" />
