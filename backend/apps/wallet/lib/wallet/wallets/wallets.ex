@@ -209,8 +209,8 @@ defmodule Wallet.Wallets do
 
   ## Examples
 
-  iex> create_claimable_transaction!(wallet, amount: {10, :satoshi})
-  %Transaction{}
+      iex> create_claimable_transaction!(wallet, amount: {10, :satoshi})
+      %Transaction{}
 
   """
   def create_claimable_transaction!(%Wallets.Wallet{} = wallet, opts \\ []) do
@@ -248,21 +248,27 @@ defmodule Wallet.Wallets do
   def claim_transaction!(%Wallets.Wallet{} = wallet, token) do
     src_trn = get_transaction_by_token!(token)
 
-    {:ok, %Wallets.Transaction{} = dst_trn} = Repo.transaction(fn ->
-      {:ok, dst_trn} = create_transaction(
-      %{"wallet_id" => wallet.id,
-        "state" => "approved",
-        "msatoshi" => -src_trn.msatoshi,
-        "processed_at" => NaiveDateTime.utc_now,
-        "description" => src_trn.description})
-
-      {:ok, _} = update_transaction(
-        src_trn,
-        %{processed_at: NaiveDateTime.utc_now,
-          state: Wallets.Transaction.approved,
-          claimed_by: dst_trn.id})
-      dst_trn
-    end)
+    {:ok, %Wallets.Transaction{} = dst_trn} = Repo.transaction(
+      fn ->
+        case create_transaction(
+              %{"wallet_id" => wallet.id,
+                "state" => "approved",
+                "msatoshi" => -src_trn.msatoshi,
+                "src_transaction_id" => src_trn.id,
+                "processed_at" => NaiveDateTime.utc_now,
+                "description" => src_trn.description}) do
+          {:ok, dst_trn} ->
+            {:ok, _} = update_transaction(
+            src_trn,
+            %{processed_at: NaiveDateTime.utc_now,
+              state: Wallets.Transaction.approved,
+              claimed_by: dst_trn.id})
+            dst_trn
+          {:error, _} ->
+            raise "Failed to claim transaction (already claimed?)"
+        end
+      end
+    )
 
     dst_trn
   end
@@ -272,11 +278,11 @@ defmodule Wallet.Wallets do
 
   ## Examples
 
-  iex> pay_invoice(%{invoice: invoice})
-  {:ok, %Transaction{}}
+      iex> pay_invoice(%{invoice: invoice})
+      {:ok, %Transaction{}}
 
-  iex> pay_invoice(%{field: bad_value})
-  {:error, %Ecto.Changeset{}}
+      iex> pay_invoice(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
 
   """
   def pay_invoice(wallet_id, invoice) do
@@ -315,11 +321,10 @@ defmodule Wallet.Wallets do
                   %{processed_at: NaiveDateTime.utc_now,
                     response: Poison.encode!(update.response)},
                   update))
-    do
+      do
       Wallet.Log.processed_transaction(processed_transaction)
       {:ok, processed_transaction}
-    else
-      err -> err
+      else err -> err
     end
 
   end

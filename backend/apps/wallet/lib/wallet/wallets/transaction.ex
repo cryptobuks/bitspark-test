@@ -17,6 +17,7 @@ defmodule Wallet.Wallets.Transaction do
     # External claim (e.g., via email)
     field :claim_token, :string
     field :claimed_by, :binary_id
+    field :src_transaction_id, :binary_id
     field :msatoshi, :integer
     field :processed_at, :naive_datetime
     field :response, :string
@@ -27,9 +28,11 @@ defmodule Wallet.Wallets.Transaction do
   @doc false
   def changeset(transaction, attrs) do
     transaction
-    |> cast(attrs, [:wallet_id, :state, :description, :msatoshi, :invoice, :response, :processed_at, :claim_token, :claimed_by])
+    |> cast(attrs, [:wallet_id, :state, :description, :msatoshi, :invoice, :response, :processed_at, :claim_token, :claimed_by, :src_transaction_id])
     |> validate_required([:wallet_id, :state, :description, :msatoshi])
     |> foreign_key_constraint(:state)
     |> foreign_key_constraint(:claimed_by)
+    |> foreign_key_constraint(:src_transaction_id)
+    |> unique_constraint(:src_transaction_id)
   end
 end

@@ -141,6 +141,17 @@ defmodule Wallet.WalletsTest do
   end
 
   describe "wallet - claimable transactions" do
+    def claimable_trn_fixture(attrs \\ %{}) do
+      wallet = create_wallet("claimable_trn_fixture")
+      Wallets.create_funding_transaction(wallet)
+
+      %Wallets.Transaction{} = Wallets.create_claimable_transaction!(
+        wallet,
+        amount: Map.get(attrs, :amount, {1, :satoshi}),
+        description: Map.get(attrs, :description, "foo")
+      )
+    end
+
     test "create_claimable_transaction!/2 with valid data creates a transaction with token" do
       wallet = create_wallet()
       Wallets.create_funding_transaction(wallet)
@@ -151,6 +162,7 @@ defmodule Wallet.WalletsTest do
       assert_value canonicalize(transaction) == %{
         claim_token: "<CLAIMTOKEN>",
         claimed_by: nil,
+        src_transaction_id: nil,
         description: "foo",
         id: "<UUID>",
         inserted_at: "<NAIVEDATETIME>",
@@ -184,7 +196,28 @@ defmodule Wallet.WalletsTest do
       assert_value canonicalize(src_trn_after |> Map.take([:claimed_by, :processed_at, :state])) == %{claimed_by: "<UUID>", processed_at: "<NAIVEDATETIME>", state: "approved"}
       assert src_trn_after.claimed_by == dst_trn.id
 
-      assert_value (canonicalize(dst_trn) |> Map.take([:description, :processed_at, :state, :msatoshi])) == %{description: "foo", msatoshi: 1000, processed_at: "<NAIVEDATETIME>", state: "approved"}
+      assert_value (canonicalize(dst_trn) |> Map.take([:description, :processed_at, :state, :msatoshi, :src_transaction_id])) == %{
+        description: "foo",
+        msatoshi: 1000,
+        processed_at: "<NAIVEDATETIME>",
+        src_transaction_id: "<UUID>",
+        state: "approved"
+      }
+
+    end
+  end
+
+  test "claimable transaction should be only claimed once" do
+    # Source transaction
+    src_trn = claimable_trn_fixture(%{amount: {1000, :msatoshi}, description: "foo"})
+
+    # Claim
+    dst_wallet = create_wallet("sub2")
+    Wallets.claim_transaction!(dst_wallet, src_trn.claim_token)
+
+    # Claim #2
+    assert_raise RuntimeError, "Failed to claim transaction (already claimed?)", fn ->
+      Wallets.claim_transaction!(dst_wallet, src_trn.claim_token)
     end
   end
 end
