@@ -2,10 +2,9 @@
   <div class="bi-overlay">
     <v-container fluid>
       <v-layout align-center justify-center text-xs-center>
-        <v-flex xs12 lg2 class="bi-overlay-content">
+        <v-flex xs12 lg6 md6 class="bi-overlay-content">
           <div class="logo-container">
-            <img class="logo-bigger" alt="Biluminate" src="/static/img/biluminate-logo.svg">
-            <p>Lighting Network Enabled Wallet</p>
+            <img class="logo-bigger" alt="Biluminate" src="/static/img/biluminate-logo-slogan.svg">
           </div>
           <div class="bi-login-carousel">
             <LoginCarousel/>
@@ -55,10 +54,12 @@ export default {
   color: #fff;
 }
 .bi-login-carousel {
+  max-width: 300px;
+  margin: auto;
   margin-top: 200px;
 }
 
-@media (min-width: 1100px) {
+@media (min-width: 960px) {
   .logo-bigger {
     width: 296px;
   }

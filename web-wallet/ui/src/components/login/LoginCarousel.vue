@@ -17,11 +17,11 @@
       <v-container fluid>
         <v-layout align-top justify-center text-xs-left>
           <v-flex xs4>
-            <img class="carousel-img" src="/static/img/carousel/fast.svg">
+            <img class="carousel-img" src="/static/img/carousel/cheap.svg">
           </v-flex>
           <v-flex xs8 class="white--text">
-            <h3>Slow</h3>
-            <p>Send money in hours. No need to wait for confirmations.</p>
+            <h3>Cheap</h3>
+            <p>Flat, cheap transaction fees powered by the Lightning Network.</p>
           </v-flex>
         </v-layout>
       </v-container>
@@ -30,11 +30,11 @@
       <v-container fluid>
         <v-layout align-top justify-center text-xs-left>
           <v-flex xs4>
-            <img class="carousel-img" src="/static/img/carousel/fast.svg">
+            <img class="carousel-img" src="/static/img/carousel/safe.svg">
           </v-flex>
           <v-flex xs8 class="white--text">
-            <h3>Fast</h3>
-            <p>Send money in milliseconds. No need to wait for confirmations.</p>
+            <h3>Safe</h3>
+            <p>Bringing over thirty years of security tech and experience to bear to protect your transactions.</p>
           </v-flex>
         </v-layout>
       </v-container>
@@ -43,11 +43,11 @@
       <v-container fluid>
         <v-layout align-top justify-center text-xs-left>
           <v-flex xs4>
-            <img class="carousel-img" src="/static/img/carousel/fast.svg">
+            <img class="carousel-img" src="/static/img/carousel/simple.svg">
           </v-flex>
           <v-flex xs8 class="white--text">
-            <h3>Slow</h3>
-            <p>Send money in hours. No need to wait for confirmations.</p>
+            <h3>Simple</h3>
+            <p>Easy to understand, easier to use: designed with you in mind.</p>
           </v-flex>
         </v-layout>
       </v-container>

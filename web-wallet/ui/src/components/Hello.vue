@@ -44,7 +44,7 @@ export default {
 </script>
  
 <style>
-@media (min-width: 1100px) {
+@media (min-width: 960px) {
   .balance {
     margin-top: 100px;
   }

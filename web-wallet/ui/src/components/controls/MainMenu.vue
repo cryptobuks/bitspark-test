@@ -172,7 +172,7 @@ export default {
   background: none !important;
 }
 
-@media (min-width: 1100px) {
+@media (min-width: 960px) {
   .toolbar__extension {
     margin-top: -45px;
   }

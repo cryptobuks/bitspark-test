@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="74px" height="71px" viewBox="0 0 74 71" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48.2 (47327) - http://www.bohemiancoding.com/sketch -->
+    <title>simple</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="landing-v.3" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-686.000000, -1735.000000)">
+        <g id="Group-3" transform="translate(239.000000, 1533.000000)">
+            <g id="section">
+                <g id="simple" transform="translate(448.000000, 202.000000)">
+                    <g id="Icon-1" transform="translate(13.000000, 0.000000)" fill="#FBC52B">
+                        <circle id="Oval" cx="30" cy="30" r="30"></circle>
+                    </g>
+                    <g id="responsive" transform="translate(0.000000, 26.000000)">
+                        <g id="desktop" stroke="#4B4B4B" stroke-width="2">
+                            <rect id="Rectangle-796" x="0" y="0" width="45" height="29.255814" rx="4"></rect>
+                            <path d="M25.799025,29.7135814 L25.799025,35.0484651" id="Stroke-2" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path d="M18.738975,29.7135814 L18.738975,35.0484651" id="Stroke-3" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path d="M28.09905,35.9089302 L16.599075,35.9089302" id="Stroke-4" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </g>
+                        <g id="phone" transform="translate(31.000000, 10.000000)">
+                            <rect id="Rectangle-796" stroke="#4B4B4B" stroke-width="2" fill="#FFFFFF" x="0" y="0" width="22" height="34" rx="4"></rect>
+                            <path d="M0.555386207,25.4864 L21.7967655,25.4864" id="Stroke-2" stroke="#4B4B4B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path d="M11.3793103,27.9555556 C12.2166759,27.9555556 12.8965517,28.6326844 12.8965517,29.4666667 C12.8965517,30.3006993 12.2166759,30.9777778 11.3793103,30.9777778 C10.5418943,30.9777778 9.86206897,30.3006993 9.86206897,29.4666667 C9.86206897,28.6326844 10.5418943,27.9555556 11.3793103,27.9555556 L11.3793103,27.9555556 Z" id="Stroke-3" fill="#4B4B4B"></path>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

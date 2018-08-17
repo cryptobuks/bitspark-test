@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="70px" height="66px" viewBox="0 0 70 66" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48.2 (47327) - http://www.bohemiancoding.com/sketch -->
+    <title>cheap</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="landing-v.3" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-690.000000, -1533.000000)">
+        <g id="Group-3" transform="translate(239.000000, 1533.000000)">
+            <g id="section">
+                <g id="cheap" transform="translate(452.000000, 0.000000)">
+                    <circle id="Oval" fill="#FBC52B" cx="39" cy="30" r="30"></circle>
+                    <g id="Wallet" transform="translate(0.000000, 21.000000)">
+                        <path d="M40.3298261,44 L3.66921739,44 C1.64234783,44 0,42.3668395 0,40.3524815 L0,13.4252963 C0,11.4109383 1.64234783,9.77777778 3.66921739,9.77777778 L40.3298261,9.77777778 C42.3566957,9.77777778 44,11.4109383 44,13.4252963 L44,40.3524815 C44,42.3668395 42.3566957,44 40.3298261,44 L40.3298261,44 Z" id="Stroke-1" stroke="#4B4B4B" stroke-width="2" fill="#FFFFFF"></path>
+                        <path d="M34.6878307,32.5925926 L44,32.5925926 L44,21.1851852 L34.6878307,21.1851852 C32.6307725,21.1851852 30.962963,22.8877407 30.962963,24.9876543 L30.962963,28.7901235 C30.962963,30.890037 32.6307725,32.5925926 34.6878307,32.5925926 L34.6878307,32.5925926 Z" id="Stroke-3" stroke="#4B4B4B" stroke-width="2"></path>
+                        <path d="M37.4814815,27.7037037 C37.4814815,28.6040741 36.7522222,29.3333333 35.8518519,29.3333333 C34.9514815,29.3333333 34.2222222,28.6040741 34.2222222,27.7037037 C34.2222222,26.8033333 34.9514815,26.0740741 35.8518519,26.0740741 C36.7522222,26.0740741 37.4814815,26.8033333 37.4814815,27.7037037 L37.4814815,27.7037037 Z" id="fill" fill="#4B4B4B"></path>
+                        <polyline id="Stroke-7" stroke="#4B4B4B" stroke-width="2" points="17.9259259 9.77777778 31.6148148 0 37.4814815 9.77777778"></polyline>
+                        <polyline id="Stroke-9" stroke="#4B4B4B" stroke-width="2" points="9.77777778 9.77777778 19.962963 0 26.0740741 5.86666667"></polyline>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

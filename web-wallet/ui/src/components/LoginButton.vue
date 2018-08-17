@@ -18,7 +18,7 @@ export default {
   computed: {
     bigScreen () {
       debugger
-      return this.$vuetify.breakpoint.name === 'lg' || this.$vuetify.breakpoint.name === 'xl'
+      return this.$vuetify.breakpoint.name === 'lg' || this.$vuetify.breakpoint.name === 'xl' || this.$vuetify.breakpoint.name === 'md'
     }
   },
   methods: {
