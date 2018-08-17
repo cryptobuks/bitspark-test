@@ -1,14 +1,14 @@
 <template>
   <div>
 
-    <v-toolbar dark tabs grow fixed>
-      <v-toolbar-side-icon v-if="this.user" @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+    <v-toolbar dark tabs grow fixed v-if="this.user">
+      <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
 
       <v-toolbar-title>
         <img class="logo" alt="Biluminate" src="/static/img/biluminate-logo.svg">
       </v-toolbar-title>
 
-      <v-tabs v-if="this.user" :hide-slider="(this.routesWithoutMenuSlider.indexOf($route.name) > -1 )" class="bi-tabs" slot="extension" centered grow slider-color="yellow">
+      <v-tabs :hide-slider="(this.routesWithoutMenuSlider.indexOf($route.name) > -1 )" class="bi-tabs" slot="extension" centered grow slider-color="yellow">
         <v-tab class="bi-tab" :to="{ path:'/history' }">
           <span class="grey--text">History</span>
         </v-tab>
