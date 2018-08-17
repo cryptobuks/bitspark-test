@@ -162,7 +162,6 @@ defmodule Wallet.WalletsTest do
       assert_value canonicalize(transaction) == %{
         claim_token: "<CLAIMTOKEN>",
         claimed_by: nil,
-        src_transaction_id: nil,
         description: "foo",
         id: "<UUID>",
         inserted_at: "<NAIVEDATETIME>",
@@ -170,6 +169,7 @@ defmodule Wallet.WalletsTest do
         msatoshi: -1000,
         processed_at: nil,
         response: nil,
+        src_transaction_id: nil,
         state: "initial",
         updated_at: "<NAIVEDATETIME>",
         wallet_id: "<UUID>"

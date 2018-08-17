@@ -46,7 +46,7 @@ defmodule WalletWeb.Mixfile do
       {:cors_plug, "~> 1.5"},
       {:joken, "~> 1.5"},
       {:tesla, "1.0.0-beta.1"},
-      {:assert_value, "~> 0.8.5", only: [:test, :dev]}
+      {:assert_value, "~> 0.9.2", only: [:test, :dev]}
     ]
   end
 
