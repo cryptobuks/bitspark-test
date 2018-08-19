@@ -10,7 +10,7 @@ defmodule WalletWeb.TransactionView do
     %{data: render_one(transaction, TransactionView, "transaction.json")}
   end
 
-  def render("transaction.json", %{transaction: transaction}) do
+  def render("transaction.json", %{transaction: %{invoice: invoice} = transaction}) when invoice != nil do
     %{id: transaction.id,
       description: transaction.description,
       state: transaction.state,
@@ -18,5 +18,15 @@ defmodule WalletWeb.TransactionView do
       processed_at: transaction.processed_at,
       msatoshi: transaction.msatoshi,
       invoice: transaction.invoice}
+  end
+
+  def render("transaction.json", %{transaction: %{claim_token: claim_token} = transaction}) when claim_token != nil do
+    %{id: transaction.id,
+      description: transaction.description,
+      state: transaction.state,
+      inserted_at: transaction.inserted_at,
+      processed_at: transaction.processed_at,
+      claim_expires_on: transaction.claim_expires_on,
+      msatoshi: transaction.msatoshi}
   end
 end
