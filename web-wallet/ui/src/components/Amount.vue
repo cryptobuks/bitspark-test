@@ -1,7 +1,7 @@
 <template>
   <span v-if="msatoshi !== undefined">
-    <span class="unit grey--text">mBTC</span>
-    <span class="amount darkGrey--text">{{ mbtc }}</span>
+    <span class="unit grey--text">BTC</span>
+    <span class="amount darkGrey--text">{{ btc }}</span>
   </span>
   <span v-else>Unknown</span>
 </template>
@@ -11,8 +11,8 @@ export default {
   props: ['msatoshi'],
   name: 'amount',
   computed: {
-    mbtc: function () {
-      return this.msatoshi / 100000000
+    btc: function () {
+      return this.msatoshi / 100000000000
     }
   }
 }
