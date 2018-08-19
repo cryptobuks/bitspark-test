@@ -32,7 +32,7 @@
         <v-layout row>
           <v-flex xs12 text-xs-center>
             <span>TOTAL (FEES INCLUDED)</span><br>
-            <Amount :msatoshi="totalAmount" :medium="true" />
+            <Amount :msatoshi="totalMsatoshi" :medium="true" />
           </v-flex>
         </v-layout>
         <v-layout row>
@@ -62,7 +62,7 @@ export default {
   },
   computed: {
     ...mapGetters(['user', 'payment']),
-    totalAmount () {
+    totalMsatoshi () {
       return this.payment.amount * 100000000000
     }
   },

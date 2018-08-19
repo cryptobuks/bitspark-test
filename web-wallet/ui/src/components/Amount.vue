@@ -22,6 +22,7 @@ export default {
 .unit {
   font-size: 42px;
   font-weight: normal;
+  margin-right: 5px;
 }
 .amount {
   font-size: 42px;

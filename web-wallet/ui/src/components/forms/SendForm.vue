@@ -6,7 +6,7 @@
     </v-flex>
     <v-layout row wrap>
       <v-flex xs9 text-xs-center>
-        <p>AVAILABLE BALANCE: {{ mbtc }}BTC</p>
+        <p>AVAILABLE BALANCE: {{ btc }}BTC</p>
       </v-flex>
       <v-flex xs3 text-xs-center>
         <span class="charcoalGrey--text" @click="fillMax()">Max</span>
@@ -35,7 +35,7 @@ export default {
   },
   computed: {
     ...mapGetters(['balance']),
-    mbtc () {
+    btc () {
       if (this.balance && this.balance.msatoshi) {
         return this.balance.msatoshi / 100000000000
       }
