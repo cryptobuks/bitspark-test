@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import BottomButton from '@/components/controls/BottomButton'
 import Amount from '@/components/Amount'
 
@@ -67,8 +67,15 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['processPayment']),
     handleSendClick () {
-      console.log('handleSendClick')
+      var payment = {
+        to_email: this.payment.sendTo,
+        msatoshi: this.totalMsatoshi,
+        description: this.payment.description,
+        expires_after: this.payment.expiresAfter
+      }
+      this.processPayment(payment)
     }
   }
 }

@@ -147,7 +147,7 @@ const actions = {
       })
       .then(payload => commit('setInvoicePayload', { invoice, payload }))
   },
-  processPayment ({ commit, state, getters: { api } }, invoice) {
+  processPayment ({ commit, getters: { api } }, invoice) {
     commit('startInvoicePayment', invoice)
     api.payInvoice(invoice)
       .catch(e => {
