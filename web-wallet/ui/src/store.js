@@ -12,7 +12,8 @@ const state = {
   returnTo: undefined,
   wallet: undefined,
   invoices: {},
-  transactions: {}
+  transactions: {},
+  payment: {}
 }
 
 const mutations = {
@@ -37,6 +38,9 @@ const mutations = {
   },
   transactions (state, transactions) {
     state.transactions = transactions
+  },
+  payment (state, payment) {
+    state.payment = payment
   },
   beforeLogin (state, payload) {
     state.returnTo = payload.returnTo
@@ -153,8 +157,10 @@ const actions = {
       .then(paymentResult => {
         commit('setInvoicePaymentResult', { invoice, paymentResult })
       })
+  },
+  createPayment ({ commit }, payment) {
+    commit('payment', payment)
   }
-
 }
 
 const getters = {
@@ -167,7 +173,8 @@ const getters = {
   },
   getTransactions (state) {
     return state.transactions
-  }
+  },
+  getPayment: state => state.payment
 }
 
 const vuexLocal = new VuexPersistence({

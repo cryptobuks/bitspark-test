@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import BottomButton from '@/components/controls/BottomButton'
 import Input from '@/components/forms/Input'
 
@@ -45,6 +45,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['createPayment']),
     handleSendToValue (value) {
       this.sendTo = value
     },
@@ -61,7 +62,7 @@ export default {
         description: '',
         expiresAfter: '86400'
       }
-      this.$emit('goToReview', payment)
+      this.createPayment(payment)
     },
     isEmptyString (string) {
       return (!string || string.length === 0)
