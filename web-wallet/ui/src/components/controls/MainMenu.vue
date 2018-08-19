@@ -92,7 +92,7 @@ export default {
   data () {
     return {
       routesWithoutMenuSlider: ['Faq', 'About', 'Roadmap', 'Send'],
-      routesWithoutMenu: ['Send'],
+      routesWithoutMenu: ['Send', 'Review'],
       drawer: null
     }
   },
@@ -101,6 +101,7 @@ export default {
     heading () {
       switch (this.$route.name) {
         case 'Send': return 'Send / Pay'
+        case 'Review': return 'Review & Confirm'
         default: return 'Biluminate'
       }
     }

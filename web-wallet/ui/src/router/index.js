@@ -11,6 +11,7 @@ import Faq from '@/components/pages/Faq'
 import About from '@/components/pages/About'
 import WalletRoadmap from '@/components/pages/WalletRoadmap'
 import Send from '@/components/pages/Send'
+import Review from '@/components/pages/Review'
 
 Vue.use(Router)
 
@@ -51,6 +52,11 @@ export default new Router({
       path: '/send',
       name: 'Send',
       component: Send
+    },
+    {
+      path: '/review',
+      name: 'Review',
+      component: Review
     },
     {
       path: '/faq',

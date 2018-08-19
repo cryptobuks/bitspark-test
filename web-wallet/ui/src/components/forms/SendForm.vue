@@ -63,6 +63,7 @@ export default {
         expiresAfter: '86400'
       }
       this.createPayment(payment)
+      this.$router.push({ name: 'Review' })
     },
     isEmptyString (string) {
       return (!string || string.length === 0)
