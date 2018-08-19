@@ -75,6 +75,7 @@ export default {
         description: this.payment.description,
         expires_after: this.payment.expiresAfter
       }
+      console.log(payment)
       this.processPayment(payment)
     }
   }
