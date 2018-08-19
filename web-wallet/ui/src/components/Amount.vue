@@ -1,14 +1,14 @@
 <template>
   <span v-if="msatoshi !== undefined">
-    <span class="unit grey--text">BTC</span>
-    <span class="amount darkGrey--text">{{ btc }}</span>
+    <span class="unit grey--text" v-bind:class="{ 'medium': medium }">BTC</span>
+    <span class="amount darkGrey--text" v-bind:class="{ 'medium': medium }">{{ btc }}</span>
   </span>
   <span v-else>Unknown</span>
 </template>
 
 <script>
 export default {
-  props: ['msatoshi'],
+  props: ['msatoshi', 'medium'],
   name: 'amount',
   computed: {
     btc: function () {
@@ -18,7 +18,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .unit {
   font-size: 42px;
   font-weight: normal;
@@ -26,5 +26,8 @@ export default {
 .amount {
   font-size: 42px;
   font-weight: normal;
+}
+.medium {
+  font-size: 37px;
 }
 </style>
