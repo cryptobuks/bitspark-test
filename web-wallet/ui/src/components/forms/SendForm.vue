@@ -1,8 +1,8 @@
 <template>
   <v-form class="bi-form">
     <v-flex xs12 text-xs-right>
-      <Input :value="sendTo" :label="'To:'" @valueInput="handleSendToValue" />
-      <Input :value="amount" :label="'BTC'" @valueInput="handleAmountValue" />
+      <Input :value="sendTo" :label="'To:'" :type="'text'" :placeholder="'Email or Address'" :tooltip="'Email or Address tooltip'" @valueInput="handleSendToValue" />
+      <Input :value="amount" :label="'BTC'" :type="'number'" :placeholder="'Amount'" :tooltip="'Amount tooltip'" @valueInput="handleAmountValue" />
     </v-flex>
     <v-layout row wrap>
       <v-flex xs9 text-xs-center>
@@ -10,6 +10,11 @@
       </v-flex>
       <v-flex xs3 text-xs-center>
         <span class="charcoalGrey--text" @click="fillMax()">Max</span>
+      </v-flex>
+    </v-layout>
+    <v-layout row wrap>
+      <v-flex xs12 text-xs-center>
+        <span class="settings-heading charcoalGrey--text" @click="advancedSettings()">Advanced Settings</span>
       </v-flex>
     </v-layout>
     <BottomButton :label="'Continue to Review'" :disabled="!isValid" :onClick="handleReviewClick" />
@@ -55,6 +60,9 @@ export default {
     fillMax () {
       console.log('Handle fillMax')
     },
+    advancedSettings () {
+      console.log('Toggle advancedSettings')
+    },
     handleReviewClick () {
       var payment = {
         sendTo: this.sendTo,
@@ -87,5 +95,8 @@ span {
   cursor: pointer;
   text-transform: uppercase;
   text-decoration: underline;
+}
+.settings-heading  {
+  margin-top: 10px;
 }
 </style>

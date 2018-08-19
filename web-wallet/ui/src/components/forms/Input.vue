@@ -3,10 +3,10 @@
     <span class="bi-input-label charcoalGrey--text">
       {{label}}
     </span>
-    <v-text-field v-model="inputValue" slot="activator" @input="handleValueInput(inputValue)"></v-text-field>
-    <v-tooltip slot="apendIcon" left>
+    <v-text-field v-model="inputValue" slot="activator" v-bind:type="type" v-bind:placeholder="placeholder" @input="handleValueInput(inputValue)"></v-text-field>
+    <v-tooltip slot="apendIcon" bottom>
       <v-icon small slot="activator" class="charcoalGrey--text">help</v-icon>
-      <span>Hello</span>
+      <span>{{tooltip}}</span>
     </v-tooltip>
   </div>
 </template>
@@ -14,7 +14,7 @@
 <script>
 export default {
   name: 'Input',
-  props: ['value', 'label'],
+  props: ['value', 'label', 'type', 'placeholder', 'tooltip'],
   data () {
     return {
       inputValue: this.value
