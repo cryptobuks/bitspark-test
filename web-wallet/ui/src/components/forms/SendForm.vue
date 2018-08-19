@@ -55,7 +55,13 @@ export default {
       console.log('Handle fillMax')
     },
     handleReviewClick () {
-      console.log('Handle review click.')
+      var payment = {
+        sendTo: this.sendTo,
+        amount: this.amount,
+        description: '',
+        expiresAfter: '86400'
+      }
+      this.$emit('goToReview', payment)
     },
     isEmptyString (string) {
       return (!string || string.length === 0)

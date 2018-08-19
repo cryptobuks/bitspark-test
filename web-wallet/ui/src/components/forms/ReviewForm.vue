@@ -2,14 +2,16 @@
   <v-form class="bi-form">
     <v-flex xs12 text-xs-right>
       <h1>ReviewForm</h1>
+      {{payment}}
     </v-flex>
-    <BottomButton :label="'Send'" :onClick="handleSendClick" />
+    <!-- <BottomButton :label="'Send'" :onClick="handleSendClick" /> -->
   </v-form>
 </template>
 
 <script>
 export default {
-  name: 'ReviewForm'
+  name: 'ReviewForm',
+  props: ['payment']
 }
 </script>
 
