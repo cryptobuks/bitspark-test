@@ -27,7 +27,7 @@ defmodule WalletWeb.TransactionControllerTest do
         [to_email: "a@b.cz", msatoshi: 1000, description: "Hello", expires_after: 60]
 
       assert_value canonicalize(json_response(conn, 201)["data"]) == %{
-                     "claim_expires_on" => "<TIMESTAMP>",
+                     "claim_expires_at" => "<TIMESTAMP>",
                      "description" => "Hello",
                      "id" => "<UUID>",
                      "inserted_at" => "<TIMESTAMP>",

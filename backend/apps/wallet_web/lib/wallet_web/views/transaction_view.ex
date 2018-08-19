@@ -26,7 +26,7 @@ defmodule WalletWeb.TransactionView do
       state: transaction.state,
       inserted_at: transaction.inserted_at,
       processed_at: transaction.processed_at,
-      claim_expires_on: transaction.claim_expires_on,
+      claim_expires_at: transaction.claim_expires_at,
       msatoshi: transaction.msatoshi}
   end
 end
