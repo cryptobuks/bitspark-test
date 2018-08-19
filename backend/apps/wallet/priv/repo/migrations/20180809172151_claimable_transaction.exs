@@ -4,6 +4,7 @@ defmodule Wallet.Repo.Migrations.ClaimableTransaction do
   def change do
     alter table("transactions") do
       add :claim_token, :string
+      add :claim_expires_on, :naive_datetime
       add :claimed_by, references(:transactions, on_delete: :nothing, type: :binary_id)
       add :src_transaction_id, references(:transactions, on_delete: :nothing, type: :binary_id)
     end

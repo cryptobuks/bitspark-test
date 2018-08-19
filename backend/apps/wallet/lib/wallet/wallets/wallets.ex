@@ -207,9 +207,14 @@ defmodule Wallet.Wallets do
   @doc """
   Create transaction claimable by providing claim token.
 
+  Options:
+    - amount (e.g. {1, :satoshi})
+    - description - transaction description which will be visible to both payee and payer
+    - expires_after - period in seconds after which it's not possible to claim transaction
+
   ## Examples
 
-      iex> create_claimable_transaction!(wallet, amount: {10, :satoshi})
+      iex> create_claimable_transaction!(wallet, amount: {10, :satoshi}, expires_after: 86400)
       %Transaction{}
 
   """
@@ -218,12 +223,14 @@ defmodule Wallet.Wallets do
     if msatoshi < 0 do
       raise ArgumentError, message: "Amount has to be positive"
     end
+    expires_after = Keyword.get(opts, :expires_after, 86400)
 
     attrs = %{
       wallet_id: wallet.id,
       # TODO: Localization
       description: Keyword.get(opts, :description),
       claim_token: "ct" <> Utils.random_string(32),
+      claim_expires_on: NaiveDateTime.utc_now |> NaiveDateTime.add(expires_after, :second),
       msatoshi: -msatoshi,
       state: Wallets.Transaction.initial
     }

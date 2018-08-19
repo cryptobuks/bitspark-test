@@ -160,20 +160,21 @@ defmodule Wallet.WalletsTest do
         wallet, amount: {1, :satoshi}, description: "foo")
 
       assert_value canonicalize(transaction) == %{
-        claim_token: "<CLAIMTOKEN>",
-        claimed_by: nil,
-        description: "foo",
-        id: "<UUID>",
-        inserted_at: "<NAIVEDATETIME>",
-        invoice: nil,
-        msatoshi: -1000,
-        processed_at: nil,
-        response: nil,
-        src_transaction_id: nil,
-        state: "initial",
-        updated_at: "<NAIVEDATETIME>",
-        wallet_id: "<UUID>"
-      }
+                     claim_expires_on: "<NAIVEDATETIME>",
+                     claim_token: "<CLAIMTOKEN>",
+                     claimed_by: nil,
+                     description: "foo",
+                     id: "<UUID>",
+                     inserted_at: "<NAIVEDATETIME>",
+                     invoice: nil,
+                     msatoshi: -1000,
+                     processed_at: nil,
+                     response: nil,
+                     src_transaction_id: nil,
+                     state: "initial",
+                     updated_at: "<NAIVEDATETIME>",
+                     wallet_id: "<UUID>"
+                   }
     end
 
     test "create_claimable_transaction!/2 fails if wallet doesn't have enough funds" do
