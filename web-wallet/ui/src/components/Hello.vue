@@ -28,11 +28,6 @@ export default {
     LoginOverlay,
     Amount
   },
-  watch: {
-    user: function () {
-      this.$store.dispatch('fetchUserInfo')
-    }
-  },
   computed: {
     ...mapGetters(['user', 'balance'])
   }

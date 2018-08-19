@@ -33,6 +33,11 @@ export default {
     ...mapGetters([
       'user'
     ])
+  },
+  watch: {
+    user: function () {
+      this.$store.dispatch('fetchUserInfo')
+    }
   }
 }
 </script>
@@ -46,7 +51,7 @@ body {
 }
 
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #9b9b9b;
