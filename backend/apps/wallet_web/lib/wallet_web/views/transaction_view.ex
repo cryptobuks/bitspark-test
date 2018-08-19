@@ -29,4 +29,13 @@ defmodule WalletWeb.TransactionView do
       claim_expires_at: transaction.claim_expires_at,
       msatoshi: transaction.msatoshi}
   end
+
+  def render("transaction.json", %{transaction: transaction}) do
+    %{id: transaction.id,
+      description: transaction.description,
+      state: transaction.state,
+      inserted_at: transaction.inserted_at,
+      processed_at: transaction.processed_at,
+      msatoshi: transaction.msatoshi}
+  end
 end
