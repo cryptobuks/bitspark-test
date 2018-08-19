@@ -174,7 +174,7 @@ const getters = {
   getTransactions (state) {
     return state.transactions
   },
-  getPayment: state => state.payment
+  payment: state => state.payment
 }
 
 const vuexLocal = new VuexPersistence({
