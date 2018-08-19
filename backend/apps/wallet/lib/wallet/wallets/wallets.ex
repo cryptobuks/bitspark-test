@@ -236,7 +236,7 @@ defmodule Wallet.Wallets do
 
   ## Examples
 
-      iex> create_claimable_transaction!(wallet, amount: {10, :satoshi}, expires_after: 86400)
+      iex> create_claimable_transaction!(wallet, amount: {10, :satoshi}, expires_after: 86400, description: "Hello")
       %Transaction{}
 
   """
