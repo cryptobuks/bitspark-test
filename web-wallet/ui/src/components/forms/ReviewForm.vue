@@ -4,14 +4,24 @@
       <h1>ReviewForm</h1>
       {{payment}}
     </v-flex>
-    <!-- <BottomButton :label="'Send'" :onClick="handleSendClick" /> -->
+    <BottomButton :label="'Send'" :onClick="handleSendClick" />
   </v-form>
 </template>
 
 <script>
+import BottomButton from '@/components/controls/BottomButton'
+
 export default {
   name: 'ReviewForm',
-  props: ['payment']
+  components: {
+    BottomButton
+  },
+  props: ['payment'],
+  methods: {
+    handleSendClick () {
+      console.log('handleSendClick')
+    }
+  }
 }
 </script>
 
