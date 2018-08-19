@@ -1,8 +1,6 @@
 <template>
   <v-container class="bi-container" fluid>
-    <v-layout align-center justify-center>
-      <ReviewForm />
-    </v-layout>
+    <ReviewForm />
   </v-container>
 </template>
 
@@ -17,5 +15,5 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 </style>
