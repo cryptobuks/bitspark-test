@@ -1,6 +1,6 @@
 <template>
-  <v-btn class="bi-bottom-button primary charcoalGrey--text" v-if="!this.bigScreen" large v-bind:class="{ disabled: 'disabled' }" @click="handleOnClick" block>{{label}}</v-btn>
-  <v-btn class="bi-bottom-button-big-screen charcoalGrey--text primary" mt-5 v-else large v-bind:class="{ disabled: 'disabled' }" @click="handleOnClick">{{label}}</v-btn>
+  <v-btn class="bi-bottom-button primary charcoalGrey--text" v-if="!this.bigScreen" large v-bind:class="{ 'disabled': disabled }" @click="handleOnClick" block>{{label}}</v-btn>
+  <v-btn class="bi-bottom-button-big-screen charcoalGrey--text primary" mt-5 v-else large v-bind:class="{ 'disabled': disabled }" @click="handleOnClick">{{label}}</v-btn>
 </template>
 
 <script>
