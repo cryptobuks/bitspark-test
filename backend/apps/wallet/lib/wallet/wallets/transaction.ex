@@ -15,7 +15,7 @@ defmodule Wallet.Wallets.Transaction do
     # Lightning
     field :invoice, :string
     # External claim (e.g., via email)
-    field :claim_token, :string
+    field :claim_token, :binary_id
     field :claim_expires_on, :naive_datetime
     field :claimed_by, :binary_id
     field :src_transaction_id, :binary_id

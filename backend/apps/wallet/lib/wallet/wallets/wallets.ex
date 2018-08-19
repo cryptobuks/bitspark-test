@@ -170,8 +170,30 @@ defmodule Wallet.Wallets do
   """
   def get_transaction!(id), do: Repo.get!(Wallets.Transaction, id)
 
+
+  @doc """
+  Gets a transaction for given claim token (makes sure that it respects expiration).
+
+  ## Example
+
+      iex> get_transaction_by_token!("a1b8bb02-9db5-4073-808f-e6fb62cab71b")
+      %Transaction{}
+
+  """
   def get_transaction_by_token!(token) do
-    %Wallets.Transaction{} = Repo.get_by(Wallets.Transaction, claim_token: token)
+    %Wallets.Transaction{} = trn = Repo.get_by(Wallets.Transaction, claim_token: token)
+
+    if NaiveDateTime.compare(trn.claim_expires_on, NaiveDateTime.utc_now) != :gt do
+      {:ok, trn} = update_transaction(
+        trn,
+        %{processed_at: trn.claim_expires_on,
+          state: Wallets.Transaction.declined,
+          response: "Expired"}
+      )
+      trn
+    else
+      trn
+    end
   end
 
   @doc """
@@ -229,7 +251,7 @@ defmodule Wallet.Wallets do
       wallet_id: wallet.id,
       # TODO: Localization
       description: Keyword.get(opts, :description),
-      claim_token: "ct" <> Utils.random_string(32),
+      claim_token: Ecto.UUID.generate,
       claim_expires_on: NaiveDateTime.utc_now |> NaiveDateTime.add(expires_after, :second),
       msatoshi: -msatoshi,
       state: Wallets.Transaction.initial
