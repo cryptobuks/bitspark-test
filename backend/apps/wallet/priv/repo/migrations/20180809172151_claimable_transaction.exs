@@ -9,7 +9,7 @@ defmodule Wallet.Repo.Migrations.ClaimableTransaction do
       add :src_transaction_id, references(:transactions, on_delete: :nothing, type: :binary_id)
     end
 
-    create index(:transactions, [:claim_token])
+    create unique_index(:transactions, [:claim_token])
     create unique_index(:transactions, [:src_transaction_id])
   end
 end
