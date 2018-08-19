@@ -41,6 +41,7 @@ defmodule PayWeb.Mixfile do
       {:phoenix_pubsub, "~> 1.0"},
       {:phoenix_html, "~> 2.10"},
       {:phoenix_live_reload, "~> 1.0", only: :dev},
+      {:assert_value, "~> 0.9.2", only: [:test, :dev]},
       {:gettext, "~> 0.11"},
       {:pay, in_umbrella: true},
       {:canteen, in_umbrella: true},
