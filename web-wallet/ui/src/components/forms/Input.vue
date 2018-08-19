@@ -27,8 +27,7 @@ export default {
 }
 .bi-input-label {
   font-size: 17px;
-  margin-top: 2px;
-  margin-right: 10px;
+  margin: 2px 10px 0px 10px;
 }
 .bi-input-container {
   display: flex;

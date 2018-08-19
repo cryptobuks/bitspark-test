@@ -28,10 +28,6 @@ export default {
     LoginOverlay,
     Amount
   },
-  created () {
-    this.$store.dispatch('fetchUserInfo')
-    this.$store.dispatch('fetchTransactions')
-  },
   watch: {
     user: function () {
       this.$store.dispatch('fetchUserInfo')

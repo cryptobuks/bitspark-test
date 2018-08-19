@@ -20,6 +20,10 @@ export default {
   components: {
     MainMenu
   },
+  created () {
+    this.$store.dispatch('fetchUserInfo')
+    this.$store.dispatch('fetchTransactions')
+  },
   computed: {
     initials: function () {
       if (!this.user) return null
@@ -42,7 +46,7 @@ body {
 }
 
 #app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #9b9b9b;
