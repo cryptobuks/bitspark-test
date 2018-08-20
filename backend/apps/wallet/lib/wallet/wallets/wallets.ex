@@ -170,6 +170,32 @@ defmodule Wallet.Wallets do
   """
   def get_transaction!(id), do: Repo.get!(Wallets.Transaction, id)
 
+
+  @doc """
+  Gets a transaction for given claim token (makes sure that it respects expiration).
+
+  ## Example
+
+      iex> get_transaction_by_token!("a1b8bb02-9db5-4073-808f-e6fb62cab71b")
+      %Transaction{}
+
+  """
+  def get_transaction_by_token!(token) do
+    %Wallets.Transaction{} = trn = Repo.get_by(Wallets.Transaction, claim_token: token)
+
+    if NaiveDateTime.compare(trn.claim_expires_at, NaiveDateTime.utc_now) != :gt do
+      {:ok, trn} = update_transaction(
+        trn,
+        %{processed_at: trn.claim_expires_at,
+          state: Wallets.Transaction.declined,
+          response: "Expired"}
+      )
+      trn
+    else
+      trn
+    end
+  end
+
   @doc """
   Creates a transaction.
 
@@ -201,15 +227,104 @@ defmodule Wallet.Wallets do
   end
 
   @doc """
+  Create transaction claimable by providing claim token.
+
+  Options:
+    - amount (e.g. {1, :satoshi})
+    - description - transaction description which will be visible to both payee and payer
+    - expires_after - period in seconds after which it's not possible to claim transaction
+
+  ## Examples
+
+      iex> create_claimable_transaction!(wallet, amount: {10, :satoshi}, expires_after: 86400, description: "Hello")
+      %Transaction{}
+
+  """
+  def create_claimable_transaction!(%Wallets.Wallet{} = wallet, opts \\ []) do
+    msatoshi = Bitcoin.to_msatoshi(Keyword.get(opts, :amount))
+    if msatoshi < 0 do
+      raise ArgumentError, message: "Amount has to be positive"
+    end
+    expires_after = Keyword.get(opts, :expires_after, 86400)
+
+    attrs = %{
+      wallet_id: wallet.id,
+      # TODO: Localization
+      description: Keyword.get(opts, :description),
+      claim_token: Ecto.UUID.generate,
+      claim_expires_at: NaiveDateTime.utc_now |> NaiveDateTime.add(expires_after, :second),
+      msatoshi: -msatoshi,
+      state: Wallets.Transaction.initial
+    }
+    {:ok, trn} = %Wallets.Transaction{}
+    |> Wallets.Transaction.changeset(attrs)
+    |> Repo.insert()
+
+    # check balance
+    %{balance: balance} = get_wallet!(wallet.id)
+
+    if balance < 0 do
+      {:ok, declined_transaction} = update_transaction(
+        trn, %{processed_at: NaiveDateTime.utc_now,
+               state: Wallets.Transaction.declined,
+               response: "NSF"})
+      declined_transaction
+    else
+      case Keyword.get(opts, :to_email) do
+        nil -> nil
+        to_email ->
+          Logger.info "Sending claim transaction email to #{to_email}"
+
+          Wallet.Email.claim_transaction_email(to_email, "https://testwallet.biluminate.com/#/claim/#{trn.claim_token}")
+          |> Wallet.Mailer.deliver_now
+      end
+
+      trn
+    end
+  end
+
+  def claim_transaction!(%Wallets.Wallet{} = wallet, token) do
+    src_trn = get_transaction_by_token!(token)
+
+    if src_trn.state != Wallets.Transaction.initial do
+      raise "Can't claim this transaction"
+    end
+
+    {:ok, %Wallets.Transaction{} = dst_trn} = Repo.transaction(
+      fn ->
+        case create_transaction(
+              %{"wallet_id" => wallet.id,
+                "state" => "approved",
+                "msatoshi" => -src_trn.msatoshi,
+                "src_transaction_id" => src_trn.id,
+                "processed_at" => NaiveDateTime.utc_now,
+                "description" => src_trn.description}) do
+          {:ok, dst_trn} ->
+            {:ok, _} = update_transaction(
+            src_trn,
+            %{processed_at: NaiveDateTime.utc_now,
+              state: Wallets.Transaction.approved,
+              claimed_by: dst_trn.id})
+            dst_trn
+          {:error, _} ->
+            raise "Can't claim this transaction (already claimed?)"
+        end
+      end
+    )
+
+    dst_trn
+  end
+
+  @doc """
   Pay lightning invoice.
 
   ## Examples
 
-  iex> pay_invoice(%{invoice: invoice})
-  {:ok, %Transaction{}}
+      iex> pay_invoice(%{invoice: invoice})
+      {:ok, %Transaction{}}
 
-  iex> pay_invoice(%{field: bad_value})
-  {:error, %Ecto.Changeset{}}
+      iex> pay_invoice(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
 
   """
   def pay_invoice(wallet_id, invoice) do
@@ -248,11 +363,10 @@ defmodule Wallet.Wallets do
                   %{processed_at: NaiveDateTime.utc_now,
                     response: Poison.encode!(update.response)},
                   update))
-    do
+      do
       Wallet.Log.processed_transaction(processed_transaction)
       {:ok, processed_transaction}
-    else
-      err -> err
+      else err -> err
     end
 
   end

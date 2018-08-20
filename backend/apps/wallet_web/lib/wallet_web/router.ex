@@ -25,6 +25,10 @@ defmodule WalletWeb.Router do
     resources "/invoice", InvoiceController, only: []
   end
 
+  if Mix.env == :dev do
+    forward "/sent_emails", Bamboo.SentEmailViewerPlug
+  end
+
   if (Mix.env in [:dev, :test]) or (System.get_env("FAKE_LND_ENABLED") == "1") do
     alias FakeLndWeb
     scope "/fakelnd" do

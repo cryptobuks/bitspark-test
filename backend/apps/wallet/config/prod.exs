@@ -1,5 +1,11 @@
 use Mix.Config
 
+config :wallet, Wallet.Mailer,
+  adapter: Bamboo.MailgunAdapter,
+  api_key: System.get_env("WALLET_MAILGUN_API_KEY"),
+  domain: System.get_env("WALLET_MAILGUN_DOMAIN") || "mailgun.biluminate.com"
+
+
 config :wallet, Lightning,
   lnd_base_url: System.get_env("WALLET_LND_REST_URL"),
   lnd_macaroon: System.get_env("WALLET_LND_REST_MACAROON")
