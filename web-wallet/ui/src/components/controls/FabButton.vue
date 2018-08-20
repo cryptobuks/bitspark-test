@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-speed-dial v-if="this.user" fixed v-model="fab" :bottom="true" :right="true" :direction="'top'" :transition="'scale-transition'">
+    <v-speed-dial v-if="this.user && (featureToggles.paymentToEmail || featureToggles.qrScan || featureToggles.recieve)" fixed v-model="fab" :bottom="true" :right="true" :direction="'top'" :transition="'scale-transition'">
 
       <v-btn color="yellow" slot="activator" v-model="fab" fab>
         <v-icon>add</v-icon>
@@ -47,9 +47,6 @@ export default {
     handleOnCLick () {
       console.log('Handle on click.')
     }
-  },
-  watch: {
-
   }
 }
 </script>
