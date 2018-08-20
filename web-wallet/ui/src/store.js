@@ -171,9 +171,7 @@ const getters = {
   getInvoiceInfo (state) {
     return (invoice) => state.invoices[invoice]
   },
-  getTransactions (state) {
-    return state.transactions
-  },
+  transactions: state => state.transactions,
   payment: state => state.payment
 }
 

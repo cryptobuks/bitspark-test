@@ -37,6 +37,7 @@ export default {
   watch: {
     user: function () {
       this.$store.dispatch('fetchUserInfo')
+      this.$store.dispatch('fetchTransactions')
     }
   }
 }

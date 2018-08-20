@@ -20,16 +20,8 @@ export default {
     Transaction,
     FabButton
   },
-  data () {
-    return {
-      transactions: {}
-    }
-  },
-  created () {
-    this.transactions = this.getTransactions()
-  },
-  methods: {
-    ...mapGetters(['getTransactions'])
+  computed: {
+    ...mapGetters(['transactions'])
   }
 }
 </script>
