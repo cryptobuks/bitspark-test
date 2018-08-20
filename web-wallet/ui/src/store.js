@@ -147,15 +147,25 @@ const actions = {
       })
       .then(payload => commit('setInvoicePayload', { invoice, payload }))
   },
-  processPayment ({ commit, getters: { api } }, invoice) {
+  processInvoicePayment ({ commit, getters: { api } }, invoice) {
     commit('startInvoicePayment', invoice)
-    api.payInvoice(invoice)
+    api.processPayment({invoice})
       .catch(e => {
         commit('apiError', e)
         return e
       })
       .then(paymentResult => {
         commit('setInvoicePaymentResult', { invoice, paymentResult })
+      })
+  },
+  processToEmailPayment ({ commit, getters: { api } }, payment) {
+    api.processPayment(payment)
+      .catch(e => {
+        commit('apiError', e)
+        return e
+      })
+      .then(paymentResult => {
+        console.log('ToEmail payment done.', paymentResult)
       })
   },
   createPayment ({ commit }, payment) {

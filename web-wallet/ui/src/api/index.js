@@ -1,3 +1,5 @@
+const BASE_URL = '/api'
+
 export function NotAuthorizedError (message) {
   this.message = message
   this.name = 'NotAuthorizedError'
@@ -21,7 +23,7 @@ export class API {
   }
 
   getWalletInfo () {
-    return fetch('/api/wallet', {
+    return fetch(BASE_URL + '/wallet', {
       headers: new Headers({
         'Authorization': 'Bearer ' + this.accessToken,
         'Content-Type': 'application/json'
@@ -31,7 +33,7 @@ export class API {
   }
 
   getTransactions () {
-    return fetch('/api/wallet/transactions', {
+    return fetch(BASE_URL + '/wallet/transactions', {
       headers: new Headers({
         'Authorization': 'Bearer ' + this.accessToken,
         'Content-Type': 'application/json'
@@ -41,16 +43,14 @@ export class API {
       .then(r => r.data)
   }
 
-  payInvoice (invoice) {
-    return fetch('/api/wallet/transactions', {
+  processPayment (payment) {
+    return fetch(BASE_URL + '/wallet/transactions', {
       method: 'POST',
       cache: 'no-cache',
       mode: 'cors',
-      body: JSON.stringify({
-        invoice: invoice
-      }),
+      body: JSON.stringify(payment),
       headers: new Headers({
-        'Authorization': 'Bearer ' + this.accessToken,
+        Authorization: 'Bearer ' + this.accessToken,
         'Content-Type': 'application/json'
       })
     })
@@ -65,7 +65,7 @@ export class API {
   }
 
   getInvoiceInfo (invoice) {
-    return fetch('/api/wallet/invoice/' + invoice, {
+    return fetch(BASE_URL + '/wallet/invoice/' + invoice, {
       headers: new Headers({
         'Authorization': 'Bearer ' + this.accessToken,
         'Content-Type': 'application/json'
