@@ -7,19 +7,19 @@
         <v-icon>close</v-icon>
       </v-btn>
 
-      <router-link to="send" tag="div" class="bi-menuitem-container">
+      <router-link to="send" v-if="featureToggles.paymentToEmail" tag="div" class="bi-menuitem-container">
         <span class="bi-menuitem-desc charcoalGrey--text">Send/Pay</span>
         <v-btn fab dark small color="blue" class="bi-fab-menu-button">
           <v-icon class="bi-icon-send">arrow_upward</v-icon>
         </v-btn>
       </router-link>
-      <div class="bi-menuitem-container">
+      <div v-if="featureToggles.qrScan" class="bi-menuitem-container">
         <span class="bi-menuitem-desc charcoalGrey--text">Scan QR Code</span>
         <v-btn fab dark small color="grey" class="bi-fab-menu-button">
           <v-icon class="bi-icon-recieve">arrow_upward</v-icon>
         </v-btn>
       </div>
-      <div class="bi-menuitem-container">
+      <div v-if="featureToggles.recieve" class="bi-menuitem-container">
         <span class="bi-menuitem-desc charcoalGrey--text">Recieve/Deposit</span>
         <v-btn fab dark small color="green" class="bi-fab-menu-button">
           <v-icon class="bi-icon-recieve">arrow_upward</v-icon>
@@ -41,7 +41,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['user'])
+    ...mapGetters(['user', 'featureToggles'])
   },
   methods: {
     handleOnCLick () {

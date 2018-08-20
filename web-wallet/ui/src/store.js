@@ -6,7 +6,10 @@ import { API, NotAuthorizedError } from './api'
 
 Vue.use(Vuex)
 
+var stringifiedFeatureToggles = localStorage.getItem('featureToggles')
+
 const state = {
+  featureToggles: stringifiedFeatureToggles ? JSON.parse(stringifiedFeatureToggles) : {},
   user: undefined, // currently authorized user
   accessToken: undefined,
   returnTo: undefined,
@@ -175,6 +178,7 @@ const actions = {
 
 const getters = {
   api: state => new API(state.accessToken),
+  featureToggles: state => state.featureToggles,
   accessToken: state => state.accessToken,
   user: state => state.user,
   balance: state => state.wallet && state.wallet.balance,
