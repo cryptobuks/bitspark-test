@@ -36,6 +36,7 @@ services:
       - PAY_WALLET_URL=${PAY_WALLET_URL:-https://testwallet.biluminate.com}
       - CANTEEN_LND_REST_URL=${CANTEEN_LND_REST_URL}
       - CANTEEN_LND_REST_MACAROON=${CANTEEN_LND_REST_MACAROON}
+      - WALLET_MAILGUN_API_KEY=${WALLET_MAILGUN_API_KEY}
 
   proxy:
     image: abiosoft/caddy
