@@ -60,7 +60,7 @@
                     <v-btn flat color="grey lighten-2" to="/">Cancel</v-btn>
                   </v-flex>
                   <v-flex xs6 text-xs-left>
-                    <v-btn flat color="primary" v-on:click="processPayment(invoice)"><v-icon left class="mr-2">mdi-check-circle</v-icon>Confirm</v-btn>
+                    <v-btn flat color="primary" v-on:click="processInvoicePayment(invoice)"><v-icon left class="mr-2">mdi-check-circle</v-icon>Confirm</v-btn>
                   </v-flex>
                 </v-layout>
               </v-footer>
@@ -139,7 +139,7 @@ export default {
     this.displayInvoice(this.invoice)
   },
   methods: {
-    ...mapActions(['displayInvoice', 'processPayment']),
+    ...mapActions(['displayInvoice', 'processInvoicePayment']),
     successOk: function () {
       this.$router.push('/')
     }

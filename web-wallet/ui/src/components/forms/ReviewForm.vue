@@ -67,7 +67,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['processPayment']),
+    ...mapActions(['processToEmailPayment']),
     handleSendClick () {
       var payment = {
         to_email: this.payment.sendTo,
@@ -76,7 +76,7 @@ export default {
         expires_after: this.payment.expiresAfter
       }
       console.log(payment)
-      this.processPayment(payment)
+      this.processToEmailPayment(payment)
     }
   }
 }

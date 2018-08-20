@@ -1,4 +1,6 @@
 defmodule Wallet.WalletsTest do
+  import AssertValue
+  import Utils, only: [canonicalize: 1]
   use Wallet.DataCase
 
   alias Wallet.Accounts
@@ -77,8 +79,8 @@ defmodule Wallet.WalletsTest do
     @update_attrs %{state: "approved", description: "some updated description", invoice: "some updated invoice", msatoshi: 43}
     @invalid_attrs %{state: nil, description: nil, invoice: nil, msatoshi: nil}
 
-    def create_wallet() do
-      {:ok, user} = Accounts.create_user(%{sub: "xyz"})
+    def create_wallet(sub \\ "xyz") do
+      {:ok, user} = Accounts.create_user(%{sub: sub})
       {:ok, wallet} = Wallets.create_wallet(%{user_id: user.id})
       wallet
     end
@@ -135,6 +137,137 @@ defmodule Wallet.WalletsTest do
     test "change_transaction/1 returns a transaction changeset" do
       transaction = transaction_fixture()
       assert %Ecto.Changeset{} = Wallets.change_transaction(transaction)
+    end
+  end
+
+  describe "wallet - claimable transactions" do
+    def claimable_trn_fixture(attrs \\ %{}) do
+      wallet = create_wallet("claimable_trn_fixture")
+      Wallets.create_funding_transaction(wallet)
+
+      %Wallets.Transaction{} = Wallets.create_claimable_transaction!(
+        wallet,
+        amount: Map.get(attrs, :amount, {1, :satoshi}),
+        description: Map.get(attrs, :description, "foo"),
+        expires_after: Map.get(attrs, :expires_after, 60)
+      )
+    end
+
+    test "create_claimable_transaction!/2 with valid data creates a transaction with token" do
+      wallet = create_wallet()
+      Wallets.create_funding_transaction(wallet)
+
+      assert %Wallets.Transaction{} = transaction = Wallets.create_claimable_transaction!(
+        wallet, amount: {1, :satoshi}, description: "foo")
+
+      assert_value canonicalize(transaction) == %{
+                     claim_expires_at: "<NAIVEDATETIME>",
+                     claim_token: "<UUID>",
+                     claimed_by: nil,
+                     description: "foo",
+                     id: "<UUID>",
+                     inserted_at: "<NAIVEDATETIME>",
+                     invoice: nil,
+                     msatoshi: -1000,
+                     processed_at: nil,
+                     response: nil,
+                     src_transaction_id: nil,
+                     state: "initial",
+                     updated_at: "<NAIVEDATETIME>",
+                     wallet_id: "<UUID>"
+                   }
+    end
+
+    test "create_claimable_transaction!/2 fails if wallet doesn't have enough funds" do
+      wallet = create_wallet()
+      Wallets.create_funding_transaction(wallet, amount: {1000, :msatoshi})
+      src_trn = Wallets.create_claimable_transaction!(wallet, amount: {1001, :msatoshi}, description: "foo")
+
+      # It should be declined
+      assert_value canonicalize(src_trn |> Map.take([:state, :response])) == %{response: "NSF", state: "declined"}
+      assert_value canonicalize(Wallets.get_wallet!(wallet.id) |> Map.take([:balance])) == %{balance: 1000}
+
+      # And not claimable
+      dst_wallet = create_wallet("dst")
+      assert_raise RuntimeError, "Can't claim this transaction", fn ->
+        Wallets.claim_transaction!(dst_wallet, src_trn.claim_token)
+      end
+      assert_value canonicalize(Wallets.get_wallet!(dst_wallet.id) |> Map.take([:balance])) == %{balance: 0}
+    end
+
+    test "claimable transaction should be claimable" do
+      src_wallet = create_wallet("sub1")
+      Wallets.create_funding_transaction(src_wallet, amount: {1000, :msatoshi})
+
+      # Source transaction
+      src_trn = Wallets.create_claimable_transaction!(
+        src_wallet, amount: {1000, :msatoshi}, description: "foo")
+
+      # Claim
+      dst_wallet = create_wallet("sub2")
+      dst_trn = Wallets.claim_transaction!(dst_wallet, src_trn.claim_token)
+
+      # Wallet balances are updated correctly
+      assert_value canonicalize(Wallets.get_wallet!(src_wallet.id) |> Map.take([:balance])) == %{balance: 0}
+      assert_value canonicalize(Wallets.get_wallet!(dst_wallet.id) |> Map.take([:balance])) == %{balance: 1000}
+
+      src_trn_after = Wallets.get_transaction!(src_trn.id)
+      assert_value canonicalize(src_trn_after |> Map.take([:claimed_by, :processed_at, :state])) == %{claimed_by: "<UUID>", processed_at: "<NAIVEDATETIME>", state: "approved"}
+      assert src_trn_after.claimed_by == dst_trn.id
+
+      assert_value (canonicalize(dst_trn) |> Map.take([:description, :processed_at, :state, :msatoshi, :src_transaction_id])) == %{
+        description: "foo",
+        msatoshi: 1000,
+        processed_at: "<NAIVEDATETIME>",
+        src_transaction_id: "<UUID>",
+        state: "approved"
+      }
+
+    end
+
+    test "claimable transaction should be only claimed once" do
+      # Source transaction
+      src_trn = claimable_trn_fixture(%{amount: {1000, :msatoshi}, description: "foo"})
+
+      # Claim
+      dst_wallet = create_wallet("dst")
+      Wallets.claim_transaction!(dst_wallet, src_trn.claim_token)
+
+      # Claim #2
+      assert_raise RuntimeError, "Can't claim this transaction", fn ->
+        Wallets.claim_transaction!(dst_wallet, src_trn.claim_token)
+      end
+    end
+
+    test "claimable transaction isn't claimable after it expires" do
+      # Source transaction (expired)
+      src_trn = claimable_trn_fixture(%{expires_after: 0})
+
+      # Claim
+      dst_wallet = create_wallet("dst")
+      assert_raise RuntimeError, "Can't claim this transaction", fn ->
+        Wallets.claim_transaction!(dst_wallet, src_trn.claim_token)
+      end
+
+      # Source transaction should be declined now
+      src_trn_after = Wallets.get_transaction!(src_trn.id)
+      assert_value canonicalize(src_trn_after) == %{
+                     claim_expires_at: "<NAIVEDATETIME>",
+                     claim_token: "<UUID>",
+                     claimed_by: nil,
+                     description: "foo",
+                     id: "<UUID>",
+                     inserted_at: "<NAIVEDATETIME>",
+                     invoice: nil,
+                     msatoshi: -1000,
+                     processed_at: "<NAIVEDATETIME>",
+                     response: "Expired",
+                     src_transaction_id: nil,
+                     state: "declined",
+                     updated_at: "<NAIVEDATETIME>",
+                     wallet_id: "<UUID>"
+                   }
+      assert src_trn.claim_expires_at == src_trn_after.processed_at
     end
   end
 end

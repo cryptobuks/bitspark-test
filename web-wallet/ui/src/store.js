@@ -6,7 +6,10 @@ import { API, NotAuthorizedError } from './api'
 
 Vue.use(Vuex)
 
+var stringifiedFeatureToggles = localStorage.getItem('featureToggles')
+
 const state = {
+  featureToggles: stringifiedFeatureToggles ? JSON.parse(stringifiedFeatureToggles) : {},
   user: undefined, // currently authorized user
   accessToken: undefined,
   returnTo: undefined,
@@ -147,15 +150,25 @@ const actions = {
       })
       .then(payload => commit('setInvoicePayload', { invoice, payload }))
   },
-  processPayment ({ commit, getters: { api } }, invoice) {
+  processInvoicePayment ({ commit, getters: { api } }, invoice) {
     commit('startInvoicePayment', invoice)
-    api.payInvoice(invoice)
+    api.processPayment({invoice})
       .catch(e => {
         commit('apiError', e)
         return e
       })
       .then(paymentResult => {
         commit('setInvoicePaymentResult', { invoice, paymentResult })
+      })
+  },
+  processToEmailPayment ({ commit, getters: { api } }, payment) {
+    api.processPayment(payment)
+      .catch(e => {
+        commit('apiError', e)
+        return e
+      })
+      .then(paymentResult => {
+        console.log('ToEmail payment done.', paymentResult)
       })
   },
   createPayment ({ commit }, payment) {
@@ -165,6 +178,7 @@ const actions = {
 
 const getters = {
   api: state => new API(state.accessToken),
+  featureToggles: state => state.featureToggles,
   accessToken: state => state.accessToken,
   user: state => state.user,
   balance: state => state.wallet && state.wallet.balance,

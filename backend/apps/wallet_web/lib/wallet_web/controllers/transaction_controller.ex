@@ -37,6 +37,39 @@ defmodule WalletWeb.TransactionController do
     end
   end
 
+  # Email transaction
+  def create(conn, %{"to_email" => to_email, "msatoshi" => msatoshi, "description" => description, "expires_after" => expires_after}) do
+    user = Accounts.login!(conn.assigns.joken_claims["sub"])
+    wallet = Wallets.get_or_create_wallet!(user)
+
+
+    with %Transaction{} = transaction <- Wallets.create_claimable_transaction!(
+           wallet,
+           to_email: to_email,
+           amount: {msatoshi, :msatoshi},
+           expires_after: expires_after,
+           description: description
+         ) do
+      conn
+      |> put_status(:created)
+      |> put_resp_header("location", transaction_path(conn, :show, transaction))
+      |> render("show.json", transaction: transaction)
+    end
+  end
+
+  # Claim transaction
+  def create(conn, %{"claim_token" => claim_token}) do
+    user = Accounts.login!(conn.assigns.joken_claims["sub"])
+    wallet = Wallets.get_or_create_wallet!(user)
+
+    with %Transaction{} = transaction <- Wallets.claim_transaction!(wallet, claim_token) do
+      conn
+      |> put_status(:created)
+      |> put_resp_header("location", transaction_path(conn, :show, transaction))
+      |> render("show.json", transaction: transaction)
+    end
+  end
+
   def show(conn, %{"id" => id}) do
     transaction = Wallets.get_transaction!(id)
     render(conn, "show.json", transaction: transaction)
