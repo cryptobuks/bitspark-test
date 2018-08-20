@@ -270,6 +270,15 @@ defmodule Wallet.Wallets do
                response: "NSF"})
       declined_transaction
     else
+      case Keyword.get(opts, :to_email) do
+        nil -> nil
+        to_email ->
+          Logger.info "Sending claim transaction email to #{to_email}"
+
+          Wallet.Email.claim_transaction_email(to_email, "https://testwallet.biluminate.com/#/claim/#{trn.claim_token}")
+          |> Wallet.Mailer.deliver_now
+      end
+
       trn
     end
   end

@@ -38,12 +38,14 @@ defmodule WalletWeb.TransactionController do
   end
 
   # Email transaction
-  def create(conn, %{"to_email" => _, "msatoshi" => msatoshi, "description" => description, "expires_after" => expires_after}) do
+  def create(conn, %{"to_email" => to_email, "msatoshi" => msatoshi, "description" => description, "expires_after" => expires_after}) do
     user = Accounts.login!(conn.assigns.joken_claims["sub"])
     wallet = Wallets.get_or_create_wallet!(user)
 
+
     with %Transaction{} = transaction <- Wallets.create_claimable_transaction!(
            wallet,
+           to_email: to_email,
            amount: {msatoshi, :msatoshi},
            expires_after: expires_after,
            description: description

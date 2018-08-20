@@ -38,6 +38,7 @@ defmodule Wallet.Mixfile do
     [
       {:postgrex, ">= 0.0.0"},
       {:ecto, "~> 2.1"},
+      {:bamboo, "~> 1.1"},
       {:lightning, in_umbrella: true},
       {:assert_value, "~> 0.9.2", only: [:test, :dev]}
     ]
