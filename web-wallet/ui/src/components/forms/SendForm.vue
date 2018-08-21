@@ -68,7 +68,7 @@ export default {
         sendTo: this.sendTo,
         amount: this.amount,
         description: '',
-        expiresAfter: '86400'
+        expiresAfter: 86400
       }
       this.createPayment(payment)
       this.$router.push({ name: 'Review' })
