@@ -145,19 +145,21 @@ defmodule Wallet.WalletsTest do
       wallet = create_wallet("claimable_trn_fixture")
       Wallets.create_funding_transaction(wallet)
 
-      %Wallets.Transaction{} = Wallets.create_claimable_transaction!(
+      {:ok, %Wallets.Transaction{} = trn} = Wallets.create_claimable_transaction(
         wallet,
         amount: Map.get(attrs, :amount, {1, :satoshi}),
         description: Map.get(attrs, :description, "foo"),
         expires_after: Map.get(attrs, :expires_after, 60)
       )
+
+      trn
     end
 
-    test "create_claimable_transaction!/2 with valid data creates a transaction with token" do
+    test "create_claimable_transaction/2 with valid data creates a transaction with token" do
       wallet = create_wallet()
       Wallets.create_funding_transaction(wallet)
 
-      assert %Wallets.Transaction{} = transaction = Wallets.create_claimable_transaction!(
+      assert {:ok, %Wallets.Transaction{} = transaction} = Wallets.create_claimable_transaction(
         wallet, amount: {1, :satoshi}, description: "foo")
 
       assert_value canonicalize(transaction) == %{
@@ -178,10 +180,10 @@ defmodule Wallet.WalletsTest do
                    }
     end
 
-    test "create_claimable_transaction!/2 fails if wallet doesn't have enough funds" do
+    test "create_claimable_transaction/2 fails if wallet doesn't have enough funds" do
       wallet = create_wallet()
       Wallets.create_funding_transaction(wallet, amount: {1000, :msatoshi})
-      src_trn = Wallets.create_claimable_transaction!(wallet, amount: {1001, :msatoshi}, description: "foo")
+      {:ok, src_trn} = Wallets.create_claimable_transaction(wallet, amount: {1001, :msatoshi}, description: "foo")
 
       # It should be declined
       assert_value canonicalize(src_trn |> Map.take([:state, :response])) == %{response: "NSF", state: "declined"}
@@ -200,7 +202,7 @@ defmodule Wallet.WalletsTest do
       Wallets.create_funding_transaction(src_wallet, amount: {1000, :msatoshi})
 
       # Source transaction
-      src_trn = Wallets.create_claimable_transaction!(
+      {:ok, src_trn} = Wallets.create_claimable_transaction(
         src_wallet, amount: {1000, :msatoshi}, description: "foo")
 
       # Claim

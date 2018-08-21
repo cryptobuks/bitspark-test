@@ -42,8 +42,7 @@ defmodule WalletWeb.TransactionController do
     user = Accounts.login!(conn.assigns.joken_claims["sub"])
     wallet = Wallets.get_or_create_wallet!(user)
 
-
-    with %Transaction{} = transaction <- Wallets.create_claimable_transaction!(
+    with {:ok, %Transaction{} = transaction} <- Wallets.create_claimable_transaction(
            wallet,
            to_email: to_email,
            amount: {msatoshi, :msatoshi},

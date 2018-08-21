@@ -226,6 +226,20 @@ defmodule Wallet.Wallets do
     |> Repo.insert()
   end
 
+  def enforce_sufficient_balance(wallet, trn) do
+    %{balance: balance} = get_wallet!(wallet.id)
+
+    if balance >= 0 do
+      {:ok, balance}
+    else
+      {:ok, declined_transaction} = update_transaction(
+        trn, %{processed_at: NaiveDateTime.utc_now,
+               state: Wallets.Transaction.declined,
+               response: "NSF"})
+      {:error, :nsf, declined_transaction}
+    end
+  end
+
   @doc """
   Create transaction claimable by providing claim token.
 
@@ -236,50 +250,43 @@ defmodule Wallet.Wallets do
 
   ## Examples
 
-      iex> create_claimable_transaction!(wallet, amount: {10, :satoshi}, expires_after: 86400, description: "Hello")
+      iex> create_claimable_transaction(wallet, amount: {10, :satoshi}, expires_after: 86400, description: "Hello")
       %Transaction{}
 
   """
-  def create_claimable_transaction!(%Wallets.Wallet{} = wallet, opts \\ []) do
-    msatoshi = Bitcoin.to_msatoshi(Keyword.get(opts, :amount))
-    if msatoshi < 0 do
-      raise ArgumentError, message: "Amount has to be positive"
-    end
+  def create_claimable_transaction(%Wallets.Wallet{} = wallet, opts \\ []) do
+    amount = Keyword.get(opts, :amount)
     expires_after = Keyword.get(opts, :expires_after, 86400)
 
-    attrs = %{
-      wallet_id: wallet.id,
-      # TODO: Localization
-      description: Keyword.get(opts, :description),
-      claim_token: Ecto.UUID.generate,
-      claim_expires_at: NaiveDateTime.utc_now |> NaiveDateTime.add(expires_after, :second),
-      msatoshi: -msatoshi,
-      state: Wallets.Transaction.initial
-    }
-    {:ok, trn} = %Wallets.Transaction{}
-    |> Wallets.Transaction.changeset(attrs)
-    |> Repo.insert()
+    with :ok <- Bitcoin.validate_amount(amount),
+         :ok <- Bitcoin.is_positive_amount(amount),
+         msatoshi <- Bitcoin.to_msatoshi(amount),
+         {:ok, trn} <- create_transaction(%{
+                  wallet_id: wallet.id,
+                  description: Keyword.get(opts, :description),
+                  claim_token: Ecto.UUID.generate,
+                  claim_expires_at: NaiveDateTime.utc_now |> NaiveDateTime.add(expires_after, :second),
+                  msatoshi: -msatoshi,
+                  state: Wallets.Transaction.initial
+         }),
+         {:ok, _} <- enforce_sufficient_balance(wallet, trn)
+      do
+        case Keyword.get(opts, :to_email) do
+          nil -> nil
+          to_email ->
+            Logger.info "Sending claim transaction email to #{to_email}"
 
-    # check balance
-    %{balance: balance} = get_wallet!(wallet.id)
+            Wallet.Email.claim_transaction_email(to_email, "https://testwallet.biluminate.com/#/claim/#{trn.claim_token}")
+            |> Wallet.Mailer.deliver_now
+        end
 
-    if balance < 0 do
-      {:ok, declined_transaction} = update_transaction(
-        trn, %{processed_at: NaiveDateTime.utc_now,
-               state: Wallets.Transaction.declined,
-               response: "NSF"})
-      declined_transaction
-    else
-      case Keyword.get(opts, :to_email) do
-        nil -> nil
-        to_email ->
-          Logger.info "Sending claim transaction email to #{to_email}"
-
-          Wallet.Email.claim_transaction_email(to_email, "https://testwallet.biluminate.com/#/claim/#{trn.claim_token}")
-          |> Wallet.Mailer.deliver_now
-      end
-
-      trn
+        {:ok, trn}
+      else
+        {:error, :nsf, %Wallets.Transaction{} = declined_transaction} ->
+          {:ok, declined_transaction}
+        error ->
+          Logger.error "Failed to create claimable transaction"
+          error
     end
   end
 
