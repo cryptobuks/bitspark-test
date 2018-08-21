@@ -45,6 +45,7 @@ export default {
 }
 .transaction-info h2 {
   font-size: 17px;
+  font-weight: bold !important;
   color: #545555;
   font-weight: normal;
 }

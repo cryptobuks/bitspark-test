@@ -50,21 +50,18 @@ html {
 body {
   margin: 0;
 }
-
 #app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  font-family: 'Lato', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #9b9b9b;
   letter-spacing: 0.7px;
   background-color: #fff;
 }
-
 main {
   text-align: center;
   margin-top: 40px;
 }
-
 header {
   margin: 0;
   height: 56px;
@@ -72,7 +69,6 @@ header {
   background-color: #35495e;
   color: #ffffff;
 }
-
 header span {
   display: block;
   position: relative;
@@ -83,13 +79,11 @@ header span {
   box-sizing: border-box;
   padding-top: 16px;
 }
-
 p {
   font-size: 12px;
   letter-spacing: 0.8px;
   text-transform: uppercase;
 }
-
 a {
   text-decoration: none;
   color: #ccc !important;
