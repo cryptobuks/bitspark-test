@@ -226,6 +226,20 @@ defmodule Wallet.Wallets do
     |> Repo.insert()
   end
 
+  def enforce_sufficient_balance(wallet, trn) do
+    %{balance: balance} = get_wallet!(wallet.id)
+
+    if balance >= 0 do
+      {:ok, balance}
+    else
+      {:ok, declined_transaction} = update_transaction(
+        trn, %{processed_at: NaiveDateTime.utc_now,
+               state: Wallets.Transaction.declined,
+               response: "NSF"})
+      {:error, declined_transaction}
+    end
+  end
+
   @doc """
   Create transaction claimable by providing claim token.
 
@@ -260,26 +274,20 @@ defmodule Wallet.Wallets do
     |> Wallets.Transaction.changeset(attrs)
     |> Repo.insert()
 
-    # check balance
-    %{balance: balance} = get_wallet!(wallet.id)
+    case enforce_sufficient_balance(wallet, trn) do
+      {:ok, _balance} ->
+        case Keyword.get(opts, :to_email) do
+          nil -> nil
+          to_email ->
+            Logger.info "Sending claim transaction email to #{to_email}"
 
-    if balance < 0 do
-      {:ok, declined_transaction} = update_transaction(
-        trn, %{processed_at: NaiveDateTime.utc_now,
-               state: Wallets.Transaction.declined,
-               response: "NSF"})
-      declined_transaction
-    else
-      case Keyword.get(opts, :to_email) do
-        nil -> nil
-        to_email ->
-          Logger.info "Sending claim transaction email to #{to_email}"
+            Wallet.Email.claim_transaction_email(to_email, "https://testwallet.biluminate.com/#/claim/#{trn.claim_token}")
+            |> Wallet.Mailer.deliver_now
+        end
 
-          Wallet.Email.claim_transaction_email(to_email, "https://testwallet.biluminate.com/#/claim/#{trn.claim_token}")
-          |> Wallet.Mailer.deliver_now
-      end
-
-      trn
+        trn
+      {:error, declined_transaction} ->
+        declined_transaction
     end
   end
 
