@@ -250,11 +250,11 @@ defmodule Wallet.Wallets do
 
   ## Examples
 
-      iex> create_claimable_transaction!(wallet, amount: {10, :satoshi}, expires_after: 86400, description: "Hello")
+      iex> create_claimable_transaction(wallet, amount: {10, :satoshi}, expires_after: 86400, description: "Hello")
       %Transaction{}
 
   """
-  def create_claimable_transaction!(%Wallets.Wallet{} = wallet, opts \\ []) do
+  def create_claimable_transaction(%Wallets.Wallet{} = wallet, opts \\ []) do
     amount = Keyword.get(opts, :amount)
     expires_after = Keyword.get(opts, :expires_after, 86400)
 
@@ -280,16 +280,13 @@ defmodule Wallet.Wallets do
             |> Wallet.Mailer.deliver_now
         end
 
-        trn
+        {:ok, trn}
       else
         {:error, :nsf, %Wallets.Transaction{} = declined_transaction} ->
-          declined_transaction
-        {:error, message} when is_bitstring(message) ->
-          Logger.error "Failed to create claimable transaction: #{message}"
-          raise message
+          {:ok, declined_transaction}
         error ->
-          Logger.error "Failed to create claimable transaction: #{error}"
-          raise "Failed to create claimable transaction"
+          Logger.error "Failed to create claimable transaction"
+          error
     end
   end
 
