@@ -61,20 +61,10 @@ export default {
 }
 </script>
  
-<style>
+<style scoped>
 .bi-carousel {
   height: 200px;
   box-shadow: none;
-}
-.carousel__controls {
-  background: none;
-}
-.bi-carousel .btn--icon.btn--small {
-  width: 5px;
-  height: 5px;
-}
-.bi-carousel .btn--icon.btn--small i {
-  font-size: 13px !important;
 }
 .carousel-img {
   width: 63px;
@@ -88,3 +78,17 @@ export default {
   text-transform: none;
 }
 </style>
+
+<style>
+/* Vuetify overrides */
+.bi-carousel .carousel__controls {
+  background: none !important;
+}
+.bi-carousel button.btn--icon.btn--small {
+  width: 5px !important;
+  height: 5px !important;
+}
+.bi-carousel button.btn--icon.btn--small i {
+  font-size: 13px !important;
+}
+</style> 

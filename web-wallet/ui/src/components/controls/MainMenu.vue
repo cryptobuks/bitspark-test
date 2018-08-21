@@ -8,7 +8,7 @@
       </v-btn>
 
       <v-toolbar-title v-if="!(this.routesWithoutMenu.indexOf($route.name) > -1)">
-        <img class="logo" alt="Biluminate" src="/static/img/biluminate-logo.svg">
+        <img class="bi-logo" alt="Biluminate" src="/static/img/biluminate-logo.svg">
       </v-toolbar-title>
       <v-toolbar-title v-if="this.routesWithoutMenu.indexOf($route.name) > -1" class="bi-central-heading">
         <h1>{{ heading }}</h1>
@@ -117,58 +117,27 @@ export default {
 }
 </script>
 
-<style>
-.toolbar {
-  background: linear-gradient(90deg, #2e3654 0%, #2e3654 50%, #584062 100%);
-}
+<style scoped>
 .bi-bigger-toolbar {
   height: 88px;
 }
-.logo {
+.bi-logo {
   width: 180px;
 }
-
 .bi-central-heading {
   width: 100%;
   text-align: center;
   margin-left: -40px;
 }
-.bi-central-heading h1{
+.bi-central-heading h1 {
   font-size: 13px;
   font-weight: normal;
   text-transform: uppercase;
 }
-
-.tabs,
-.tabs__bar {
-  background-color: transparent !important;
-}
-.toolbar__content > .btn:first-child {
-  margin-left: 17px;
-}
-
 .bi-tabs {
   max-width: 500px;
   margin: auto;
 }
-.tabs span {
-  font-size: 11px;
-  min-width: 80px;
-}
-.tabs__item {
-  opacity: 1 !important;
-}
-.tabs__item:hover span {
-  transition: color 0.3s;
-  color: #fff !important;
-}
-.tabs__item--active span {
-  color: #fff !important;
-}
-.tabs__slider {
-  height: 4px;
-}
-
 .bi-navigation-drawer {
   background-color: #282b3d !important;
   overflow-y: hidden;
@@ -194,10 +163,6 @@ export default {
     #584062 100%
   ) !important;
 }
-.bi-list-tile:hover i,
-.bi-list-tile:hover .bi-list-tile-title {
-  color: #fff !important;
-}
 .bi-name {
   font-size: 13px;
   letter-spacing: 0.8px;
@@ -211,21 +176,61 @@ export default {
   font-size: 12px;
   text-transform: uppercase;
 }
+</style>
+
+<style>
+/* Vuetify overrides */
+.toolbar {
+  background: linear-gradient(
+    90deg,
+    #2e3654 0%,
+    #2e3654 50%,
+    #584062 100%
+  ) !important;
+}
+.tabs span {
+  font-size: 11px !important;
+  min-width: 80px !important;
+}
+.tabs__item {
+  opacity: 1 !important;
+}
+.tabs__item:hover span {
+  transition: color 0.3s;
+  color: #fff !important;
+}
+.tabs__item--active span {
+  color: #fff !important;
+}
+.tabs__slider {
+  height: 4px !important;
+}
+.tabs,
+.tabs__bar {
+  background-color: transparent !important;
+}
+.toolbar__content > .btn:first-child {
+  margin-left: 17px !important;
+}
 .list__tile--link:hover {
   background: none !important;
 }
+.bi-list-tile:hover i,
+.bi-list-tile:hover .bi-list-tile-title {
+  color: #fff !important;
+}
 @media (min-width: 1264px) {
   .tabs span {
-    font-size: 12px;
+    font-size: 12px !important;
   }
   .toolbar {
-    height: 89px;
+    height: 89px !important;
   }
   .toolbar__content {
     height: 89px !important;
   }
   .toolbar__extension {
-    margin-top: -47px;
+    margin-top: -47px !important;
   }
 }
 </style>

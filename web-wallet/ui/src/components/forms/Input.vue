@@ -29,12 +29,6 @@ export default {
 </script>
 
 <style focused>
-.input-group__details {
-  display: none;
-}
-.input-group {
-  padding: 0;
-}
 .bi-input-label {
   font-size: 17px;
   margin: 2px 10px 0px 10px;
@@ -44,13 +38,23 @@ export default {
   margin-top: 35px;
   border-bottom: 1px solid #434350;
 }
+</style>
+
+<style>
+/* Vuetify overrides */
+.input-group__details {
+  display: none !important;
+}
+.input-group {
+  padding: 0 !important;
+}
 .bi-input-container input {
-  margin-bottom: 4px;
-  text-align: right;
+  margin-bottom: 4px !important;
+  text-align: right !important;
 }
 .bi-input-container i {
-  margin-top: 8px;
-  margin-left: 10px;
+  margin-top: 8px !important;
+  margin-left: 10px !important;
   font-size: 13px !important;
 }
 </style>

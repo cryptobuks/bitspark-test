@@ -45,7 +45,7 @@ export default {
 
 <style>
 html {
-  overflow-y: auto;
+  overflow-y: auto !important;
 }
 body {
   margin: 0;
@@ -110,13 +110,13 @@ a:hover {
   width: 100%;
 }
 .bi-container {
-  margin: 0;
-  padding: 0;
-  margin-top: 89px;
+  margin: 0 !important;
+  padding: 0 !important;
+  margin-top: 89px !important;
 }
 @media (max-width: 1264px) {
   .bi-container {
-    margin-top: 104px;
+    margin-top: 104px !important;
   }
 }
 </style>

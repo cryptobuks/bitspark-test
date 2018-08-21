@@ -26,7 +26,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .bi-login-button {
   height: 56px;
   position: absolute;

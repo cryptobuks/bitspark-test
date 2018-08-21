@@ -51,10 +51,7 @@ export default {
 }
 </script>
 
-<style>
-.speed-dial {
-  z-index: 4;
-}
+<style scoped>
 .btn--bottom.btn--absolute {
   bottom: 16px;
 }
@@ -99,5 +96,12 @@ export default {
   bottom: 0;
   background: #000;
   opacity: 0.5;
+}
+</style>
+
+<style>
+/* Vuetify overrides */
+.speed-dial {
+  z-index: 4 !important;
 }
 </style>

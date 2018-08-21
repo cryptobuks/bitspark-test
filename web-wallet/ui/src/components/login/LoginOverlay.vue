@@ -3,8 +3,8 @@
     <v-container fluid>
       <v-layout align-center justify-center text-xs-center>
         <v-flex xs12 lg6 md6 class="bi-overlay-content">
-          <div class="logo-container">
-            <img class="logo-bigger" alt="Biluminate" src="/static/img/biluminate-logo-slogan.svg">
+          <div class="bi-logo-container">
+            <img class="bi-logo-bigger" alt="Biluminate" src="/static/img/biluminate-logo-slogan.svg">
           </div>
           <div class="bi-login-carousel">
             <LoginCarousel/>
@@ -29,7 +29,7 @@ export default {
 }
 </script>
  
-<style>
+<style scoped>
 .bi-overlay {
   position: absolute;
   top: 0;
@@ -42,13 +42,13 @@ export default {
   flex-direction: column;
   align-items: flex-end;
 }
-.logo-container {
+.bi-logo-container {
   margin-top: 100px;
 }
-.logo-bigger {
+.bi-logo-bigger {
   width: 221px;
 }
-.logo-container p {
+.bi-logo-container p {
   font-size: 10px;
   text-transform: uppercase;
   color: #fff;
@@ -60,10 +60,10 @@ export default {
 }
 
 @media (min-width: 960px) {
-  .logo-bigger {
+  .bi-logo-bigger {
     width: 296px;
   }
-  .logo-container p {
+  .bi-logo-container p {
     font-size: 14px;
   }
 } 
