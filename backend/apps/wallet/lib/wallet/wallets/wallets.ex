@@ -236,7 +236,7 @@ defmodule Wallet.Wallets do
         trn, %{processed_at: NaiveDateTime.utc_now,
                state: Wallets.Transaction.declined,
                response: "NSF"})
-      {:error, declined_transaction}
+      {:error, :nsf, declined_transaction}
     end
   end
 
@@ -255,27 +255,22 @@ defmodule Wallet.Wallets do
 
   """
   def create_claimable_transaction!(%Wallets.Wallet{} = wallet, opts \\ []) do
-    msatoshi = Bitcoin.to_msatoshi(Keyword.get(opts, :amount))
-    if msatoshi < 0 do
-      raise ArgumentError, message: "Amount has to be positive"
-    end
+    amount = Keyword.get(opts, :amount)
     expires_after = Keyword.get(opts, :expires_after, 86400)
 
-    attrs = %{
-      wallet_id: wallet.id,
-      # TODO: Localization
-      description: Keyword.get(opts, :description),
-      claim_token: Ecto.UUID.generate,
-      claim_expires_at: NaiveDateTime.utc_now |> NaiveDateTime.add(expires_after, :second),
-      msatoshi: -msatoshi,
-      state: Wallets.Transaction.initial
-    }
-    {:ok, trn} = %Wallets.Transaction{}
-    |> Wallets.Transaction.changeset(attrs)
-    |> Repo.insert()
-
-    case enforce_sufficient_balance(wallet, trn) do
-      {:ok, _balance} ->
+    with :ok <- Bitcoin.validate_amount(amount),
+         :ok <- Bitcoin.is_positive_amount(amount),
+         msatoshi <- Bitcoin.to_msatoshi(amount),
+         {:ok, trn} <- create_transaction(%{
+                  wallet_id: wallet.id,
+                  description: Keyword.get(opts, :description),
+                  claim_token: Ecto.UUID.generate,
+                  claim_expires_at: NaiveDateTime.utc_now |> NaiveDateTime.add(expires_after, :second),
+                  msatoshi: -msatoshi,
+                  state: Wallets.Transaction.initial
+         }),
+         {:ok, _} <- enforce_sufficient_balance(wallet, trn)
+      do
         case Keyword.get(opts, :to_email) do
           nil -> nil
           to_email ->
@@ -286,8 +281,15 @@ defmodule Wallet.Wallets do
         end
 
         trn
-      {:error, declined_transaction} ->
-        declined_transaction
+      else
+        {:error, :nsf, %Wallets.Transaction{} = declined_transaction} ->
+          declined_transaction
+        {:error, message} when is_bitstring(message) ->
+          Logger.error "Failed to create claimable transaction: #{message}"
+          raise message
+        error ->
+          Logger.error "Failed to create claimable transaction: #{error}"
+          raise "Failed to create claimable transaction"
     end
   end
 

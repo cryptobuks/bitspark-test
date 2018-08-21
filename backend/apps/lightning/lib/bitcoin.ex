@@ -1,6 +1,25 @@
 defmodule Bitcoin do
   alias Decimal, as: D
 
+  # Validations
+  def validate_amount({amount, unit}) do
+    max_btc = 2100000000000000
+    satoshi = to_satoshi({amount, unit})
+    if (satoshi > max_btc or satoshi < -max_btc) do
+      {:error, "Amount exceeds Bitcoin limit"}
+    else
+      :ok
+    end
+  end
+
+  def is_positive_amount({amount, _unit}) do
+    if amount > 0 do
+      :ok
+    else
+      {:error, "Non-positive amount given"}
+    end
+  end
+
   # Conversions
   def to_satoshi({amount, unit}) do
     D.div(to_msatoshi({amount, unit}), 1000) |> D.round |> D.to_integer
