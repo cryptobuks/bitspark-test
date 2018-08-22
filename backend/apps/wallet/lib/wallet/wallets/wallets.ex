@@ -168,21 +168,25 @@ defmodule Wallet.Wallets do
       ** (Ecto.NoResultsError)
 
   """
-  def get_transaction!(id), do: Repo.get!(Wallets.Transaction, id)
-
+  def get_transaction!(id), do: Repo.get!(Wallets.Transaction, id) |> postprocess_transaction
 
   @doc """
-  Gets a transaction for given claim token (makes sure that it respects expiration).
-
-  ## Example
-
-      iex> get_transaction_by_token!("a1b8bb02-9db5-4073-808f-e6fb62cab71b")
-      %Transaction{}
-
+  Try to determine transaction type by it's properties
   """
-  def get_transaction_by_token!(token) do
-    %Wallets.Transaction{} = trn = Repo.get_by(Wallets.Transaction, claim_token: token)
+  def get_transaction_type(%Wallets.Transaction{claim_token: value}) when value != nil, do: :claimable
+  def get_transaction_type(%Wallets.Transaction{invoice: value}) when value != nil, do: :lightning
+  def get_transaction_type(%Wallets.Transaction{}), do: :other
 
+  @doc """
+  Postprocess transaction before returning it to the user
+
+  E.g. expire claimable transactions
+  """
+  def postprocess_transaction(%Wallets.Transaction{} = trn) do
+    postprocess_transaction(trn, get_transaction_type(trn))
+  end
+
+  def postprocess_transaction(%Wallets.Transaction{} = trn, :claimable) do
     if NaiveDateTime.compare(trn.claim_expires_at, NaiveDateTime.utc_now) != :gt do
       {:ok, trn} = update_transaction(
         trn,
@@ -194,6 +198,25 @@ defmodule Wallet.Wallets do
     else
       trn
     end
+  end
+
+  def postprocess_transaction(%Wallets.Transaction{} = trn, _) do
+    trn
+  end
+
+  @doc """
+  Gets a transaction for given claim token (makes sure that it respects expiration).
+
+  ## Example
+
+      iex> get_transaction_by_token!("a1b8bb02-9db5-4073-808f-e6fb62cab71b")
+      %Transaction{}
+
+  """
+  def get_transaction_by_token!(token) do
+    %Wallets.Transaction{} =
+      Repo.get_by(Wallets.Transaction, claim_token: token)
+      |> postprocess_transaction
   end
 
   @doc """
