@@ -171,6 +171,21 @@ defmodule Wallet.Wallets do
   def get_transaction!(id), do: Repo.get!(Wallets.Transaction, id) |> postprocess_transaction
 
   @doc """
+  Gets a transaction for given claim token (makes sure that it respects expiration).
+
+  ## Example
+
+      iex> get_transaction_by_token!("a1b8bb02-9db5-4073-808f-e6fb62cab71b")
+      %Transaction{}
+
+  """
+  def get_transaction_by_token!(token) do
+    %Wallets.Transaction{} =
+      Repo.get_by(Wallets.Transaction, claim_token: token)
+      |> postprocess_transaction
+  end
+
+  @doc """
   Try to determine transaction type by it's properties
   """
   def get_transaction_type(%Wallets.Transaction{claim_token: value}) when value != nil, do: :claimable
@@ -200,24 +215,7 @@ defmodule Wallet.Wallets do
     end
   end
 
-  def postprocess_transaction(%Wallets.Transaction{} = trn, _) do
-    trn
-  end
-
-  @doc """
-  Gets a transaction for given claim token (makes sure that it respects expiration).
-
-  ## Example
-
-      iex> get_transaction_by_token!("a1b8bb02-9db5-4073-808f-e6fb62cab71b")
-      %Transaction{}
-
-  """
-  def get_transaction_by_token!(token) do
-    %Wallets.Transaction{} =
-      Repo.get_by(Wallets.Transaction, claim_token: token)
-      |> postprocess_transaction
-  end
+  def postprocess_transaction(%Wallets.Transaction{} = trn, _), do: trn
 
   @doc """
   Creates a transaction.
@@ -247,20 +245,6 @@ defmodule Wallet.Wallets do
     %Wallets.Transaction{}
     |> Wallets.Transaction.changeset(attrs)
     |> Repo.insert()
-  end
-
-  def enforce_sufficient_balance(wallet, trn) do
-    %{balance: balance} = get_wallet!(wallet.id)
-
-    if balance >= 0 do
-      {:ok, balance}
-    else
-      {:ok, declined_transaction} = update_transaction(
-        trn, %{processed_at: NaiveDateTime.utc_now,
-               state: Wallets.Transaction.declined,
-               response: "NSF"})
-      {:error, :nsf, declined_transaction}
-    end
   end
 
   @doc """
@@ -305,7 +289,7 @@ defmodule Wallet.Wallets do
 
         {:ok, trn}
       else
-        {:error, :nsf, %Wallets.Transaction{} = declined_transaction} ->
+        {:error, %Wallet.NonSufficientFunds{transaction: declined_transaction}} ->
           {:ok, declined_transaction}
         error ->
           Logger.error "Failed to create claimable transaction"
@@ -399,6 +383,26 @@ defmodule Wallet.Wallets do
       else err -> err
     end
 
+  end
+
+  @doc """
+  Ensure that wallet has sufficient balance after given transaction
+
+  Otherwise decline such transaction
+  """
+  def enforce_sufficient_balance(%Wallets.Wallet{} = wallet, %Wallets.Transaction{state: "initial"} = trn) do
+    # Make sure that we work with up-to-date balance
+    %Wallets.Wallet{balance: balance} = wallet = get_wallet!(wallet.id)
+
+    if balance >= 0 do
+      {:ok, balance}
+    else
+      {:ok, declined_transaction} = update_transaction(
+        trn, %{processed_at: NaiveDateTime.utc_now,
+               state: Wallets.Transaction.declined,
+               response: "NSF"})
+      {:error, Wallet.NonSufficientFunds.exception(wallet: wallet, transaction: declined_transaction)}
+    end
   end
 
   @doc """
