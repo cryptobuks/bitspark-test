@@ -143,6 +143,7 @@ defmodule Wallet.Wallets do
   """
   def list_transactions do
     Repo.all(Wallets.Transaction)
+    |> Enum.map(&postprocess_transaction/1)
   end
 
   def list_transactions(%Wallets.Wallet{} = wallet) do
@@ -152,6 +153,7 @@ defmodule Wallet.Wallets do
       order_by: [desc: t.inserted_at]
 
     Repo.all(q)
+    |> Enum.map(&postprocess_transaction/1)
   end
 
   @doc """
