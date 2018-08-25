@@ -18,6 +18,7 @@
       </v-flex>
     </v-layout>
     <BottomButton :label="'Continue to Review'" :disabled="!isValid" :onClick="handleReviewClick" />
+    <AvailableBalanceModal :show="showAvailableBalanceModal" @handleAvailableBalanceModal="handleAvailableBalanceModal"/>
   </v-form>
 </template>
 
@@ -25,6 +26,7 @@
 import { mapGetters, mapActions } from 'vuex'
 import BottomButton from '@/components/controls/BottomButton'
 import Input from '@/components/forms/Input'
+import AvailableBalanceModal from '@/components/forms/AvailableBalanceModal'
 
 export default {
   name: 'SendForm',
@@ -33,12 +35,14 @@ export default {
       sendTo: '',
       amount: '',
       sendToTooltip: '1. Email - Recipients with email address either get funds instantly (if they already have Biluminate account) or have to create Biluminate account and then the funds will be transfered. The email transfer has expiration that you can adjust in advanced settings. <br><br> 2. Address - Recipients with address will receive funds once the transaction is verified.',
-      amountTooltip: 'View amount in crypto or FIAT currency and its available denominations.'
+      amountTooltip: 'View amount in crypto or FIAT currency and its available denominations.',
+      showAvailableBalanceModal: false
     }
   },
   components: {
     Input,
-    BottomButton
+    BottomButton,
+    AvailableBalanceModal
   },
   computed: {
     ...mapGetters(['balance']),
@@ -60,7 +64,14 @@ export default {
       this.amount = value
     },
     fillMax () {
-      console.log('Handle fillMax')
+      this.showAvailableBalanceModal = true
+    },
+    handleAvailableBalanceModal (fillMax) {
+      this.showAvailableBalanceModal = false
+      if (fillMax) {
+        console.log(this.btc)
+        this.amount = this.btc
+      }
     },
     advancedSettings () {
       console.log('Toggle advancedSettings')

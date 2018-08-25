@@ -18,6 +18,7 @@ Vue.use(Vuetify, {
     darkGrey: '#4a4a4a',
     grey: '#9b9b9b',
     charcoalGrey: '#434350',
+    purplishGrey: '#757476',
     yellow: '#ffc80a',
     blue: '#4a90e2',
     green: '#68ba42'

@@ -24,6 +24,11 @@ export default {
     handleValueInput () {
       this.$emit('valueInput', this.inputValue)
     }
+  },
+  watch: {
+    value: function (newVal) {
+      this.inputValue = newVal
+    }
   }
 }
 </script>
@@ -38,7 +43,7 @@ export default {
   margin-top: 35px;
   border-bottom: 1px solid #434350;
 }
-.tooltip-cion  {
+.tooltip-cion {
   cursor: pointer;
 }
 </style>
