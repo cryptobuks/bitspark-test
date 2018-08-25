@@ -117,6 +117,7 @@ span {
     margin-top: 0;
     padding: 0;
     height: 100%;
+    max-width: none;
     justify-content: space-between;
   }
 }
