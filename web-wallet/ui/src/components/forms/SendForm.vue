@@ -1,8 +1,8 @@
 <template>
   <v-form class="bi-form">
     <v-flex xs12 text-xs-right>
-      <Input :value="sendTo" :label="'To:'" :type="'text'" :placeholder="'Email or Address'" :tooltip="'Email or Address tooltip'" @valueInput="handleSendToValue" />
-      <Input :value="amount" :label="'BTC'" :type="'number'" :placeholder="'Amount'" :tooltip="'Amount tooltip'" @valueInput="handleAmountValue" />
+      <Input :value="sendTo" :label="'To:'" :type="'text'" :placeholder="'Email or Address'" :tooltip="sendToTooltip" @valueInput="handleSendToValue" />
+      <Input :value="amount" :label="'BTC'" :type="'number'" :placeholder="'Amount'" :tooltip="amountTooltip" @valueInput="handleAmountValue" />
     </v-flex>
     <v-layout row wrap>
       <v-flex xs9 text-xs-center>
@@ -31,7 +31,9 @@ export default {
   data () {
     return {
       sendTo: '',
-      amount: ''
+      amount: '',
+      sendToTooltip: '1. Email - Recipients with email address either get funds instantly (if they already have Biluminate account) or have to create Biluminate account and then the funds will be transfered. The email transfer has expiration that you can adjust in advanced settings. <br><br> 2. Address - Recipients with address will receive funds once the transaction is verified.',
+      amountTooltip: 'View amount in crypto or FIAT currency and its available denominations.'
     }
   },
   components: {

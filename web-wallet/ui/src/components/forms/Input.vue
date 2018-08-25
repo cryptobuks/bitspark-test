@@ -4,9 +4,9 @@
       {{label}}
     </span>
     <v-text-field v-model="inputValue" slot="activator" v-bind:type="type" v-bind:placeholder="placeholder" @input="handleValueInput(inputValue)"></v-text-field>
-    <v-tooltip slot="apendIcon" bottom>
-      <v-icon small slot="activator" class="charcoalGrey--text">help</v-icon>
-      <span>{{tooltip}}</span>
+    <v-tooltip slot="apendIcon" bottom max-width="300px">
+      <v-icon small slot="activator" class="tooltip-cion charcoalGrey--text">help</v-icon>
+      <span v-html="tooltip"></span>
     </v-tooltip>
   </div>
 </template>
@@ -37,6 +37,9 @@ export default {
   display: flex;
   margin-top: 35px;
   border-bottom: 1px solid #434350;
+}
+.tooltip-cion  {
+  cursor: pointer;
 }
 </style>
 

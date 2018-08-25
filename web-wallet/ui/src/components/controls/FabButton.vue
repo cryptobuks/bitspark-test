@@ -8,7 +8,7 @@
       </v-btn>
 
       <router-link to="send" v-if="featureToggles.paymentToEmail" tag="div" class="bi-menuitem-container">
-        <span class="bi-menuitem-desc charcoalGrey--text">Send/Pay</span>
+        <span class="bi-menuitem-desc charcoalGrey--text">Send / Pay</span>
         <v-btn fab dark small color="blue" class="bi-fab-menu-button">
           <v-icon class="bi-icon-send">arrow_upward</v-icon>
         </v-btn>
@@ -20,7 +20,7 @@
         </v-btn>
       </div>
       <div v-if="featureToggles.recieve" class="bi-menuitem-container">
-        <span class="bi-menuitem-desc charcoalGrey--text">Recieve/Deposit</span>
+        <span class="bi-menuitem-desc charcoalGrey--text">Recieve / Deposit</span>
         <v-btn fab dark small color="green" class="bi-fab-menu-button">
           <v-icon class="bi-icon-recieve">arrow_upward</v-icon>
         </v-btn>
