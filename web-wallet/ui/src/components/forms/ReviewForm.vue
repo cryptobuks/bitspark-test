@@ -63,7 +63,10 @@ export default {
   computed: {
     ...mapGetters(['user', 'payment']),
     totalMsatoshi () {
-      return this.payment.amount * 100000000000
+      // Truncate here so that we remove floating point errors before sending
+      // amount to API, but this should be handled correctly right at the
+      // beginning (e.g., converting string entered by the user to msatoshi).
+      return Math.round(this.payment.amount * 100000000000)
     }
   },
   methods: {
