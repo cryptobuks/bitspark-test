@@ -2,7 +2,7 @@
   <v-form class="bi-form">
     <v-flex xs12 text-xs-right>
       <Input :value="sendTo" :label="'To:'" :type="'text'" :placeholder="'Email or Address'" :tooltip="sendToTooltip" @valueInput="handleSendToValue" />
-      <Input :value="amount" :label="'BTC'" :type="'number'" :placeholder="'Amount'" :tooltip="amountTooltip" @valueInput="handleAmountValue" />
+      <CurencySelect :currency="currency" :amount="amount" :placeholder="'Amount'" :tooltip="amountTooltip" @valueInput="handleAmountValue" />
     </v-flex>
     <v-layout row wrap>
       <v-flex xs9 text-xs-center>
@@ -14,18 +14,19 @@
     </v-layout>
     <v-layout row wrap>
       <v-flex xs12 text-xs-center>
-        <span class="settings-heading charcoalGrey--text" @click="advancedSettings()">Advanced Settings</span>
+        <Input :value="description" :label="'Description:'" :type="'text'" :placeholder="'Optional'" @valueInput="handleDescriptionValue" />
       </v-flex>
     </v-layout>
     <BottomButton :label="'Continue to Review'" :disabled="!isValid" :onClick="handleReviewClick" />
-    <AvailableBalanceModal :show="showAvailableBalanceModal" @handleAvailableBalanceModal="handleAvailableBalanceModal"/>
+    <AvailableBalanceModal :show="showAvailableBalanceModal" @handleAvailableBalanceModal="handleAvailableBalanceModal" />
   </v-form>
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import BottomButton from '@/components/controls/BottomButton'
-import Input from '@/components/forms/Input'
+import Input from '@/components/forms/elements/Input'
+import CurencySelect from '@/components/forms/elements/CurencySelect'
 import AvailableBalanceModal from '@/components/forms/AvailableBalanceModal'
 
 export default {
@@ -34,6 +35,8 @@ export default {
     return {
       sendTo: '',
       amount: '',
+      description: '',
+      currency: 'BTC',
       sendToTooltip: '1. Email - Recipients with email address either get funds instantly (if they already have Biluminate account) or have to create Biluminate account and then the funds will be transfered. The email transfer has expiration that you can adjust in advanced settings. <br><br> 2. Address - Recipients with address will receive funds once the transaction is verified.',
       amountTooltip: 'View amount in crypto or FIAT currency and its available denominations.',
       showAvailableBalanceModal: false
@@ -41,6 +44,7 @@ export default {
   },
   components: {
     Input,
+    CurencySelect,
     BottomButton,
     AvailableBalanceModal
   },
@@ -61,7 +65,11 @@ export default {
       this.sendTo = value
     },
     handleAmountValue (value) {
-      this.amount = value
+      this.amount = value.amount
+      this.currency = value.currency
+    },
+    handleDescriptionValue (value) {
+      this.description = value
     },
     fillMax () {
       this.showAvailableBalanceModal = true
@@ -69,22 +77,21 @@ export default {
     handleAvailableBalanceModal (fillMax) {
       this.showAvailableBalanceModal = false
       if (fillMax) {
-        console.log(this.btc)
+        this.currency = 'BTC'
         this.amount = this.btc
       }
-    },
-    advancedSettings () {
-      console.log('Toggle advancedSettings')
     },
     handleReviewClick () {
       var payment = {
         sendTo: this.sendTo,
         amount: this.amount,
-        description: '',
+        currency: this.currency,
+        description: this.description,
         expiresAfter: 86400
       }
-      this.createPayment(payment)
-      this.$router.push({ name: 'Review' })
+      console.log(payment)
+      // this.createPayment(payment)
+      // this.$router.push({ name: 'Review' })
     },
     isEmptyString (string) {
       return (!string || string.length === 0)
@@ -112,12 +119,12 @@ span {
   text-transform: uppercase;
   text-decoration: underline;
 }
-.settings-heading  {
+.settings-heading {
   margin-top: 10px;
 }
 @media (max-width: 960px) {
   .bi-form {
     margin-top: 0;
   }
-} 
+}
 </style>
