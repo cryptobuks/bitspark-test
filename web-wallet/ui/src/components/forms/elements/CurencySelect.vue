@@ -1,6 +1,6 @@
 <template>
   <div class="bi-select-combined-container">
-    <div class="bi-select-container">
+    <div class="bi-select-combined">
       <v-select :items="currencies" v-model="actualCurrency" box @input="handleCurrencyInput"></v-select>
     </div>
     <div class="bi-input-combined-container">
@@ -58,13 +58,14 @@ export default {
   margin-top: 35px;
   border-bottom: 1px solid #434350;
 }
-.bi-select-container {
+.bi-select-combined {
   margin: 2px 10px 0px 10px;
   width: 100px;
 }
 .bi-input-combined-container {
   display: flex;
   margin-top: 0px;
+  width: 100%;
 }
 .tooltip-cion {
   cursor: pointer;

@@ -12,8 +12,9 @@
         <span class="charcoalGrey--text" @click="fillMax()">Max</span>
       </v-flex>
     </v-layout>
-    <v-layout row wrap>
+    <v-layout row wrap mt-5>
       <v-flex xs12 text-xs-center>
+        <Select :items="expiringItems" :item="expiringActualItem" @valueInput="handleExpiringValue" />
         <Input :value="description" :label="'Description:'" :type="'text'" :placeholder="'Optional'" @valueInput="handleDescriptionValue" />
       </v-flex>
     </v-layout>
@@ -26,8 +27,11 @@
 import { mapGetters, mapActions } from 'vuex'
 import BottomButton from '@/components/controls/BottomButton'
 import Input from '@/components/forms/elements/Input'
+import Select from '@/components/forms/elements/Select'
 import CurencySelect from '@/components/forms/elements/CurencySelect'
 import AvailableBalanceModal from '@/components/forms/AvailableBalanceModal'
+
+import expiringItems from './expiringItems.json'
 
 export default {
   name: 'SendForm',
@@ -39,11 +43,15 @@ export default {
       currency: 'BTC',
       sendToTooltip: '1. Email - Recipients with email address either get funds instantly (if they already have Biluminate account) or have to create Biluminate account and then the funds will be transfered. The email transfer has expiration that you can adjust in advanced settings. <br><br> 2. Address - Recipients with address will receive funds once the transaction is verified.',
       amountTooltip: 'View amount in crypto or FIAT currency and its available denominations.',
-      showAvailableBalanceModal: false
+      showAvailableBalanceModal: false,
+      expiresAfter: expiringItems[0].value,
+      expiringItems: expiringItems,
+      expiringActualItem: expiringItems[0]
     }
   },
   components: {
     Input,
+    Select,
     CurencySelect,
     BottomButton,
     AvailableBalanceModal
@@ -71,6 +79,9 @@ export default {
     handleDescriptionValue (value) {
       this.description = value
     },
+    handleExpiringValue (value) {
+      this.expiresAfter = value
+    },
     fillMax () {
       this.showAvailableBalanceModal = true
     },
@@ -87,11 +98,10 @@ export default {
         amount: this.amount,
         currency: this.currency,
         description: this.description,
-        expiresAfter: 86400
+        expiresAfter: this.expiresAfter
       }
-      console.log(payment)
-      // this.createPayment(payment)
-      // this.$router.push({ name: 'Review' })
+      this.createPayment(payment)
+      this.$router.push({ name: 'Review' })
     },
     isEmptyString (string) {
       return (!string || string.length === 0)
