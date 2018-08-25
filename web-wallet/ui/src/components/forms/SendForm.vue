@@ -85,6 +85,9 @@ export default {
 <style scoped>
 .bi-form {
   width: 100%;
+  max-width: 500px;
+  text-align: center;
+  margin-top: 50px;
   padding: 0px 22px;
 }
 p,
@@ -101,4 +104,9 @@ span {
 .settings-heading  {
   margin-top: 10px;
 }
+@media (max-width: 960px) {
+  .bi-form {
+    margin-top: 0;
+  }
+} 
 </style>

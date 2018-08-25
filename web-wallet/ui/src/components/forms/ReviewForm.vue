@@ -1,5 +1,5 @@
 <template>
-  <v-layout align-center justify-space-between column fill-height fill-width>
+  <v-layout align-center justify-center column class="bi-form">
     <div class="bi-contacts-container">
       <v-flex xs12>
         <v-list>
@@ -88,6 +88,10 @@ span {
 }
 .bi-form {
   width: 100%;
+  max-width: 500px;
+  margin: auto;
+  margin-top: 50px;
+  text-align: center;
   padding: 0px 22px;
 }
 .bi-contacts-container {
@@ -107,5 +111,13 @@ span {
 }
 .bi-contacts-container i {
   font-size: 45px !important;
+}
+@media (max-width: 960px) {
+  .bi-form {
+    margin-top: 0;
+    padding: 0;
+    height: 100%;
+    justify-content: space-between;
+  }
 }
 </style>
