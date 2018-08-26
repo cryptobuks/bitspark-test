@@ -39,9 +39,7 @@ export default {
   border-radius: 4px;
   background: #4a4a4a;
   color: #fff;
-  transition: 
 }
-
 .animated {
   -webkit-animation-duration: 0.3s;
   animation-duration: 0.3s;
