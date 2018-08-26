@@ -1,7 +1,7 @@
 <template>
   <v-form class="bi-form">
     <v-flex xs12 text-xs-right>
-      <Input :value="sendTo" :label="'To:'" :type="'text'" :placeholder="'Email or Address'" :tooltip="sendToTooltip" @valueInput="handleSendToValue" :tabindex="1" :autofocus="true"/>
+      <Input :value="sendTo" :label="'To:'" :type="'text'" :placeholder="'Email or Address'" :tooltip="sendToTooltip" @valueInput="handleSendToValue" :tabindex="1" :autofocus="true" />
       <CurencySelect :currency="currency" :amount="amount" :placeholder="'Amount'" :tooltip="amountTooltip" @valueInput="handleAmountValue" :tabindex="2" />
     </v-flex>
     <v-layout row wrap>
@@ -20,7 +20,7 @@
     </v-layout>
     <BottomButton :label="'Continue to Review'" :disabled="!isValid" :onClick="handleReviewClick" :tabindex="5" />
     <AvailableBalanceModal :show="showAvailableBalanceModal" @handleAvailableBalanceModal="handleAvailableBalanceModal" />
-    <ValidationError v-if="this.errors.length > 0" :error="this.errors[0]" @hide="handleValidationErrorHide"/>
+    <ValidationError v-if="this.errors.length > 0" :error="this.errors[0]" @hide="handleValidationErrorHide" />
   </v-form>
 </template>
 
@@ -61,7 +61,7 @@ export default {
     ValidationError
   },
   computed: {
-    ...mapGetters(['balance']),
+    ...mapGetters(['balance', 'payment']),
     btc () {
       if (this.balance && this.balance.msatoshi) {
         return this.balance.msatoshi / 100000000000
@@ -69,6 +69,19 @@ export default {
     },
     isValid () {
       return !this.isEmptyString(this.sendTo) && !this.isEmptyString(this.amount)
+    }
+  },
+  mounted () {
+    if (this.payment) {
+      this.sendTo = this.payment.sendTo ? this.payment.sendTo : ''
+      this.amount = this.payment.amount ? this.payment.amount : ''
+      this.currency = this.payment.currency ? this.payment.currency : 'BTC'
+      this.description = this.payment.description ? this.payment.description : ''
+      if (this.payment.expiresAfter) {
+        this.expiringActualItem = expiringItems.find(item => item.value === this.payment.expiresAfter)
+      } else {
+        this.expiringActualItem = expiringItems[0]
+      }
     }
   },
   methods: {
