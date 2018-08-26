@@ -45,6 +45,9 @@ const mutations = {
   payment (state, payment) {
     state.payment = payment
   },
+  removePayment (state) {
+    state.payment = {}
+  },
   beforeLogin (state, payload) {
     state.returnTo = payload.returnTo
   },
@@ -173,6 +176,9 @@ const actions = {
   },
   createPayment ({ commit }, payment) {
     commit('payment', payment)
+  },
+  removePayment ({ commit }) {
+    commit('removePayment')
   }
 }
 
