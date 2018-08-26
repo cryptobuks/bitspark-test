@@ -105,7 +105,7 @@ export default {
         return this.payment.amount * 100000000
       }
       if (this.payment.currency === 'satoshi') {
-        return this.payment.amount * 100000
+        return this.payment.amount * 1000
       }
     }
   },

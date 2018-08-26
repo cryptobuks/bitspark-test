@@ -20,12 +20,12 @@ export default {
   computed: {
     btc: function () {
       if (this.currency === 'satoshi') {
-        return this.msatoshi / 100000 // satoshi
+        return this.msatoshi / 1000 // satoshi
       }
       if (this.currency === 'mBTC') {
         return this.msatoshi / 100000000 // mBTC
-      } else { // BTC
-        return this.msatoshi / 100000000000
+      } else {
+        return this.msatoshi / 100000000000 // BTC
       }
     }
   }

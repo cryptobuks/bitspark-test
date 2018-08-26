@@ -114,12 +114,12 @@ export default {
     },
     validateForm () {
       this.errors = []
-      if (!this.validEmail(this.sendTo)) {
-        this.errors.push('This is not a valid email address !!!')
-      }
-      if (!this.validAmount(this.amount)) {
-        this.errors.push('Exceeding your available balance !!!')
-      }
+      // if (!this.validEmail(this.sendTo)) {
+      //   this.errors.push('This is not a valid email address !!!')
+      // }
+      // if (!this.validAmount(this.amount)) {
+      //   this.errors.push('Exceeding your available balance !!!')
+      // }
       if (!this.errors.length) {
         return true
       }
