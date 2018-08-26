@@ -1,12 +1,12 @@
 <template>
-  <v-btn class="bi-bottom-button primary charcoalGrey--text" v-if="!this.bigScreen" large v-bind:class="{ 'disabled': disabled }" @click="handleOnClick" block>{{label}}</v-btn>
-  <v-btn class="bi-bottom-button-big-screen charcoalGrey--text primary" mt-5 v-else large v-bind:class="{ 'disabled': disabled }" @click="handleOnClick">{{label}}</v-btn>
+  <v-btn class="bi-bottom-button primary charcoalGrey--text" v-if="!this.bigScreen" large v-bind:class="{ 'disabled': disabled }" @click="handleOnClick" :tabindex="tabindex" block>{{label}}</v-btn>
+  <v-btn class="bi-bottom-button-big-screen charcoalGrey--text primary" mt-5 v-else large v-bind:class="{ 'disabled': disabled }" @click="handleOnClick" :tabindex="tabindex">{{label}}</v-btn>
 </template>
 
 <script>
 export default {
   name: 'BottomButton',
-  props: ['label', 'onClick', 'disabled'],
+  props: ['label', 'onClick', 'disabled', 'tabindex'],
   computed: {
     bigScreen () {
       return this.$vuetify.breakpoint.name === 'lg' || this.$vuetify.breakpoint.name === 'xl' || this.$vuetify.breakpoint.name === 'md'

@@ -1,8 +1,8 @@
 <template>
   <v-form class="bi-form">
     <v-flex xs12 text-xs-right>
-      <Input :value="sendTo" :label="'To:'" :type="'text'" :placeholder="'Email or Address'" :tooltip="sendToTooltip" @valueInput="handleSendToValue" />
-      <CurencySelect :currency="currency" :amount="amount" :placeholder="'Amount'" :tooltip="amountTooltip" @valueInput="handleAmountValue" />
+      <Input :value="sendTo" :label="'To:'" :type="'text'" :placeholder="'Email or Address'" :tooltip="sendToTooltip" @valueInput="handleSendToValue" :tabindex="1"/>
+      <CurencySelect :currency="currency" :amount="amount" :placeholder="'Amount'" :tooltip="amountTooltip" @valueInput="handleAmountValue" :tabindex="2" />
     </v-flex>
     <v-layout row wrap>
       <v-flex xs9 text-xs-center>
@@ -14,11 +14,11 @@
     </v-layout>
     <v-layout row wrap mt-5>
       <v-flex xs12 text-xs-center>
-        <Select :items="expiringItems" :item="expiringActualItem" @valueInput="handleExpiringValue" />
-        <Input :value="description" :label="'Description:'" :type="'text'" :placeholder="'Optional'" @valueInput="handleDescriptionValue" />
+        <Select :items="expiringItems" :item="expiringActualItem" @valueInput="handleExpiringValue" :tabindex="3" />
+        <Input :value="description" :label="'Description:'" :type="'text'" :placeholder="'Optional'" @valueInput="handleDescriptionValue" :tabindex="4" />
       </v-flex>
     </v-layout>
-    <BottomButton :label="'Continue to Review'" :disabled="!isValid" :onClick="handleReviewClick" />
+    <BottomButton :label="'Continue to Review'" :disabled="!isValid" :onClick="handleReviewClick" :tabindex="5" />
     <AvailableBalanceModal :show="showAvailableBalanceModal" @handleAvailableBalanceModal="handleAvailableBalanceModal" />
     <ValidationError v-if="this.errors.length > 0" :error="this.errors[0]" @hide="handleValidationErrorHide"/>
   </v-form>

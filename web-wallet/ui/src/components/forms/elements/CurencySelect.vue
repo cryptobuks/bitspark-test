@@ -4,7 +4,7 @@
       <v-select :items="currencies" v-model="actualCurrency" box @input="handleCurrencyInput"></v-select>
     </div>
     <div class="bi-input-combined-container">
-      <v-text-field v-model="actualAmount" slot="activator" type="number" v-bind:placeholder="placeholder" @input="handleValueInput"></v-text-field>
+      <v-text-field v-model="actualAmount" slot="activator" type="number" v-bind:placeholder="placeholder" @input="handleValueInput" :tabindex="tabindex"></v-text-field>
       <v-tooltip v-if="tooltip" slot="apendIcon" bottom max-width="300px">
         <v-icon small slot="activator" class="tooltip-cion charcoalGrey--text">help</v-icon>
         <span v-html="tooltip"></span>
@@ -21,7 +21,7 @@ export default {
   components: {
     Input
   },
-  props: ['amount', 'currency', 'placeholder', 'tooltip'],
+  props: ['amount', 'currency', 'placeholder', 'tooltip', 'tabindex'],
   data () {
     return {
       actualAmount: this.amount,

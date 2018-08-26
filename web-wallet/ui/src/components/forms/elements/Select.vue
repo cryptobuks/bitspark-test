@@ -1,13 +1,13 @@
 <template>
   <div class="bi-select-container">
-    <v-select :items="items" v-model="actualItem" box @input="handleInput"></v-select>
+    <v-select :items="items" v-model="actualItem" box @input="handleInput" :tabindex="tabindex"></v-select>
   </div>
 </template>
 
 <script>
 export default {
   name: 'Select',
-  props: ['items', 'item'],
+  props: ['items', 'item', 'tabindex'],
   data () {
     return {
       actualItem: this.item,
