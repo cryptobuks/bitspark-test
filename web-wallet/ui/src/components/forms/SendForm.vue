@@ -20,6 +20,7 @@
     </v-layout>
     <BottomButton :label="'Continue to Review'" :disabled="!isValid" :onClick="handleReviewClick" />
     <AvailableBalanceModal :show="showAvailableBalanceModal" @handleAvailableBalanceModal="handleAvailableBalanceModal" />
+    <ValidationError v-if="this.errors.length > 0" :error="this.errors[0]" @hide="handleValidationErrorHide"/>
   </v-form>
 </template>
 
@@ -30,6 +31,7 @@ import Input from '@/components/forms/elements/Input'
 import Select from '@/components/forms/elements/Select'
 import CurencySelect from '@/components/forms/elements/CurencySelect'
 import AvailableBalanceModal from '@/components/forms/AvailableBalanceModal'
+import ValidationError from '@/components/forms/ValidationError'
 
 import expiringItems from './expiringItems.json'
 
@@ -46,7 +48,8 @@ export default {
       showAvailableBalanceModal: false,
       expiresAfter: expiringItems[0].value,
       expiringItems: expiringItems,
-      expiringActualItem: expiringItems[0]
+      expiringActualItem: expiringItems[0],
+      errors: []
     }
   },
   components: {
@@ -54,7 +57,8 @@ export default {
     Select,
     CurencySelect,
     BottomButton,
-    AvailableBalanceModal
+    AvailableBalanceModal,
+    ValidationError
   },
   computed: {
     ...mapGetters(['balance']),
@@ -100,8 +104,40 @@ export default {
         description: this.description,
         expiresAfter: this.expiresAfter
       }
-      this.createPayment(payment)
-      this.$router.push({ name: 'Review' })
+      if (this.validateForm()) {
+        this.createPayment(payment)
+        this.$router.push({ name: 'Review' })
+      }
+    },
+    handleValidationErrorHide () {
+      this.errors = []
+    },
+    validateForm () {
+      this.errors = []
+      if (!this.validEmail(this.sendTo)) {
+        this.errors.push('This is not a valid email address !!!')
+      }
+      if (!this.validAmount(this.amount)) {
+        this.errors.push('Exceeding your available balance !!!')
+      }
+      if (!this.errors.length) {
+        return true
+      }
+    },
+    validEmail (email) {
+      var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      return re.test(email)
+    },
+    validAmount (amount) {
+      if (this.currency === 'satoshi') {
+        return amount < this.btc * 1000000 // satoshi
+      }
+      if (this.currency === 'mBTC') {
+        return amount < this.btc * 1000 // mBTC
+      }
+      if (this.currency === 'BTC') {
+        return amount < this.btc
+      }
     },
     isEmptyString (string) {
       return (!string || string.length === 0)
