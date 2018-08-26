@@ -1,18 +1,32 @@
 <template>
   <span v-if="msatoshi !== undefined">
-    <span class="unit grey--text" v-bind:class="{ 'medium': medium }">BTC</span>
+    <span class="unit grey--text" v-bind:class="{ 'medium': medium }">{{ currency ? currency : 'BTC' }}</span>
     <span class="amount darkGrey--text" v-bind:class="{ 'medium': medium }">{{ btc }}</span>
   </span>
-  <span v-else>Unknown</span>
+  <span v-else class="unit">{{ emptyString }}</span>
 </template>
 
 <script>
+const EMPTY_STRING = '- - -'
+
 export default {
-  props: ['msatoshi', 'medium'],
+  props: ['msatoshi', 'currency', 'medium'],
   name: 'amount',
+  data () {
+    return {
+      emptyString: EMPTY_STRING
+    }
+  },
   computed: {
     btc: function () {
-      return this.msatoshi / 100000000000
+      if (this.currency === 'satoshi') {
+        return this.msatoshi / 100000 // satoshi
+      }
+      if (this.currency === 'mBTC') {
+        return this.msatoshi / 100000000 // mBTC
+      } else { // BTC
+        return this.msatoshi / 100000000000
+      }
     }
   }
 }
@@ -20,6 +34,7 @@ export default {
 
 <style scoped>
 .unit {
+  text-transform: none;
   font-size: 42px;
   font-weight: normal;
   margin-right: 5px;
