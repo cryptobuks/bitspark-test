@@ -130,13 +130,13 @@ export default {
     },
     validAmount (amount) {
       if (this.currency === 'satoshi') {
-        return amount < this.btc * 1000000 // satoshi
+        return amount <= this.btc * 1000000 // satoshi
       }
       if (this.currency === 'mBTC') {
-        return amount < this.btc * 1000 // mBTC
+        return amount <= this.btc * 1000 // mBTC
       }
       if (this.currency === 'BTC') {
-        return amount < this.btc
+        return amount <= this.btc
       }
     },
     isEmptyString (string) {
