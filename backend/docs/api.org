@@ -114,13 +114,13 @@
 }
 #+end_example
 ** Send Bitcoin to email address
-*** Create transaction (payee)
+*** Create transaction (payer)
 #+BEGIN_SRC python :cache yes
   email_src_trn = POST('/api/wallet/transactions', {
       "to_email": "a@b.cz",
       "msatoshi": 1000,
-      "description": "Free BTC",
-      "expires_after": 900
+      "description": "Free BTC",    # optional - visible to both payee & payer
+      "expires_after": 900          # in seconds
   })['data']
 #+END_SRC
 
@@ -139,7 +139,7 @@
 }
 #+end_example
 
-*** Claim transaction (payer)
+*** Claim transaction (payee)
 #+BEGIN_SRC python :cache yes
   _ = POST('/api/wallet/transactions', {"claim_token": "373e4ceb-e305-49ee-bc40-ddf6cb9e73c1"})
 #+END_SRC
@@ -158,7 +158,7 @@
 }
 #+end_example
 
-*** Payee sees that transaction has been claimed
+*** Payer sees that transaction has been claimed
 - status :: approved
 - processed_at :: timestamp of claim event
 

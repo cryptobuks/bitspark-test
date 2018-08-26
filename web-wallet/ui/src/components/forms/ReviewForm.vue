@@ -98,14 +98,17 @@ export default {
       return description || EMPTY_STRING
     },
     totalMsatoshi () {
+      // Truncate here so that we remove floating point errors before sending
+      // amount to API, but this should be handled correctly right at the
+      // beginning (e.g., converting string entered by the user to msatoshi).
       if (this.payment.currency === 'BTC') {
-        return this.payment.amount * 100000000000
+        return Math.round(this.payment.amount * 100000000000)
       }
       if (this.payment.currency === 'mBTC') {
-        return this.payment.amount * 100000000
+        return Math.round(this.payment.amount * 100000000)
       }
       if (this.payment.currency === 'satoshi') {
-        return this.payment.amount * 1000
+        return Math.round(this.payment.amount * 1000)
       }
     }
   },
