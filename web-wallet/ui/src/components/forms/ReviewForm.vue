@@ -54,7 +54,7 @@
         <v-layout row>
           <v-flex xs12 ml-3 mr-3 text-xs-center class="bi-bordered">
             <span>TOTAL (FEES INCLUDED)</span><br>
-            <Amount :msatoshi="totalMsatoshi" :medium="true" />
+            <Amount :currency="payment.currency" :msatoshi="totalMsatoshi" :medium="true" />
           </v-flex>
         </v-layout>
         <v-layout row pb-2>
@@ -98,7 +98,15 @@ export default {
       return description || EMPTY_STRING
     },
     totalMsatoshi () {
-      return this.payment.amount * 100000000000
+      if (this.payment.currency === 'BTC') {
+        return this.payment.amount * 100000000000
+      }
+      if (this.payment.currency === 'mBTC') {
+        return this.payment.amount * 100000000
+      }
+      if (this.payment.currency === 'satoshi') {
+        return this.payment.amount * 100000
+      }
     }
   },
   methods: {
@@ -154,13 +162,13 @@ span {
   margin-bottom: 56px;
 }
 .bi-amounts-container .bi-bordered {
-  border-bottom: 1px solid #C6C6C6;
+  border-bottom: 1px solid #c6c6c6;
 }
 .bi-amounts-container .bold {
   font-weight: 600;
 }
 .bi-amounts-container .bi-border-right {
-  border-right: 1px solid #C6C6C6;
+  border-right: 1px solid #c6c6c6;
 }
 .bi-contacts-container ul {
   background-color: #fafafa;
