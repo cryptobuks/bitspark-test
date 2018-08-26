@@ -52,16 +52,18 @@
     <div class="bi-amounts-container">
       <v-container pa-0 fluid>
         <v-layout row>
-          <v-flex xs12 text-xs-center>
+          <v-flex xs12 ml-3 mr-3 text-xs-center class="bi-bordered">
             <span>TOTAL (FEES INCLUDED)</span><br>
             <Amount :msatoshi="totalMsatoshi" :medium="true" />
           </v-flex>
         </v-layout>
-        <v-layout row>
-          <v-flex xs6 text-xs-center>
+        <v-layout row pb-2>
+          <v-flex xs6 pt-2 text-xs-center class="bi-border-right">
             <span>FEE INCLUDED</span>
+            <br>
+            <span class="darkGrey--text bold">Free</span>
           </v-flex>
-          <v-flex xs6 text-xs-center>
+          <v-flex xs6 pt-2 text-xs-center>
             <span>TOTAL FIAT VALUE</span>
           </v-flex>
         </v-layout>
@@ -150,6 +152,15 @@ span {
   padding: 15px;
   background-color: #fafafa;
   margin-bottom: 56px;
+}
+.bi-amounts-container .bi-bordered {
+  border-bottom: 1px solid #C6C6C6;
+}
+.bi-amounts-container .bold {
+  font-weight: 600;
+}
+.bi-amounts-container .bi-border-right {
+  border-right: 1px solid #C6C6C6;
 }
 .bi-contacts-container ul {
   background-color: #fafafa;
