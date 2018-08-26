@@ -1,31 +1,53 @@
 <template>
   <v-layout align-center justify-center column class="bi-form">
-    <div class="bi-contacts-container">
-      <v-flex xs12>
-        <v-list>
-          <v-list-tile avatar>
-            <v-list-tile-avatar>
-              <v-icon v-if="!this.user.picture" x-large class="bi-icon">account_circle</v-icon>
-              <img v-else v-bind:src="this.user.picture" />
-            </v-list-tile-avatar>
-            <v-list-tile-content>
-              <v-list-tile-title class="bi-name">{{this.user.name}} (You)</v-list-tile-title>
-            </v-list-tile-content>
-          </v-list-tile>
-        </v-list>
-      </v-flex>
-      <v-flex xs12>
-        <v-list>
-          <v-list-tile avatar>
-            <v-list-tile-avatar>
-              <v-icon x-large class="bi-icon">account_circle</v-icon>
-            </v-list-tile-avatar>
-            <v-list-tile-content>
-              <v-list-tile-title class="bi-name">{{payment.sendTo}}</v-list-tile-title>
-            </v-list-tile-content>
-          </v-list-tile>
-        </v-list>
-      </v-flex>
+    <div class="bi-review-form">
+      <div class="bi-contacts-container">
+        <v-flex xs12>
+          <v-list>
+            <v-list-tile avatar>
+              <v-list-tile-avatar>
+                <v-icon v-if="!this.user.picture" x-large class="bi-icon">account_circle</v-icon>
+                <img v-else v-bind:src="this.user.picture" />
+              </v-list-tile-avatar>
+              <v-list-tile-content>
+                <v-list-tile-title class="bi-name">{{this.user.name}} (You)</v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+          </v-list>
+        </v-flex>
+        <v-flex xs12>
+          <v-list>
+            <v-list-tile avatar>
+              <v-list-tile-avatar>
+                <v-icon x-large class="bi-icon">account_circle</v-icon>
+              </v-list-tile-avatar>
+              <v-list-tile-content>
+                <v-list-tile-title class="bi-name">{{payment.sendTo}}</v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+          </v-list>
+        </v-flex>
+      </div>
+      <div class="bi-settings-container">
+        <v-container pa-0 fluid>
+          <v-layout row mb-3>
+            <v-flex xs4 text-xs-left>
+              <span>Expiration</span>
+            </v-flex>
+            <v-flex xs8 text-xs-right>
+              <span class="bi-settings-span charcoalGrey--text">{{expire}}</span>
+            </v-flex>
+          </v-layout>
+          <v-layout row>
+            <v-flex xs4 text-xs-left>
+              <span>Description</span>
+            </v-flex>
+            <v-flex xs8 text-xs-right>
+              <span class="bi-settings-span charcoalGrey--text">{{description}}</span>
+            </v-flex>
+          </v-layout>
+        </v-container>
+      </div>
     </div>
     <div class="bi-amounts-container">
       <v-container pa-0 fluid>
@@ -54,6 +76,9 @@ import { mapGetters, mapActions } from 'vuex'
 import BottomButton from '@/components/controls/BottomButton'
 import Amount from '@/components/Amount'
 
+import expiringItems from './expiringItems.json'
+const EMPTY_STRING = '- - -'
+
 export default {
   name: 'ReviewForm',
   components: {
@@ -62,6 +87,14 @@ export default {
   },
   computed: {
     ...mapGetters(['user', 'payment']),
+    expire () {
+      var expiresAfter = expiringItems.find(item => item.value === this.payment.expiresAfter)
+      return expiresAfter ? expiresAfter.text : EMPTY_STRING
+    },
+    description () {
+      var description = this.payment.description
+      return description || EMPTY_STRING
+    },
     totalMsatoshi () {
       return this.payment.amount * 100000000000
     }
@@ -85,6 +118,10 @@ export default {
 <style scoped>
 span {
   font-size: 11px;
+  text-transform: uppercase;
+}
+.bi-review-form {
+  width: 100%;
 }
 .bi-form {
   width: 100%;
@@ -99,6 +136,14 @@ span {
   margin-top: -50px;
   padding: 15px;
   background-color: #fafafa;
+}
+.bi-settings-container {
+  margin: 5px 15px;
+  padding: 15px;
+  background-color: #fff;
+}
+.bi-settings-span {
+  font-size: 14px;
 }
 .bi-amounts-container {
   width: 100%;
