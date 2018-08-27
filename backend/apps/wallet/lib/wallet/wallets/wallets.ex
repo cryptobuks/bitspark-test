@@ -9,6 +9,7 @@ defmodule Wallet.Wallets do
 
   alias Lightning
   alias Wallet.Wallets
+  import Wallet.Validation, only: [maybe_validation_error: 1]
 
   @doc """
   Returns the list of wallets.
@@ -267,8 +268,8 @@ defmodule Wallet.Wallets do
     amount = Keyword.get(opts, :amount)
     expires_after = Keyword.get(opts, :expires_after, 86400)
 
-    with :ok <- Bitcoin.validate_amount(amount),
-         :ok <- Bitcoin.is_positive_amount(amount),
+    with :ok <- maybe_validation_error(Bitcoin.validate_amount(amount)),
+         :ok <- maybe_validation_error(Bitcoin.is_positive_amount(amount)),
          msatoshi <- Bitcoin.to_msatoshi(amount),
          {:ok, trn} <- create_transaction(%{
                   wallet_id: wallet.id,
@@ -293,6 +294,8 @@ defmodule Wallet.Wallets do
       else
         {:error, %Wallet.NonSufficientFunds{transaction: declined_transaction}} ->
           {:ok, declined_transaction}
+        {:error, %Wallet.ValidationError{}} = error ->
+          error
         error ->
           Logger.error "Failed to create claimable transaction"
           error

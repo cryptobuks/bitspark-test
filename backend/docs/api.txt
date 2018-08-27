@@ -29,12 +29,14 @@ Table of Contents
   └────
 
   ┌────
+  │ 200 OK
+  │ 
   │ {
   │   "data": {
   │     "balance": {
   │       "msatoshi": 1000000000
   │     },
-  │     "id": "c0801ace-7f38-46cd-82ec-73f1fa3a4d20"
+  │     "id": "50c9827f-d4a2-4a90-9cf5-49b0ca80ce8a"
   │   }
   │ }
   └────
@@ -48,6 +50,8 @@ Table of Contents
   └────
 
   ┌────
+  │ 200 OK
+  │ 
   │ {
   │   "data": {
   │     "description": "Foobar #ldq",
@@ -66,14 +70,16 @@ Table of Contents
   └────
 
   ┌────
+  │ 201 Created
+  │ 
   │ {
   │   "data": {
   │     "description": "Foobar #ldq",
-  │     "id": "064638ab-166f-4f35-b1a6-3f0a0101a0fe",
-  │     "inserted_at": "2018-08-25T16:06:51.717780",
+  │     "id": "04d39707-e266-4195-8701-3145fa18dcc4",
+  │     "inserted_at": "2018-08-27T06:49:09.276258",
   │     "invoice": "lntb1500n1pd0c66dpp5p8rpzxck9u7umfl9u7dqratj8rlfthe29xl6ejhwt2exuaxfpftqdqvg9jxgg8zn2sscqzysyv8kgctq7haghaus4wqd262mxr9342mvp23gdsv6vmgkce9zgshjd0av06dq3xpe8cy6fucnj454smkqxuetyvu3h5jggx2w8ethlvcp6g3ldq",
   │     "msatoshi": -150000,
-  │     "processed_at": "2018-08-25T16:06:51.772826",
+  │     "processed_at": "2018-08-27T06:49:09.333471",
   │     "state": "approved"
   │   }
   │ }
@@ -88,21 +94,23 @@ Table of Contents
   └────
 
   ┌────
+  │ 200 OK
+  │ 
   │ {
   │   "data": [
   │     {
   │       "description": "Foobar #ldq",
-  │       "id": "064638ab-166f-4f35-b1a6-3f0a0101a0fe",
-  │       "inserted_at": "2018-08-25T16:06:51.717780",
+  │       "id": "04d39707-e266-4195-8701-3145fa18dcc4",
+  │       "inserted_at": "2018-08-27T06:49:09.276258",
   │       "invoice": "lntb1500n1pd0c66dpp5p8rpzxck9u7umfl9u7dqratj8rlfthe29xl6ejhwt2exuaxfpftqdqvg9jxgg8zn2sscqzysyv8kgctq7haghaus4wqd262mxr9342mvp23gdsv6vmgkce9zgshjd0av06dq3xpe8cy6fucnj454smkqxuetyvu3h5jggx2w8ethlvcp6g3ldq",
   │       "msatoshi": -150000,
-  │       "processed_at": "2018-08-25T16:06:51.772826",
+  │       "processed_at": "2018-08-27T06:49:09.333471",
   │       "state": "approved"
   │     },
   │     {
   │       "description": "Funding transaction",
-  │       "id": "5a7b3449-e3e0-45c3-bb03-2d1420e293b3",
-  │       "inserted_at": "2018-08-25T16:06:51.485356",
+  │       "id": "cbfc9e46-879f-47e9-bf8f-c544d19a71d3",
+  │       "inserted_at": "2018-08-27T06:49:09.005924",
   │       "msatoshi": 1000000000,
   │       "processed_at": null,
   │       "state": "approved"
@@ -128,15 +136,39 @@ Table of Contents
   └────
 
   ┌────
+  │ 201 Created
+  │ 
   │ {
   │   "data": {
-  │     "claim_expires_at": "2018-08-25T16:18:14.170513",
+  │     "claim_expires_at": "2018-08-27T07:04:09.506776",
   │     "description": "Free BTC",
-  │     "id": "201992a6-3636-4133-a661-b2c24f5735aa",
-  │     "inserted_at": "2018-08-25T16:03:14.170590",
+  │     "id": "a923af54-d7e7-480a-9f9c-510e438c46fa",
+  │     "inserted_at": "2018-08-27T06:49:09.506849",
   │     "msatoshi": -1000,
   │     "processed_at": null,
   │     "state": "initial"
+  │   }
+  │ }
+  └────
+
+
+◊ 1.5.1.1 With invalid amount
+
+  ┌────
+  │ _ = POST('/api/wallet/transactions', {
+  │     "to_email": "a@b.cz",
+  │     "msatoshi": -1000, # <- can't send negative amount
+  │     "description": "Free BTC",
+  │     "expires_after": 900
+  │ })
+  └────
+
+  ┌────
+  │ 400 Bad Request
+  │ 
+  │ {
+  │   "error": {
+  │     "detail": "Non-positive amount given"
   │   }
   │ }
   └────

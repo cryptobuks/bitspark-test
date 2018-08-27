@@ -23,12 +23,13 @@
       'Authorization': 'Bearer ' + token
     })
     response = conn.getresponse()
-    if response.status >= 200 and response.status <= 300:
+    
+    print("{} {}".format(response.status, response.reason))
+    if response.status >= 200 and response.status <= 500:
       data = json.loads(response.read().decode())
+      print()
       print(json.dumps(data, indent=2, sort_keys=True))
       return data
-    else:
-      print("Status: {} and reason: {}".format(response.status, response.reason))
 
   def GET(url):
     return api('GET', url, None)
@@ -138,6 +139,24 @@
   }
 }
 #+end_example
+**** With invalid amount
+#+BEGIN_SRC python
+  _ = POST('/api/wallet/transactions', {
+      "to_email": "a@b.cz",
+      "msatoshi": -1000, # <- can't send negative amount
+      "description": "Free BTC",
+      "expires_after": 900
+  })
+#+END_SRC
+
+#+RESULTS:
+: 400 Bad Request
+: 
+: {
+:   "error": {
+:     "detail": "Non-positive amount given"
+:   }
+: }
 
 *** Claim transaction (payee)
 #+BEGIN_SRC python :cache yes

@@ -1,6 +1,10 @@
 defmodule WalletWeb.ErrorView do
   use WalletWeb, :view
 
+  def render("400.json", %Wallet.ValidationError{} = error) do
+    %{error: %{detail: error.message}}
+  end
+
   def render("400.json", assigns) do
     %{error: %{detail: assigns.reason.message}}
   end
