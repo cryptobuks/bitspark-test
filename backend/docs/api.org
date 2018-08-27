@@ -12,9 +12,17 @@
   import json
   
   token = token.strip()
+  verbose = True
 
   def pp(data):
     print(json.dumps(data, indent=2, sort_keys=True))
+    
+  def silent(fn):
+    global verbose
+    verbose = False
+    res = fn()
+    verbose = True
+    return res
 
   def api(method, url, data):
     conn = http.client.HTTPConnection('localhost:4000')
@@ -24,11 +32,13 @@
     })
     response = conn.getresponse()
     
-    print("{} {}".format(response.status, response.reason))
+    if verbose:
+      print("{} {}".format(response.status, response.reason))
     if response.status >= 200 and response.status <= 500:
       data = json.loads(response.read().decode())
-      print()
-      print(json.dumps(data, indent=2, sort_keys=True))
+      if verbose:
+        print()
+        print(json.dumps(data, indent=2, sort_keys=True))
       return data
 
   def GET(url):
@@ -139,6 +149,36 @@
   }
 }
 #+end_example
+**** With amount exceeding wallet balance
+It returns declined transaction.
+
+#+BEGIN_SRC python
+  wallet = silent(lambda: GET('/api/wallet'))
+  _ = POST('/api/wallet/transactions', {
+      "to_email": "a@b.cz",
+      "msatoshi": wallet['data']['balance']['msatoshi'] + 1,
+      "description": "Free BTC",
+      "expires_after": 900
+  })
+#+END_SRC
+
+#+RESULTS:
+#+begin_example
+201 Created
+
+{
+  "data": {
+    "claim_expires_at": "2018-08-27T07:15:34.543600",
+    "description": "Free BTC",
+    "id": "aa7b68af-ec32-4680-8975-1e38947b170e",
+    "inserted_at": "2018-08-27T07:00:34.543679",
+    "msatoshi": -999849001,
+    "processed_at": "2018-08-27T07:00:34.549174",
+    "state": "declined"
+  }
+}
+#+end_example
+
 **** With invalid amount
 #+BEGIN_SRC python
   _ = POST('/api/wallet/transactions', {
