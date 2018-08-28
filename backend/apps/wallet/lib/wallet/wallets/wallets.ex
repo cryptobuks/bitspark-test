@@ -307,42 +307,38 @@ defmodule Wallet.Wallets do
   end
 
   def claim_transaction!(%Wallets.Wallet{} = wallet, token) do
-    {:ok, src_trn} = get_transaction_by_token(token)
-
-    case Validation.expect_claimable_transaction(src_trn) do
-      :ok ->
-        nil
-
+    with {:ok, src_trn} <- get_transaction_by_token(token),
+         :ok <- Validation.expect_claimable_transaction(src_trn),
+         {:ok, %Wallets.Transaction{} = dst_trn} <- Repo.transaction(
+           fn ->
+             case create_transaction(
+                   %{"wallet_id" => wallet.id,
+                     "state" => "approved",
+                     "msatoshi" => -src_trn.msatoshi,
+                     "src_transaction_id" => src_trn.id,
+                     "processed_at" => NaiveDateTime.utc_now,
+                     "description" => src_trn.description}) do
+               {:ok, dst_trn} ->
+                 {:ok, _} = update_transaction(
+                 src_trn,
+                 %{processed_at: NaiveDateTime.utc_now,
+                   state: Wallets.Transaction.approved,
+                   claimed_by: dst_trn.id})
+                 dst_trn
+               {:error, _} = error ->
+                 error
+             end
+           end
+         )
+    do
+      {:ok, dst_trn}
+    else
       {:error, %Wallet.ValidationError{details: details}} ->
         raise "Can't claim this transaction - #{details}"
 
-      {:error, error} ->
-        raise "Can't claim this transaction"
+      {:error, _} = error ->
+        error
     end
-
-    {:ok, %Wallets.Transaction{} = dst_trn} = Repo.transaction(
-      fn ->
-        case create_transaction(
-              %{"wallet_id" => wallet.id,
-                "state" => "approved",
-                "msatoshi" => -src_trn.msatoshi,
-                "src_transaction_id" => src_trn.id,
-                "processed_at" => NaiveDateTime.utc_now,
-                "description" => src_trn.description}) do
-          {:ok, dst_trn} ->
-            {:ok, _} = update_transaction(
-            src_trn,
-            %{processed_at: NaiveDateTime.utc_now,
-              state: Wallets.Transaction.approved,
-              claimed_by: dst_trn.id})
-            dst_trn
-          {:error, _} ->
-            raise "Can't claim this transaction (already claimed?)"
-        end
-      end
-    )
-
-    dst_trn
   end
 
   @doc """

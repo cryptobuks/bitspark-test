@@ -207,7 +207,7 @@ defmodule Wallet.WalletsTest do
 
       # Claim
       dst_wallet = create_wallet("sub2")
-      dst_trn = Wallets.claim_transaction!(dst_wallet, src_trn.claim_token)
+      {:ok, %Wallets.Transaction{} = dst_trn} = Wallets.claim_transaction!(dst_wallet, src_trn.claim_token)
 
       # Wallet balances are updated correctly
       assert_value canonicalize(Wallets.get_wallet!(src_wallet.id) |> Map.take([:balance])) == %{balance: 0}
