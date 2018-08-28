@@ -9,7 +9,7 @@ defmodule Wallet.Wallets do
 
   alias Lightning
   alias Wallet.Wallets
-  import Wallet.Validation, only: [maybe_validation_error: 1]
+  alias Wallet.Validation
 
   @doc """
   Returns the list of wallets.
@@ -178,14 +178,18 @@ defmodule Wallet.Wallets do
 
   ## Example
 
-      iex> get_transaction_by_token!("a1b8bb02-9db5-4073-808f-e6fb62cab71b")
-      %Transaction{}
+      iex> get_transaction_by_token("a1b8bb02-9db5-4073-808f-e6fb62cab71b")
+      {:ok, %Transaction{}}
 
   """
-  def get_transaction_by_token!(token) do
-    %Wallets.Transaction{} =
-      Repo.get_by(Wallets.Transaction, claim_token: token)
-      |> postprocess_transaction
+  def get_transaction_by_token(token) do
+    case Repo.get_by(Wallets.Transaction, claim_token: token) do
+      %Wallets.Transaction{} = trn ->
+        {:ok, trn |> postprocess_transaction}
+
+      nil ->
+        {:error, :transaction_not_found}
+    end
   end
 
   @doc """
@@ -268,8 +272,8 @@ defmodule Wallet.Wallets do
     amount = Keyword.get(opts, :amount)
     expires_after = Keyword.get(opts, :expires_after, 86400)
 
-    with :ok <- maybe_validation_error(Bitcoin.validate_amount(amount)),
-         :ok <- maybe_validation_error(Bitcoin.is_positive_amount(amount)),
+    with :ok <- Validation.maybe_validation_error(Bitcoin.validate_amount(amount)),
+         :ok <- Validation.maybe_validation_error(Bitcoin.is_positive_amount(amount)),
          msatoshi <- Bitcoin.to_msatoshi(amount),
          {:ok, trn} <- create_transaction(%{
                   wallet_id: wallet.id,
@@ -303,10 +307,17 @@ defmodule Wallet.Wallets do
   end
 
   def claim_transaction!(%Wallets.Wallet{} = wallet, token) do
-    src_trn = get_transaction_by_token!(token)
+    {:ok, src_trn} = get_transaction_by_token(token)
 
-    if src_trn.state != Wallets.Transaction.initial do
-      raise "Can't claim this transaction"
+    case Validation.expect_claimable_transaction(src_trn) do
+      :ok ->
+        nil
+
+      {:error, %Wallet.ValidationError{details: details}} ->
+        raise "Can't claim this transaction - #{details}"
+
+      {:error, error} ->
+        raise "Can't claim this transaction"
     end
 
     {:ok, %Wallets.Transaction{} = dst_trn} = Repo.transaction(

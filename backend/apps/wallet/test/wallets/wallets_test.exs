@@ -191,7 +191,7 @@ defmodule Wallet.WalletsTest do
 
       # And not claimable
       dst_wallet = create_wallet("dst")
-      assert_raise RuntimeError, "Can't claim this transaction", fn ->
+      assert_raise RuntimeError, "Can't claim this transaction - Non-initial state (declined)", fn ->
         Wallets.claim_transaction!(dst_wallet, src_trn.claim_token)
       end
       assert_value canonicalize(Wallets.get_wallet!(dst_wallet.id) |> Map.take([:balance])) == %{balance: 0}
@@ -236,7 +236,7 @@ defmodule Wallet.WalletsTest do
       Wallets.claim_transaction!(dst_wallet, src_trn.claim_token)
 
       # Claim #2
-      assert_raise RuntimeError, "Can't claim this transaction", fn ->
+      assert_raise RuntimeError, "Can't claim this transaction - Non-initial state (approved)", fn ->
         Wallets.claim_transaction!(dst_wallet, src_trn.claim_token)
       end
     end
@@ -247,7 +247,7 @@ defmodule Wallet.WalletsTest do
 
       # Claim
       dst_wallet = create_wallet("dst")
-      assert_raise RuntimeError, "Can't claim this transaction", fn ->
+      assert_raise RuntimeError, "Can't claim this transaction - Non-initial state (declined)", fn ->
         Wallets.claim_transaction!(dst_wallet, src_trn.claim_token)
       end
 
