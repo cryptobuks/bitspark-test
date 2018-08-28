@@ -230,7 +230,8 @@ It returns declined transaction.
 }
 #+end_example
 
-**** Call is idempotent
+When called multiple times it returns same transaction (i.e. it's idempotent).
+
 #+BEGIN_SRC python :cache yes
   _ = POST('/api/wallet/transactions', {"claim_token": "4470892b-acef-4a9f-8b02-861ceadd6c39"})
   _ = POST('/api/wallet/transactions', {"claim_token": "4470892b-acef-4a9f-8b02-861ceadd6c39"})
@@ -290,8 +291,7 @@ It returns declined transaction.
 : }
 
 ** Payer sees that transaction has been claimed
-- status :: approved
-- processed_at :: timestamp of claim event
+Status of transaction is =approved= and =processed_at= field marks time of claim event.
 
 #+BEGIN_SRC python
   _ = GET('/api/wallet/transactions/' + email_src_trn['id'])
