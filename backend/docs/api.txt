@@ -36,7 +36,7 @@ Table of Contents
   │     "balance": {
   │       "msatoshi": 1000000000
   │     },
-  │     "id": "50c9827f-d4a2-4a90-9cf5-49b0ca80ce8a"
+  │     "id": "12abb992-0865-4dc8-98d5-8bc842e952f9"
   │   }
   │ }
   └────
@@ -55,7 +55,7 @@ Table of Contents
   │ {
   │   "data": {
   │     "description": "Foobar #ldq",
-  │     "dst_alias": "Barbaz #039",
+  │     "dst_alias": "SomeNodeAlias #039",
   │     "msatoshi": 150000
   │   }
   │ }
@@ -75,11 +75,11 @@ Table of Contents
   │ {
   │   "data": {
   │     "description": "Foobar #ldq",
-  │     "id": "04d39707-e266-4195-8701-3145fa18dcc4",
-  │     "inserted_at": "2018-08-27T06:49:09.276258",
+  │     "id": "d051b90e-cd02-43a5-8bfc-3cc031035739",
+  │     "inserted_at": "2018-08-28T21:37:02.911710",
   │     "invoice": "lntb1500n1pd0c66dpp5p8rpzxck9u7umfl9u7dqratj8rlfthe29xl6ejhwt2exuaxfpftqdqvg9jxgg8zn2sscqzysyv8kgctq7haghaus4wqd262mxr9342mvp23gdsv6vmgkce9zgshjd0av06dq3xpe8cy6fucnj454smkqxuetyvu3h5jggx2w8ethlvcp6g3ldq",
   │     "msatoshi": -150000,
-  │     "processed_at": "2018-08-27T06:49:09.333471",
+  │     "processed_at": "2018-08-28T21:37:02.966579",
   │     "state": "approved"
   │   }
   │ }
@@ -100,17 +100,17 @@ Table of Contents
   │   "data": [
   │     {
   │       "description": "Foobar #ldq",
-  │       "id": "04d39707-e266-4195-8701-3145fa18dcc4",
-  │       "inserted_at": "2018-08-27T06:49:09.276258",
+  │       "id": "d051b90e-cd02-43a5-8bfc-3cc031035739",
+  │       "inserted_at": "2018-08-28T21:37:02.911710",
   │       "invoice": "lntb1500n1pd0c66dpp5p8rpzxck9u7umfl9u7dqratj8rlfthe29xl6ejhwt2exuaxfpftqdqvg9jxgg8zn2sscqzysyv8kgctq7haghaus4wqd262mxr9342mvp23gdsv6vmgkce9zgshjd0av06dq3xpe8cy6fucnj454smkqxuetyvu3h5jggx2w8ethlvcp6g3ldq",
   │       "msatoshi": -150000,
-  │       "processed_at": "2018-08-27T06:49:09.333471",
+  │       "processed_at": "2018-08-28T21:37:02.966579",
   │       "state": "approved"
   │     },
   │     {
   │       "description": "Funding transaction",
-  │       "id": "cbfc9e46-879f-47e9-bf8f-c544d19a71d3",
-  │       "inserted_at": "2018-08-27T06:49:09.005924",
+  │       "id": "72b87200-3993-49e9-92e6-b99749971eea",
+  │       "inserted_at": "2018-08-28T21:37:02.625389",
   │       "msatoshi": 1000000000,
   │       "processed_at": null,
   │       "state": "approved"
@@ -140,10 +140,10 @@ Table of Contents
   │ 
   │ {
   │   "data": {
-  │     "claim_expires_at": "2018-08-27T07:04:09.506776",
+  │     "claim_expires_at": "2018-08-28T21:49:05.397935",
   │     "description": "Free BTC",
-  │     "id": "a923af54-d7e7-480a-9f9c-510e438c46fa",
-  │     "inserted_at": "2018-08-27T06:49:09.506849",
+  │     "id": "b9515b26-3948-474e-815d-ffc779755739",
+  │     "inserted_at": "2018-08-28T21:34:05.398011",
   │     "msatoshi": -1000,
   │     "processed_at": null,
   │     "state": "initial"
@@ -171,12 +171,12 @@ Table of Contents
   │ 
   │ {
   │   "data": {
-  │     "claim_expires_at": "2018-08-28T18:14:08.405098",
+  │     "claim_expires_at": "2018-08-28T21:52:03.209147",
   │     "description": "Free BTC",
-  │     "id": "c7373767-dc5c-443b-88c1-a2024ba3ae20",
-  │     "inserted_at": "2018-08-28T17:59:08.405212",
+  │     "id": "574b6454-fb8f-4f0b-b45b-ca5c56d07a52",
+  │     "inserted_at": "2018-08-28T21:37:03.209264",
   │     "msatoshi": -999850001,
-  │     "processed_at": "2018-08-28T17:59:08.418143",
+  │     "processed_at": "2018-08-28T21:37:03.219360",
   │     "state": "declined"
   │   }
   │ }
@@ -208,18 +208,22 @@ Table of Contents
 1.5.2 Claim transaction (payee)
 ╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌
 
+◊ 1.5.2.1 Success
+
   ┌────
-  │ _ = POST('/api/wallet/transactions', {"claim_token": "373e4ceb-e305-49ee-bc40-ddf6cb9e73c1"})
+  │ _ = POST('/api/wallet/transactions', {"claim_token": "e49511d0-4374-4e0f-9400-fa30bf8c34d8"})
   └────
 
   ┌────
+  │ 201 Created
+  │ 
   │ {
   │   "data": {
   │     "description": "Free BTC",
-  │     "id": "32d8284d-90cc-4737-ae56-2eb1c6e2a732",
-  │     "inserted_at": "2018-08-25T16:04:19.984684",
+  │     "id": "980ce198-f97f-45b9-8d78-b7ae7a9fe117",
+  │     "inserted_at": "2018-08-28T21:34:55.285028",
   │     "msatoshi": 1000,
-  │     "processed_at": "2018-08-25T16:04:19.984597",
+  │     "processed_at": "2018-08-28T21:34:55.284941",
   │     "state": "approved"
   │   }
   │ }
@@ -229,8 +233,8 @@ Table of Contents
   ◊ 1.5.2.1.1 Call is idempotent
 
     ┌────
-    │ _ = POST('/api/wallet/transactions', {"claim_token": "b9beb314-6192-4934-8886-e8dbf77f723d"})
-    │ _ = POST('/api/wallet/transactions', {"claim_token": "b9beb314-6192-4934-8886-e8dbf77f723d"})
+    │ _ = POST('/api/wallet/transactions', {"claim_token": "e49511d0-4374-4e0f-9400-fa30bf8c34d8"})
+    │ _ = POST('/api/wallet/transactions', {"claim_token": "e49511d0-4374-4e0f-9400-fa30bf8c34d8"})
     └────
 
     ┌────
@@ -239,10 +243,10 @@ Table of Contents
     │ {
     │   "data": {
     │     "description": "Free BTC",
-    │     "id": "c43b6820-0ea5-4869-80a5-095cb1ae8e38",
-    │     "inserted_at": "2018-08-28T21:26:56.506913",
+    │     "id": "980ce198-f97f-45b9-8d78-b7ae7a9fe117",
+    │     "inserted_at": "2018-08-28T21:34:55.285028",
     │     "msatoshi": 1000,
-    │     "processed_at": "2018-08-28T21:26:56.506803",
+    │     "processed_at": "2018-08-28T21:34:55.284941",
     │     "state": "approved"
     │   }
     │ }
@@ -251,10 +255,10 @@ Table of Contents
     │ {
     │   "data": {
     │     "description": "Free BTC",
-    │     "id": "c43b6820-0ea5-4869-80a5-095cb1ae8e38",
-    │     "inserted_at": "2018-08-28T21:26:56.506913",
+    │     "id": "980ce198-f97f-45b9-8d78-b7ae7a9fe117",
+    │     "inserted_at": "2018-08-28T21:34:55.285028",
     │     "msatoshi": 1000,
-    │     "processed_at": "2018-08-28T21:26:56.506803",
+    │     "processed_at": "2018-08-28T21:34:55.284941",
     │     "state": "approved"
     │   }
     │ }
@@ -273,7 +277,7 @@ Table of Contents
   └────
 
   ┌────
-  │ _ = POST('/api/wallet/transactions', {"claim_token": "4e2474f0-b999-4c02-860b-95c270f7cb22"})
+  │ _ = POST('/api/wallet/transactions', {"claim_token": "abfb0e24-9719-4eec-b0c1-07fd4e11f9a6"})
   └────
 
   ┌────
@@ -300,14 +304,16 @@ Table of Contents
   └────
 
   ┌────
+  │ 200 OK
+  │ 
   │ {
   │   "data": {
-  │     "claim_expires_at": "2018-08-25T16:18:14.170513",
+  │     "claim_expires_at": "2018-08-28T21:49:05.397935",
   │     "description": "Free BTC",
-  │     "id": "201992a6-3636-4133-a661-b2c24f5735aa",
-  │     "inserted_at": "2018-08-25T16:03:14.170590",
+  │     "id": "b9515b26-3948-474e-815d-ffc779755739",
+  │     "inserted_at": "2018-08-28T21:34:05.398011",
   │     "msatoshi": -1000,
-  │     "processed_at": "2018-08-25T16:04:19.986538",
+  │     "processed_at": "2018-08-28T21:34:55.288132",
   │     "state": "approved"
   │   }
   │ }

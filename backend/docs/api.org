@@ -64,7 +64,7 @@
     "balance": {
       "msatoshi": 1000000000
     },
-    "id": "e103ef6f-ed03-4166-ba5c-f083dcfe1515"
+    "id": "15bf9699-d13b-4d33-b06b-95202d1f59a1"
   }
 }
 #+end_example
@@ -79,7 +79,7 @@
 : {
 :   "data": {
 :     "description": "Foobar #ldq",
-:     "dst_alias": "Barbaz #039",
+:     "dst_alias": "SomeNodeAlias #039",
 :     "msatoshi": 150000
 :   }
 : }
@@ -95,11 +95,11 @@
 {
   "data": {
     "description": "Foobar #ldq",
-    "id": "ae9b1709-36b9-4664-913c-1a215c480b7d",
-    "inserted_at": "2018-08-28T08:34:08.258116",
+    "id": "dc18bb9e-9848-47a2-a4ed-390558946009",
+    "inserted_at": "2018-08-28T21:33:39.339356",
     "invoice": "lntb1500n1pd0c66dpp5p8rpzxck9u7umfl9u7dqratj8rlfthe29xl6ejhwt2exuaxfpftqdqvg9jxgg8zn2sscqzysyv8kgctq7haghaus4wqd262mxr9342mvp23gdsv6vmgkce9zgshjd0av06dq3xpe8cy6fucnj454smkqxuetyvu3h5jggx2w8ethlvcp6g3ldq",
     "msatoshi": -150000,
-    "processed_at": "2018-08-28T08:34:08.311921",
+    "processed_at": "2018-08-28T21:33:39.399469",
     "state": "approved"
   }
 }
@@ -117,17 +117,17 @@
   "data": [
     {
       "description": "Foobar #ldq",
-      "id": "ae9b1709-36b9-4664-913c-1a215c480b7d",
-      "inserted_at": "2018-08-28T08:34:08.258116",
+      "id": "dc18bb9e-9848-47a2-a4ed-390558946009",
+      "inserted_at": "2018-08-28T21:33:39.339356",
       "invoice": "lntb1500n1pd0c66dpp5p8rpzxck9u7umfl9u7dqratj8rlfthe29xl6ejhwt2exuaxfpftqdqvg9jxgg8zn2sscqzysyv8kgctq7haghaus4wqd262mxr9342mvp23gdsv6vmgkce9zgshjd0av06dq3xpe8cy6fucnj454smkqxuetyvu3h5jggx2w8ethlvcp6g3ldq",
       "msatoshi": -150000,
-      "processed_at": "2018-08-28T08:34:08.311921",
+      "processed_at": "2018-08-28T21:33:39.399469",
       "state": "approved"
     },
     {
       "description": "Funding transaction",
-      "id": "7a1ad37c-0645-4474-be5b-559f22fd9007",
-      "inserted_at": "2018-08-28T08:34:00.006318",
+      "id": "ba25d362-3d2e-4166-accc-60ca0fe7e2bd",
+      "inserted_at": "2018-08-28T21:33:27.507080",
       "msatoshi": 1000000000,
       "processed_at": null,
       "state": "approved"
@@ -152,10 +152,10 @@
 
 {
   "data": {
-    "claim_expires_at": "2018-08-28T08:49:14.859790",
+    "claim_expires_at": "2018-08-28T21:49:05.397935",
     "description": "Free BTC",
-    "id": "bf1f4de9-18c1-4d6a-a315-88a782f58d03",
-    "inserted_at": "2018-08-28T08:34:14.859925",
+    "id": "b9515b26-3948-474e-815d-ffc779755739",
+    "inserted_at": "2018-08-28T21:34:05.398011",
     "msatoshi": -1000,
     "processed_at": null,
     "state": "initial"
@@ -182,12 +182,12 @@ It returns declined transaction.
 
 {
   "data": {
-    "claim_expires_at": "2018-08-27T07:15:34.543600",
+    "claim_expires_at": "2018-08-28T21:49:28.802290",
     "description": "Free BTC",
-    "id": "aa7b68af-ec32-4680-8975-1e38947b170e",
-    "inserted_at": "2018-08-27T07:00:34.543679",
+    "id": "dc8dcff8-8a84-4d0b-a3d3-ff21618ef86a",
+    "inserted_at": "2018-08-28T21:34:28.802358",
     "msatoshi": -999849001,
-    "processed_at": "2018-08-27T07:00:34.549174",
+    "processed_at": "2018-08-28T21:34:28.809444",
     "state": "declined"
   }
 }
@@ -215,41 +215,42 @@ It returns declined transaction.
 *** Claim transaction (payee)
 **** Success
 #+BEGIN_SRC python :cache yes
-  _ = POST('/api/wallet/transactions', {"claim_token": "4dd171e7-c336-4eb1-8b0c-050e6965dc77"})
+  _ = POST('/api/wallet/transactions', {"claim_token": "e49511d0-4374-4e0f-9400-fa30bf8c34d8"})
 #+END_SRC
 
-#+RESULTS[455f9d2496d1d7fcedc3a37dd1505599ab281c6b]:
+#+RESULTS[9f1ba8d17731df90597f47c61f8c69a8bb20111c]:
 #+begin_example
 201 Created
 
 {
   "data": {
     "description": "Free BTC",
-    "id": "e56abb55-cdc3-4925-85fe-cc5fc89ec678",
-    "inserted_at": "2018-08-28T08:34:37.419446",
+    "id": "980ce198-f97f-45b9-8d78-b7ae7a9fe117",
+    "inserted_at": "2018-08-28T21:34:55.285028",
     "msatoshi": 1000,
-    "processed_at": "2018-08-28T08:34:37.419340",
+    "processed_at": "2018-08-28T21:34:55.284941",
     "state": "approved"
   }
 }
 #+end_example
+
 ***** Call is idempotent
 #+BEGIN_SRC python :cache yes
-  _ = POST('/api/wallet/transactions', {"claim_token": "b9beb314-6192-4934-8886-e8dbf77f723d"})
-  _ = POST('/api/wallet/transactions', {"claim_token": "b9beb314-6192-4934-8886-e8dbf77f723d"})
+  _ = POST('/api/wallet/transactions', {"claim_token": "e49511d0-4374-4e0f-9400-fa30bf8c34d8"})
+  _ = POST('/api/wallet/transactions', {"claim_token": "e49511d0-4374-4e0f-9400-fa30bf8c34d8"})
 #+END_SRC
 
-#+RESULTS[30acbdc185c579d33aa484007cfa68a1f92af328]:
+#+RESULTS[d231476f41de0d34770ad77906cd081a6afb0393]:
 #+begin_example
 201 Created
 
 {
   "data": {
     "description": "Free BTC",
-    "id": "c43b6820-0ea5-4869-80a5-095cb1ae8e38",
-    "inserted_at": "2018-08-28T21:26:56.506913",
+    "id": "980ce198-f97f-45b9-8d78-b7ae7a9fe117",
+    "inserted_at": "2018-08-28T21:34:55.285028",
     "msatoshi": 1000,
-    "processed_at": "2018-08-28T21:26:56.506803",
+    "processed_at": "2018-08-28T21:34:55.284941",
     "state": "approved"
   }
 }
@@ -258,10 +259,10 @@ It returns declined transaction.
 {
   "data": {
     "description": "Free BTC",
-    "id": "c43b6820-0ea5-4869-80a5-095cb1ae8e38",
-    "inserted_at": "2018-08-28T21:26:56.506913",
+    "id": "980ce198-f97f-45b9-8d78-b7ae7a9fe117",
+    "inserted_at": "2018-08-28T21:34:55.285028",
     "msatoshi": 1000,
-    "processed_at": "2018-08-28T21:26:56.506803",
+    "processed_at": "2018-08-28T21:34:55.284941",
     "state": "approved"
   }
 }
@@ -280,10 +281,10 @@ It returns declined transaction.
 #+RESULTS[b463bddae0f43638809d5729731e7775931b62d5]:
 
 #+BEGIN_SRC python :cache yes
-  _ = POST('/api/wallet/transactions', {"claim_token": "4e2474f0-b999-4c02-860b-95c270f7cb22"})
+  _ = POST('/api/wallet/transactions', {"claim_token": "abfb0e24-9719-4eec-b0c1-07fd4e11f9a6"})
 #+END_SRC
 
-#+RESULTS[eacd3b8a1c53eb82831de2f684f4efb1e527fd93]:
+#+RESULTS[c6c9470f5d3b1d56585ac63c3f514ee9e20415f4]:
 : 400 Bad Request
 : 
 : {
@@ -296,23 +297,24 @@ It returns declined transaction.
 - status :: approved
 - processed_at :: timestamp of claim event
 
-#+BEGIN_SRC python :cache yes
+#+BEGIN_SRC python
   _ = GET('/api/wallet/transactions/' + email_src_trn['id'])
 #+END_SRC
 
-#+RESULTS[ac191976045a44a7891a7bf1e99d15dc8f1b8378]:
+#+RESULTS:
 #+begin_example
 200 OK
 
 {
   "data": {
-    "claim_expires_at": "2018-08-28T08:49:14.859790",
+    "claim_expires_at": "2018-08-28T21:49:05.397935",
     "description": "Free BTC",
-    "id": "bf1f4de9-18c1-4d6a-a315-88a782f58d03",
-    "inserted_at": "2018-08-28T08:34:14.859925",
+    "id": "b9515b26-3948-474e-815d-ffc779755739",
+    "inserted_at": "2018-08-28T21:34:05.398011",
     "msatoshi": -1000,
-    "processed_at": "2018-08-28T08:34:37.423418",
+    "processed_at": "2018-08-28T21:34:55.288132",
     "state": "approved"
   }
 }
 #+end_example
+
