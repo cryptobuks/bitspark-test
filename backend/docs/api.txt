@@ -226,6 +226,41 @@ Table of Contents
   └────
 
 
+  ◊ 1.5.2.1.1 Call is idempotent
+
+    ┌────
+    │ _ = POST('/api/wallet/transactions', {"claim_token": "b9beb314-6192-4934-8886-e8dbf77f723d"})
+    │ _ = POST('/api/wallet/transactions', {"claim_token": "b9beb314-6192-4934-8886-e8dbf77f723d"})
+    └────
+
+    ┌────
+    │ 201 Created
+    │ 
+    │ {
+    │   "data": {
+    │     "description": "Free BTC",
+    │     "id": "c43b6820-0ea5-4869-80a5-095cb1ae8e38",
+    │     "inserted_at": "2018-08-28T21:26:56.506913",
+    │     "msatoshi": 1000,
+    │     "processed_at": "2018-08-28T21:26:56.506803",
+    │     "state": "approved"
+    │   }
+    │ }
+    │ 201 Created
+    │ 
+    │ {
+    │   "data": {
+    │     "description": "Free BTC",
+    │     "id": "c43b6820-0ea5-4869-80a5-095cb1ae8e38",
+    │     "inserted_at": "2018-08-28T21:26:56.506913",
+    │     "msatoshi": 1000,
+    │     "processed_at": "2018-08-28T21:26:56.506803",
+    │     "state": "approved"
+    │   }
+    │ }
+    └────
+
+
 ◊ 1.5.2.2 Failure: Expired
 
   ┌────

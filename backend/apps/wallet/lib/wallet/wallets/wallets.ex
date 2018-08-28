@@ -306,9 +306,39 @@ defmodule Wallet.Wallets do
     end
   end
 
-  def claim_transaction(%Wallets.Wallet{} = wallet, token) do
+  @doc """
+  Claim given transaction (by token)
+
+  Call is idempotent, and returns existing transaction if transaction has
+  already been claimed by same wallet.
+
+  ## Examples
+
+    iex> claim_transaction("373e4ceb-e305-49ee-bc40-ddf6cb9e73c1")
+    {:ok, %Transaction{}}
+
+  """
+  def claim_transaction(%Wallets.Wallet{} = wallet, token) when is_bitstring(token) do
     with {:ok, src_trn} <- get_transaction_by_token(token),
-         :ok <- Validation.expect_claimable_transaction(src_trn),
+         {:ok, dst_trn} <- claim_transaction(wallet, src_trn)
+      do
+      {:ok, dst_trn}
+    end
+  end
+
+  def claim_transaction(%Wallets.Wallet{} = wallet, %Wallets.Transaction{claimed_by: claimed_by} = src_trn) when claimed_by != nil do
+    dst_trn = get_transaction!(claimed_by)
+
+    if wallet.id == dst_trn.wallet_id do
+      {:ok, dst_trn}
+    else
+      # Should fail with already claimed error
+      Validation.expect_claimable_transaction(src_trn)
+    end
+  end
+
+  def claim_transaction(%Wallets.Wallet{} = wallet, %Wallets.Transaction{} = src_trn) do
+    with :ok <- Validation.expect_claimable_transaction(src_trn),
          {:ok, %Wallets.Transaction{} = dst_trn} <- Repo.transaction(fn ->
            case create_transaction(
                  %{"wallet_id" => wallet.id,
@@ -328,11 +358,11 @@ defmodule Wallet.Wallets do
                error
            end
          end)
-    do
-      {:ok, dst_trn}
-    else
-      {:error, _} = error ->
-        error
+      do
+        {:ok, dst_trn}
+      else
+        {:error, _} = error ->
+          error
     end
   end
 

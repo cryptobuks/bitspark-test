@@ -233,6 +233,40 @@ It returns declined transaction.
   }
 }
 #+end_example
+***** Call is idempotent
+#+BEGIN_SRC python :cache yes
+  _ = POST('/api/wallet/transactions', {"claim_token": "b9beb314-6192-4934-8886-e8dbf77f723d"})
+  _ = POST('/api/wallet/transactions', {"claim_token": "b9beb314-6192-4934-8886-e8dbf77f723d"})
+#+END_SRC
+
+#+RESULTS[30acbdc185c579d33aa484007cfa68a1f92af328]:
+#+begin_example
+201 Created
+
+{
+  "data": {
+    "description": "Free BTC",
+    "id": "c43b6820-0ea5-4869-80a5-095cb1ae8e38",
+    "inserted_at": "2018-08-28T21:26:56.506913",
+    "msatoshi": 1000,
+    "processed_at": "2018-08-28T21:26:56.506803",
+    "state": "approved"
+  }
+}
+201 Created
+
+{
+  "data": {
+    "description": "Free BTC",
+    "id": "c43b6820-0ea5-4869-80a5-095cb1ae8e38",
+    "inserted_at": "2018-08-28T21:26:56.506913",
+    "msatoshi": 1000,
+    "processed_at": "2018-08-28T21:26:56.506803",
+    "state": "approved"
+  }
+}
+#+end_example
+
 **** Failure: Expired
 #+BEGIN_SRC python :cache yes
   email_expired_src_trn = silent(lambda: POST('/api/wallet/transactions', {

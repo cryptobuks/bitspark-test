@@ -227,10 +227,23 @@ defmodule Wallet.WalletsTest do
         src_transaction_id: "<UUID>",
         state: "approved"
       }
-
     end
 
-    test "claimable transaction should be only claimed once" do
+    test "claimable transaction should be only claimed once (same wallet)" do
+      # Source transaction
+      src_trn = claimable_trn_fixture(%{amount: {1000, :msatoshi}, description: "foo"})
+
+      # Claim
+      dst_wallet = create_wallet("dst")
+      {:ok, dst_trn} = Wallets.claim_transaction(dst_wallet, src_trn.claim_token)
+      assert_value Wallets.get_wallet_balance(dst_wallet) == 1000
+
+      # Claim #2 should return same dst_trn
+      assert {:ok, dst_trn} == Wallets.claim_transaction(dst_wallet, src_trn.claim_token)
+      assert_value Wallets.get_wallet_balance(dst_wallet) == 1000
+    end
+
+    test "claimable transaction should be only claimed once (different wallet)" do
       # Source transaction
       src_trn = claimable_trn_fixture(%{amount: {1000, :msatoshi}, description: "foo"})
 
@@ -238,13 +251,16 @@ defmodule Wallet.WalletsTest do
       dst_wallet = create_wallet("dst")
       {:ok, _} = Wallets.claim_transaction(dst_wallet, src_trn.claim_token)
 
-      # Claim #2
-      assert_value Wallets.claim_transaction(dst_wallet, src_trn.claim_token) ==
+      # Claim #2 fails when different wallet tries it
+      different_wallet = create_wallet("dst_different")
+      assert_value Wallets.claim_transaction(different_wallet, src_trn.claim_token) ==
                      {:error,
                       %Wallet.ValidationError{
                         details: "Non-initial state (approved)",
                         message: "Non-claimable transaction"
                       }}
+      assert_value Wallets.get_wallet_balance(dst_wallet) == 1000
+      assert_value Wallets.get_wallet_balance(different_wallet) == 0
     end
 
     test "claimable transaction isn't claimable after it expires" do
