@@ -6,7 +6,7 @@
   make -s -C .. token
 #+END_SRC
 
-#+BEGIN_SRC python :preamble "# -*- coding: utf-8 -*-" :var token=token :exports none
+#+BEGIN_SRC python :preamble "# -*- coding: utf-8 -*-" :results output silent :var token=token :exports none
   import subprocess
   import http.client
   import json
@@ -49,26 +49,33 @@
 #+END_SRC
 
 #+RESULTS:
+
 ** Wallet info
 #+BEGIN_SRC python
   _ = GET('/api/wallet')
 #+END_SRC
 
 #+RESULTS:
-: {
-:   "data": {
-:     "balance": {
-:       "msatoshi": 1000000000
-:     },
-:     "id": "0dc8b29a-1181-4425-be68-e99db9eb30fb"
-:   }
-: }
+#+begin_example
+200 OK
+
+{
+  "data": {
+    "balance": {
+      "msatoshi": 1000000000
+    },
+    "id": "e103ef6f-ed03-4166-ba5c-f083dcfe1515"
+  }
+}
+#+end_example
 ** Invoice info
 #+BEGIN_SRC python
   _ = GET('/api/wallet/invoice/lntb1500n1pd0c66dpp5p8rpzxck9u7umfl9u7dqratj8rlfthe29xl6ejhwt2exuaxfpftqdqvg9jxgg8zn2sscqzysyv8kgctq7haghaus4wqd262mxr9342mvp23gdsv6vmgkce9zgshjd0av06dq3xpe8cy6fucnj454smkqxuetyvu3h5jggx2w8ethlvcp6g3ldq')
 #+END_SRC
 
 #+RESULTS:
+: 200 OK
+: 
 : {
 :   "data": {
 :     "description": "Foobar #ldq",
@@ -83,14 +90,16 @@
 
 #+RESULTS:
 #+begin_example
+201 Created
+
 {
   "data": {
     "description": "Foobar #ldq",
-    "id": "32934c9b-b97d-4694-bfcd-00f148b80bcb",
-    "inserted_at": "2018-08-25T16:00:47.851188",
+    "id": "ae9b1709-36b9-4664-913c-1a215c480b7d",
+    "inserted_at": "2018-08-28T08:34:08.258116",
     "invoice": "lntb1500n1pd0c66dpp5p8rpzxck9u7umfl9u7dqratj8rlfthe29xl6ejhwt2exuaxfpftqdqvg9jxgg8zn2sscqzysyv8kgctq7haghaus4wqd262mxr9342mvp23gdsv6vmgkce9zgshjd0av06dq3xpe8cy6fucnj454smkqxuetyvu3h5jggx2w8ethlvcp6g3ldq",
     "msatoshi": -150000,
-    "processed_at": "2018-08-25T16:00:47.894576",
+    "processed_at": "2018-08-28T08:34:08.311921",
     "state": "approved"
   }
 }
@@ -102,21 +111,23 @@
 
 #+RESULTS:
 #+begin_example
+200 OK
+
 {
   "data": [
     {
       "description": "Foobar #ldq",
-      "id": "32934c9b-b97d-4694-bfcd-00f148b80bcb",
-      "inserted_at": "2018-08-25T16:00:47.851188",
+      "id": "ae9b1709-36b9-4664-913c-1a215c480b7d",
+      "inserted_at": "2018-08-28T08:34:08.258116",
       "invoice": "lntb1500n1pd0c66dpp5p8rpzxck9u7umfl9u7dqratj8rlfthe29xl6ejhwt2exuaxfpftqdqvg9jxgg8zn2sscqzysyv8kgctq7haghaus4wqd262mxr9342mvp23gdsv6vmgkce9zgshjd0av06dq3xpe8cy6fucnj454smkqxuetyvu3h5jggx2w8ethlvcp6g3ldq",
       "msatoshi": -150000,
-      "processed_at": "2018-08-25T16:00:47.894576",
+      "processed_at": "2018-08-28T08:34:08.311921",
       "state": "approved"
     },
     {
       "description": "Funding transaction",
-      "id": "eb947ef5-7ab5-45aa-8ee5-f6fc1429d2e5",
-      "inserted_at": "2018-08-25T15:56:46.784985",
+      "id": "7a1ad37c-0645-4474-be5b-559f22fd9007",
+      "inserted_at": "2018-08-28T08:34:00.006318",
       "msatoshi": 1000000000,
       "processed_at": null,
       "state": "approved"
@@ -135,20 +146,23 @@
   })['data']
 #+END_SRC
 
-#+RESULTS[6f1b1513150382f307bc972f0c8533d6ad5b1ba3]:
+#+RESULTS[add74a74026bf272a0270247a1c37396ad10f1ee]:
 #+begin_example
+201 Created
+
 {
   "data": {
-    "claim_expires_at": "2018-08-25T16:18:14.170513",
+    "claim_expires_at": "2018-08-28T08:49:14.859790",
     "description": "Free BTC",
-    "id": "201992a6-3636-4133-a661-b2c24f5735aa",
-    "inserted_at": "2018-08-25T16:03:14.170590",
+    "id": "bf1f4de9-18c1-4d6a-a315-88a782f58d03",
+    "inserted_at": "2018-08-28T08:34:14.859925",
     "msatoshi": -1000,
     "processed_at": null,
     "state": "initial"
   }
 }
 #+end_example
+
 **** With amount exceeding wallet balance
 It returns declined transaction.
 
@@ -199,19 +213,22 @@ It returns declined transaction.
 : }
 
 *** Claim transaction (payee)
+**** Success
 #+BEGIN_SRC python :cache yes
-  _ = POST('/api/wallet/transactions', {"claim_token": "373e4ceb-e305-49ee-bc40-ddf6cb9e73c1"})
+  _ = POST('/api/wallet/transactions', {"claim_token": "4dd171e7-c336-4eb1-8b0c-050e6965dc77"})
 #+END_SRC
 
-#+RESULTS[d1041f17c0c01fd7dc87e4d9f9b879c88bda4d49]:
+#+RESULTS[455f9d2496d1d7fcedc3a37dd1505599ab281c6b]:
 #+begin_example
+201 Created
+
 {
   "data": {
     "description": "Free BTC",
-    "id": "32d8284d-90cc-4737-ae56-2eb1c6e2a732",
-    "inserted_at": "2018-08-25T16:04:19.984684",
+    "id": "e56abb55-cdc3-4925-85fe-cc5fc89ec678",
+    "inserted_at": "2018-08-28T08:34:37.419446",
     "msatoshi": 1000,
-    "processed_at": "2018-08-25T16:04:19.984597",
+    "processed_at": "2018-08-28T08:34:37.419340",
     "state": "approved"
   }
 }
@@ -227,14 +244,16 @@ It returns declined transaction.
 
 #+RESULTS[ac191976045a44a7891a7bf1e99d15dc8f1b8378]:
 #+begin_example
+200 OK
+
 {
   "data": {
-    "claim_expires_at": "2018-08-25T16:18:14.170513",
+    "claim_expires_at": "2018-08-28T08:49:14.859790",
     "description": "Free BTC",
-    "id": "201992a6-3636-4133-a661-b2c24f5735aa",
-    "inserted_at": "2018-08-25T16:03:14.170590",
+    "id": "bf1f4de9-18c1-4d6a-a315-88a782f58d03",
+    "inserted_at": "2018-08-28T08:34:14.859925",
     "msatoshi": -1000,
-    "processed_at": "2018-08-25T16:04:19.986538",
+    "processed_at": "2018-08-28T08:34:37.423418",
     "state": "approved"
   }
 }
