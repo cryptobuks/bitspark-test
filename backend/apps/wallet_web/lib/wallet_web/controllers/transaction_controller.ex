@@ -61,7 +61,7 @@ defmodule WalletWeb.TransactionController do
     user = Accounts.login!(conn.assigns.joken_claims["sub"])
     wallet = Wallets.get_or_create_wallet!(user)
 
-    with {:ok, %Transaction{} = transaction} <- Wallets.claim_transaction!(wallet, claim_token) do
+    with {:ok, %Transaction{} = transaction} <- Wallets.claim_transaction(wallet, claim_token) do
       conn
       |> put_status(:created)
       |> put_resp_header("location", transaction_path(conn, :show, transaction))

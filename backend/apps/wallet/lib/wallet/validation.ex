@@ -15,13 +15,13 @@ defmodule Wallet.Validation do
   def expect_claimable_transaction(%Wallets.Transaction{
         claim_token: token}) when token == nil,
     do: {:error, %Wallet.ValidationError{
-            message: "Non claimable transaction",
+            message: "Non-claimable transaction",
             details: "Empty claim_token"}}
 
   def expect_claimable_transaction(%Wallets.Transaction{
         state: state}) when state != "initial",
     do: {:error, %Wallet.ValidationError{
-            message: "Non claimable transaction",
+            message: "Non-claimable transaction",
             details: "Non-initial state (#{state})"}}
 
   def expect_claimable_transaction(%Wallets.Transaction{}),

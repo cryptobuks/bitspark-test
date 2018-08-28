@@ -191,9 +191,12 @@ defmodule Wallet.WalletsTest do
 
       # And not claimable
       dst_wallet = create_wallet("dst")
-      assert_raise RuntimeError, "Can't claim this transaction - Non-initial state (declined)", fn ->
-        Wallets.claim_transaction!(dst_wallet, src_trn.claim_token)
-      end
+      assert_value Wallets.claim_transaction(dst_wallet, src_trn.claim_token) ==
+                     {:error,
+                      %Wallet.ValidationError{
+                        details: "Non-initial state (declined)",
+                        message: "Non-claimable transaction"
+                      }}
       assert_value canonicalize(Wallets.get_wallet!(dst_wallet.id) |> Map.take([:balance])) == %{balance: 0}
     end
 
@@ -207,7 +210,7 @@ defmodule Wallet.WalletsTest do
 
       # Claim
       dst_wallet = create_wallet("sub2")
-      {:ok, %Wallets.Transaction{} = dst_trn} = Wallets.claim_transaction!(dst_wallet, src_trn.claim_token)
+      {:ok, %Wallets.Transaction{} = dst_trn} = Wallets.claim_transaction(dst_wallet, src_trn.claim_token)
 
       # Wallet balances are updated correctly
       assert_value canonicalize(Wallets.get_wallet!(src_wallet.id) |> Map.take([:balance])) == %{balance: 0}
@@ -233,12 +236,15 @@ defmodule Wallet.WalletsTest do
 
       # Claim
       dst_wallet = create_wallet("dst")
-      Wallets.claim_transaction!(dst_wallet, src_trn.claim_token)
+      {:ok, _} = Wallets.claim_transaction(dst_wallet, src_trn.claim_token)
 
       # Claim #2
-      assert_raise RuntimeError, "Can't claim this transaction - Non-initial state (approved)", fn ->
-        Wallets.claim_transaction!(dst_wallet, src_trn.claim_token)
-      end
+      assert_value Wallets.claim_transaction(dst_wallet, src_trn.claim_token) ==
+                     {:error,
+                      %Wallet.ValidationError{
+                        details: "Non-initial state (approved)",
+                        message: "Non-claimable transaction"
+                      }}
     end
 
     test "claimable transaction isn't claimable after it expires" do
@@ -247,9 +253,12 @@ defmodule Wallet.WalletsTest do
 
       # Claim
       dst_wallet = create_wallet("dst")
-      assert_raise RuntimeError, "Can't claim this transaction - Non-initial state (declined)", fn ->
-        Wallets.claim_transaction!(dst_wallet, src_trn.claim_token)
-      end
+      assert_value Wallets.claim_transaction(dst_wallet, src_trn.claim_token) ==
+                     {:error,
+                      %Wallet.ValidationError{
+                        details: "Non-initial state (declined)",
+                        message: "Non-claimable transaction"
+                      }}
 
       # Source transaction should be declined now
       src_trn_after = Wallets.get_transaction!(src_trn.id)

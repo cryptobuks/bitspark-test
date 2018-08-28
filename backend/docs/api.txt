@@ -152,7 +152,38 @@ Table of Contents
   └────
 
 
-◊ 1.5.1.1 With invalid amount
+◊ 1.5.1.1 With amount exceeding wallet balance
+
+  It returns declined transaction.
+
+  ┌────
+  │ wallet = silent(lambda: GET('/api/wallet'))
+  │ _ = POST('/api/wallet/transactions', {
+  │     "to_email": "a@b.cz",
+  │     "msatoshi": wallet['data']['balance']['msatoshi'] + 1,
+  │     "description": "Free BTC",
+  │     "expires_after": 900
+  │ })
+  └────
+
+  ┌────
+  │ 201 Created
+  │ 
+  │ {
+  │   "data": {
+  │     "claim_expires_at": "2018-08-28T18:14:08.405098",
+  │     "description": "Free BTC",
+  │     "id": "c7373767-dc5c-443b-88c1-a2024ba3ae20",
+  │     "inserted_at": "2018-08-28T17:59:08.405212",
+  │     "msatoshi": -999850001,
+  │     "processed_at": "2018-08-28T17:59:08.418143",
+  │     "state": "declined"
+  │   }
+  │ }
+  └────
+
+
+◊ 1.5.1.2 With invalid amount
 
   ┌────
   │ _ = POST('/api/wallet/transactions', {
@@ -190,6 +221,32 @@ Table of Contents
   │     "msatoshi": 1000,
   │     "processed_at": "2018-08-25T16:04:19.984597",
   │     "state": "approved"
+  │   }
+  │ }
+  └────
+
+
+◊ 1.5.2.2 Failure: Expired
+
+  ┌────
+  │ email_expired_src_trn = silent(lambda: POST('/api/wallet/transactions', {
+  │     "to_email": "a@b.cz",
+  │     "msatoshi": 1000,
+  │     "description": "Free BTC",
+  │     "expires_after": 0          # already expired
+  │ }))['data']
+  └────
+
+  ┌────
+  │ _ = POST('/api/wallet/transactions', {"claim_token": "4e2474f0-b999-4c02-860b-95c270f7cb22"})
+  └────
+
+  ┌────
+  │ 400 Bad Request
+  │ 
+  │ {
+  │   "error": {
+  │     "detail": "Non-claimable transaction"
   │   }
   │ }
   └────

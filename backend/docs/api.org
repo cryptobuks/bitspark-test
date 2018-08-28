@@ -233,6 +233,30 @@ It returns declined transaction.
   }
 }
 #+end_example
+**** Failure: Expired
+#+BEGIN_SRC python :cache yes
+  email_expired_src_trn = silent(lambda: POST('/api/wallet/transactions', {
+      "to_email": "a@b.cz",
+      "msatoshi": 1000,
+      "description": "Free BTC",
+      "expires_after": 0          # already expired
+  }))['data']
+#+END_SRC
+
+#+RESULTS[b463bddae0f43638809d5729731e7775931b62d5]:
+
+#+BEGIN_SRC python :cache yes
+  _ = POST('/api/wallet/transactions', {"claim_token": "4e2474f0-b999-4c02-860b-95c270f7cb22"})
+#+END_SRC
+
+#+RESULTS[eacd3b8a1c53eb82831de2f684f4efb1e527fd93]:
+: 400 Bad Request
+: 
+: {
+:   "error": {
+:     "detail": "Non-claimable transaction"
+:   }
+: }
 
 *** Payer sees that transaction has been claimed
 - status :: approved
