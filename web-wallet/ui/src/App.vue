@@ -38,6 +38,11 @@ export default {
     user: function () {
       this.$store.dispatch('fetchUserInfo')
       this.$store.dispatch('fetchTransactions')
+    },
+    '$route': function (value) {
+      if (value.name === 'History') {
+        this.$store.dispatch('fetchTransactions')
+      }
     }
   }
 }
