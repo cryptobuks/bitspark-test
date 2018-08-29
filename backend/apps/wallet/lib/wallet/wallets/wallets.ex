@@ -9,7 +9,7 @@ defmodule Wallet.Wallets do
 
   alias Lightning
   alias Wallet.Wallets
-  import Wallet.Validation, only: [maybe_validation_error: 1]
+  alias Wallet.Validation
 
   @doc """
   Returns the list of wallets.
@@ -178,14 +178,18 @@ defmodule Wallet.Wallets do
 
   ## Example
 
-      iex> get_transaction_by_token!("a1b8bb02-9db5-4073-808f-e6fb62cab71b")
-      %Transaction{}
+      iex> get_transaction_by_token("a1b8bb02-9db5-4073-808f-e6fb62cab71b")
+      {:ok, %Transaction{}}
 
   """
-  def get_transaction_by_token!(token) do
-    %Wallets.Transaction{} =
-      Repo.get_by(Wallets.Transaction, claim_token: token)
-      |> postprocess_transaction
+  def get_transaction_by_token(token) do
+    case Repo.get_by(Wallets.Transaction, claim_token: token) do
+      %Wallets.Transaction{} = trn ->
+        {:ok, trn |> postprocess_transaction}
+
+      nil ->
+        {:error, :transaction_not_found}
+    end
   end
 
   @doc """
@@ -268,8 +272,8 @@ defmodule Wallet.Wallets do
     amount = Keyword.get(opts, :amount)
     expires_after = Keyword.get(opts, :expires_after, 86400)
 
-    with :ok <- maybe_validation_error(Bitcoin.validate_amount(amount)),
-         :ok <- maybe_validation_error(Bitcoin.is_positive_amount(amount)),
+    with :ok <- Validation.maybe_validation_error(Bitcoin.validate_amount(amount)),
+         :ok <- Validation.maybe_validation_error(Bitcoin.is_positive_amount(amount)),
          msatoshi <- Bitcoin.to_msatoshi(amount),
          {:ok, trn} <- create_transaction(%{
                   wallet_id: wallet.id,
@@ -302,36 +306,64 @@ defmodule Wallet.Wallets do
     end
   end
 
-  def claim_transaction!(%Wallets.Wallet{} = wallet, token) do
-    src_trn = get_transaction_by_token!(token)
+  @doc """
+  Claim given transaction (by token)
 
-    if src_trn.state != Wallets.Transaction.initial do
-      raise "Can't claim this transaction"
+  Call is idempotent, and returns existing transaction if transaction has
+  already been claimed by same wallet.
+
+  ## Examples
+
+    iex> claim_transaction("373e4ceb-e305-49ee-bc40-ddf6cb9e73c1")
+    {:ok, %Transaction{}}
+
+  """
+  def claim_transaction(%Wallets.Wallet{} = wallet, token) when is_bitstring(token) do
+    with {:ok, src_trn} <- get_transaction_by_token(token),
+         {:ok, dst_trn} <- claim_transaction(wallet, src_trn)
+      do
+      {:ok, dst_trn}
     end
+  end
 
-    {:ok, %Wallets.Transaction{} = dst_trn} = Repo.transaction(
-      fn ->
-        case create_transaction(
-              %{"wallet_id" => wallet.id,
-                "state" => "approved",
-                "msatoshi" => -src_trn.msatoshi,
-                "src_transaction_id" => src_trn.id,
-                "processed_at" => NaiveDateTime.utc_now,
-                "description" => src_trn.description}) do
-          {:ok, dst_trn} ->
-            {:ok, _} = update_transaction(
-            src_trn,
-            %{processed_at: NaiveDateTime.utc_now,
-              state: Wallets.Transaction.approved,
-              claimed_by: dst_trn.id})
-            dst_trn
-          {:error, _} ->
-            raise "Can't claim this transaction (already claimed?)"
-        end
-      end
-    )
+  def claim_transaction(%Wallets.Wallet{} = wallet, %Wallets.Transaction{claimed_by: claimed_by} = src_trn) when claimed_by != nil do
+    dst_trn = get_transaction!(claimed_by)
 
-    dst_trn
+    if wallet.id == dst_trn.wallet_id do
+      {:ok, dst_trn}
+    else
+      # Should fail with already claimed error
+      Validation.expect_claimable_transaction(src_trn)
+    end
+  end
+
+  def claim_transaction(%Wallets.Wallet{} = wallet, %Wallets.Transaction{} = src_trn) do
+    with :ok <- Validation.expect_claimable_transaction(src_trn),
+         {:ok, %Wallets.Transaction{} = dst_trn} <- Repo.transaction(fn ->
+           case create_transaction(
+                 %{"wallet_id" => wallet.id,
+                   "state" => "approved",
+                   "msatoshi" => -src_trn.msatoshi,
+                   "src_transaction_id" => src_trn.id,
+                   "processed_at" => NaiveDateTime.utc_now,
+                   "description" => src_trn.description}) do
+             {:ok, dst_trn} ->
+               {:ok, _} = update_transaction(
+               src_trn,
+               %{processed_at: NaiveDateTime.utc_now,
+                 state: Wallets.Transaction.approved,
+                 claimed_by: dst_trn.id})
+               dst_trn
+             {:error, _} = error ->
+               error
+           end
+         end)
+      do
+        {:ok, dst_trn}
+      else
+        {:error, _} = error ->
+          error
+    end
   end
 
   @doc """

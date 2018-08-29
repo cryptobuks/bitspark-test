@@ -27,7 +27,7 @@ defmodule FakeLndWeb.Router do
     payload = %{
       "node" => %{"addresses" => [
                    %{"addr" => "35.204.151.181:9736", "network" => "tcp"}],
-                  "alias" => "Barbaz #" <> String.slice(node_pub_key, 0, 3),
+                  "alias" => "SomeNodeAlias #" <> String.slice(node_pub_key, 0, 3),
                   "color" => "#00ff00",
                   "last_update" => Joken.current_time - 60,
                   "pub_key" => "#{node_pub_key}"

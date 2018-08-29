@@ -9,6 +9,10 @@ test:
 	$(MAKE) MIX_ENV=test reset-db
 	mix test
 
+test-watch:
+	$(MAKE) MIX_ENV=test reset-db
+	mix test.watch
+
 shell:
 	ERL_AFLAGS="-kernel shell_history enabled" iex -S mix
 

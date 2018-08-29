@@ -13,7 +13,11 @@ defmodule WalletWeb.InvoiceControllerTest do
   describe "show (encoded invoice)" do
     test "returns invoice info", %{conn: conn} do
       conn = get conn, invoice_path(conn, :show, gen_invoice('1600n', 'rxt'))
-      assert_value json_response(conn, 200)["data"] == %{"description" => "Foobar #rxt", "dst_alias" => "Barbaz #039", "msatoshi" => 160000}
+      assert_value json_response(conn, 200)["data"] == %{
+                     "description" => "Foobar #rxt",
+                     "dst_alias" => "SomeNodeAlias #039",
+                     "msatoshi" => 160_000
+                   }
     end
   end
 
