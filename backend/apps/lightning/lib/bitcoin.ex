@@ -1,9 +1,24 @@
 defmodule Bitcoin do
   alias Decimal, as: D
 
-  # Validations
+  @doc """
+  Validations
+
+      iex> Bitcoin.validate_amount({21_000_000, :btc})
+      :ok
+
+      iex> Bitcoin.validate_amount({-21_000_000, :btc})
+      :ok
+
+      iex> Bitcoin.validate_amount({21_000_000 + 1, :btc})
+      {:error, "Amount exceeds Bitcoin limit"}
+
+      iex> Bitcoin.validate_amount({-21_000_000 - 1, :btc})
+      {:error, "Amount exceeds Bitcoin limit"}
+
+  """
   def validate_amount({amount, unit}) do
-    max_btc = 2100000000000000
+    max_btc = 2_100_000_000_000_000
     satoshi = to_satoshi({amount, unit})
     if (satoshi > max_btc or satoshi < -max_btc) do
       {:error, "Amount exceeds Bitcoin limit"}
@@ -20,7 +35,19 @@ defmodule Bitcoin do
     end
   end
 
-  # Conversions
+  @doc """
+  Conversions
+
+      iex> Bitcoin.to_satoshi({1, :btc})
+      100_000_000
+
+      iex> Bitcoin.to_satoshi({1, :mbtc})
+      100_000
+
+      iex> Bitcoin.to_msatoshi({1, :btc})
+      100_000_000_000
+
+  """
   def to_satoshi({amount, unit}) do
     D.div(to_msatoshi({amount, unit}), 1000) |> D.round |> D.to_integer
   end
@@ -42,7 +69,16 @@ defmodule Bitcoin do
   def to_msatoshi({amount, :satoshi}),
     do: D.mult(amount, 1_000) |> D.to_integer
 
-  # Lightning
+  @doc """
+  Lightning
+
+      iex> Bitcoin.is_invoice("lntb10n1pdctf20pp5s6aj9rum8rez4w93058a7hheqdtq2vmex8a7j8e87jxcqgqlx32sdqg235xjmn8cqzysttrrdt3yucpl6dfzrke47cp3pxea5km99ujgj2ttagx80s9xmznqh778gctz87azkm6cvr3qqxxyecayfa78r7j00mfuae40n468wccp3f0mlv")
+      true
+
+      iex> Bitcoin.is_invoice("foo")
+      false
+
+  """
   def is_invoice(s) do
     cond do
       not String.starts_with?(s, "lntb") -> false
@@ -50,6 +86,13 @@ defmodule Bitcoin do
     end
   end
 
+  @doc """
+  Returns amount stored in invoice in satoshi
+
+      iex> Bitcoin.invoice_satoshi("lntb10n1pdctf20pp5s6aj9rum8rez4w93058a7hheqdtq2vmex8a7j8e87jxcqgqlx32sdqg235xjmn8cqzysttrrdt3yucpl6dfzrke47cp3pxea5km99ujgj2ttagx80s9xmznqh778gctz87azkm6cvr3qqxxyecayfa78r7j00mfuae40n468wccp3f0mlv")
+      1
+
+  """
   def invoice_satoshi(invoice) do
     # https://github.com/lightningnetwork/lightning-rfc/blob/master/11-payment-encoding.md
     {amount, rest} = Integer.parse(String.slice(invoice, 4, 100))
