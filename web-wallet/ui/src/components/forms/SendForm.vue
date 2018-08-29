@@ -187,3 +187,9 @@ span {
   }
 }
 </style>
+<style>
+/* Vuetify overrides */
+.list__tile.list__tile--link:hover {
+  color: #ffc80a !important;
+}
+</style>
