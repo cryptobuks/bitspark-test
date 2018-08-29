@@ -43,7 +43,7 @@
               <span>Description</span>
             </v-flex>
             <v-flex xs8 text-xs-right>
-              <span class="bi-settings-span charcoalGrey--text">{{description}}</span>
+              <span class="bi-settings-span no-uppercase charcoalGrey--text">{{description}}</span>
             </v-flex>
           </v-layout>
         </v-container>
@@ -121,7 +121,6 @@ export default {
         description: this.payment.description,
         expires_after: this.payment.expiresAfter
       }
-      console.log(payment)
       this.processToEmailPayment(payment)
     }
   }
@@ -149,6 +148,7 @@ span {
   margin-top: -50px;
   padding: 15px;
   background-color: #fafafa;
+  border-bottom: 1px solid #d1d1d1;
 }
 .bi-settings-container {
   margin: 5px 15px;
@@ -158,11 +158,15 @@ span {
 .bi-settings-span {
   font-size: 14px;
 }
+.bi-settings-span.no-uppercase {
+  text-transform: none;
+}
 .bi-amounts-container {
   width: 100%;
   padding: 15px;
   background-color: #fafafa;
   margin-bottom: 56px;
+  border-top: 1px solid #d1d1d1;
 }
 .bi-amounts-container .bi-bordered {
   border-bottom: 1px solid #c6c6c6;
