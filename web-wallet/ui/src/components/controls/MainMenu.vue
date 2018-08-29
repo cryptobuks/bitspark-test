@@ -3,14 +3,14 @@
 
     <v-toolbar dark tabs grow fixed v-if="this.user">
       <v-toolbar-side-icon @click.stop="drawer = !drawer" v-if="!(this.routesWithoutMenu.indexOf($route.name) > -1)"></v-toolbar-side-icon>
-      <v-btn icon v-if="this.routesWithoutMenu.indexOf($route.name) > -1" @click="$router.go(-1)">
+      <v-btn icon v-if="(this.routesWithoutMenu.indexOf($route.name) > -1) && $route.name !== 'PaymentConfirmation'" @click="$router.go(-1)">
         <v-icon>arrow_back</v-icon>
       </v-btn>
 
       <v-toolbar-title v-if="!(this.routesWithoutMenu.indexOf($route.name) > -1)">
         <img class="bi-logo" alt="Biluminate" src="/static/img/biluminate-logo.svg">
       </v-toolbar-title>
-      <v-toolbar-title v-if="this.routesWithoutMenu.indexOf($route.name) > -1" class="bi-central-heading">
+      <v-toolbar-title v-if="this.routesWithoutMenu.indexOf($route.name) > -1" class="bi-central-heading" v-bind:class="{'no-margin': this.routesWithoutBackButton.indexOf($route.name) > -1 }">
         <h1>{{ heading }}</h1>
       </v-toolbar-title>
 
@@ -92,7 +92,8 @@ export default {
   data () {
     return {
       routesWithoutMenuSlider: ['Faq', 'About', 'Roadmap', 'Send'],
-      routesWithoutMenu: ['Send', 'Review'],
+      routesWithoutMenu: ['Send', 'Review', 'PaymentConfirmation'],
+      routesWithoutBackButton: ['PaymentConfirmation'],
       drawer: null
     }
   },
@@ -102,6 +103,7 @@ export default {
       switch (this.$route.name) {
         case 'Send': return 'Send / Pay'
         case 'Review': return 'Review & Confirm'
+        case 'PaymentConfirmation': return 'Confirmation'
         default: return 'Biluminate'
       }
     }
@@ -133,6 +135,9 @@ export default {
   font-size: 13px;
   font-weight: normal;
   text-transform: uppercase;
+}
+.bi-central-heading.no-margin {
+  margin: 0;
 }
 .bi-tabs {
   max-width: 500px;
