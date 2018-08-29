@@ -130,8 +130,11 @@ export default {
       if (!this.validEmail(this.sendTo)) {
         this.errors.push('This is not a valid email address !!!')
       }
-      if (!this.validAmount(this.amount)) {
+      if (!this.validAmountExceed(this.amount)) {
         this.errors.push('Exceeding your available balance !!!')
+      }
+      if (!this.validAmountMinimum(this.amount)) {
+        this.errors.push('This is too small amount !!!')
       }
       if (!this.errors.length) {
         return true
@@ -141,7 +144,7 @@ export default {
       var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
       return re.test(email)
     },
-    validAmount (amount) {
+    validAmountExceed (amount) {
       if (this.currency === 'satoshi') {
         return amount <= this.btc * 1000000 // satoshi
       }
@@ -150,6 +153,18 @@ export default {
       }
       if (this.currency === 'BTC') {
         return amount <= this.btc
+      }
+    },
+    validAmountMinimum (amount) {
+      console.log(amount)
+      if (this.currency === 'satoshi') {
+        return amount >= 1
+      }
+      if (this.currency === 'mBTC') {
+        return amount >= 0.00001
+      }
+      if (this.currency === 'BTC') {
+        return amount >= 0.00000001
       }
     },
     isEmptyString (string) {

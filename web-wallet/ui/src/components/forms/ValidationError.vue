@@ -30,11 +30,13 @@ export default {
 
 <style scoped>
 .validation-error {
+  max-width: 300px;
   position: fixed;
   bottom: 60px;
   left: 0;
   right: 0;
   margin: 20px 30px;
+  margin: auto;
   padding: 10px 20px;
   border-radius: 4px;
   background: #4a4a4a;
