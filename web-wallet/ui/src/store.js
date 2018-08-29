@@ -16,7 +16,8 @@ const state = {
   wallet: undefined,
   invoices: {},
   transactions: {},
-  payment: {}
+  payment: null,
+  paymentResult: null
 }
 
 const mutations = {
@@ -35,6 +36,8 @@ const mutations = {
     state.wallet = undefined
     state.invoices = {}
     state.transaction = {}
+    state.payment = null
+    state.paymentResult = null
   },
   walletInfo (state, walletInfo) {
     state.wallet = walletInfo.data
@@ -45,8 +48,12 @@ const mutations = {
   payment (state, payment) {
     state.payment = payment
   },
+  paymentResult (state, paymentResult) {
+    state.paymentResult = paymentResult
+  },
   removePayment (state) {
-    state.payment = {}
+    state.payment = null
+    state.paymentResult = null
   },
   beforeLogin (state, payload) {
     state.returnTo = payload.returnTo
@@ -164,14 +171,16 @@ const actions = {
         commit('setInvoicePaymentResult', { invoice, paymentResult })
       })
   },
-  processToEmailPayment ({ commit, getters: { api } }, payment) {
+  processToEmailPayment ({ commit, dispatch, getters: { api } }, payment) {
     api.processPayment(payment)
       .catch(e => {
         commit('apiError', e)
         return e
       })
       .then(paymentResult => {
-        console.log('ToEmail payment done.', paymentResult)
+        dispatch('fetchUserInfo')
+        commit('paymentResult', paymentResult.message)
+        router.push({ name: 'PaymentConfirmation' })
       })
   },
   createPayment ({ commit }, payment) {
@@ -192,7 +201,8 @@ const getters = {
     return (invoice) => state.invoices[invoice]
   },
   transactions: state => state.transactions,
-  payment: state => state.payment
+  payment: state => state.payment,
+  paymentResult: state => state.paymentResult
 }
 
 const vuexLocal = new VuexPersistence({

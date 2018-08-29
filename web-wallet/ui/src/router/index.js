@@ -12,6 +12,7 @@ import About from '@/components/pages/About'
 import WalletRoadmap from '@/components/pages/WalletRoadmap'
 import Send from '@/components/pages/Send'
 import Review from '@/components/pages/Review'
+import PaymentConfirmation from '@/components/pages/PaymentConfirmation'
 
 Vue.use(Router)
 
@@ -57,6 +58,11 @@ export default new Router({
       path: '/review',
       name: 'Review',
       component: Review
+    },
+    {
+      path: '/confirmation',
+      name: 'PaymentConfirmation',
+      component: PaymentConfirmation
     },
     {
       path: '/faq',
