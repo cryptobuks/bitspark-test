@@ -1,5 +1,8 @@
 <template>
-  <span v-bind:class="{ '': mbtc > 0 }" class="transaction-amount">{{ mbtc }}</span>
+  <div class="transaction-amount">
+    <span class="transaction-amount-money" v-bind:class="{ 'positive': mbtc > 0 }">{{ mbtc }}</span>
+    <span>mBTC</span>
+  </div>
 </template>
 
 <script>
@@ -14,14 +17,19 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .transaction-amount {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  max-width: 73px;
+}
+.transaction-amount-money {
   font-weight: bold;
   font-size: 17px;
-  max-width: 73px;
   color: #d0021b;
 }
-.transaction-amount.positive {
+.transaction-amount-money.positive {
   color: #417505;
 }
 </style>

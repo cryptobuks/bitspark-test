@@ -1,13 +1,13 @@
 <template>
   <div class="transaction-state">
     <span v-if="state === 'approved'" class="approved">
-      <v-icon class="mr-1">check_circle_outline</v-icon> Completed
+      <!--  <v-icon class="mr-1">check_circle_outline</v-icon>  --> Completed
     </span>
     <span v-else-if="state === 'declined'" class="declined">
-      <v-icon class="mr-1">block</v-icon> Declined
+      <!-- <v-icon class="mr-1">block</v-icon> --> Declined 
     </span>
     <span v-else class="pending">
-      <v-icon class="mr-1">schedule</v-icon> Transaction Pending
+      <!--  <v-icon class="mr-1">schedule</v-icon>  --> Transaction Pending
     </span>
   </div>
 </template>

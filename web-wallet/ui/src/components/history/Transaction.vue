@@ -3,7 +3,7 @@
     <v-icon x-large color="grey">account_circle</v-icon>
     <div class="transaction-info">
       <h2 class="mb-1">Dummy Heading</h2>
-      <p>Transaction description</p>
+      <p>{{ transactionDescription }}</p>
       <TransactionState :state="transaction.state" />
     </div>
     <TransactionAmount :msatoshi="transaction.msatoshi"/>
@@ -20,7 +20,12 @@ export default {
     TransactionAmount,
     TransactionState
   },
-  props: ['transaction']
+  props: ['transaction'],
+  computed: {
+    transactionDescription () {
+      return this.transaction.description ? this.transaction.description : 'No description'
+    }
+  }
 }
 </script>
 
