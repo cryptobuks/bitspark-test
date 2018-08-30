@@ -9,6 +9,13 @@ defmodule WalletWeb.Router do
     plug Joken.Plug, verify: &WalletWeb.Auth0.verify_function/0, on_error: &__MODULE__.auth_on_error/2
   end
 
+  # Public API
+  scope "/api", WalletWeb do
+    pipe_through [:api]
+
+    get "/rates/:currency", RatesController, :show
+  end
+
   # Wallet API without auth (only safe handlers here)
   scope "/api/wallet", WalletWeb do
     pipe_through [:api]
