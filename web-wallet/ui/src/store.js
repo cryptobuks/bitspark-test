@@ -10,6 +10,7 @@ var stringifiedFeatureToggles = localStorage.getItem('featureToggles')
 
 const state = {
   featureToggles: stringifiedFeatureToggles ? JSON.parse(stringifiedFeatureToggles) : {},
+  currencyRates: {}, // {"BTC": {"USD": 6000, ...}}
   user: undefined, // currently authorized user
   accessToken: undefined,
   returnTo: undefined,
@@ -38,6 +39,9 @@ const mutations = {
     state.transaction = {}
     state.payment = null
     state.paymentResult = null
+  },
+  currencyRatesUpdate (state, rates) {
+    state.currencyRates = rates
   },
   walletInfo (state, walletInfo) {
     state.wallet = walletInfo.data
@@ -107,6 +111,10 @@ const mutations = {
 }
 
 const actions = {
+  init: ({ commit, getters: { api } }) => {
+    api.getCurrencyRates('BTC')
+      .then(rates => commit('currencyRatesUpdate', rates))
+  },
   logout: ({ commit }) => {
     commit('clearStore')
   },
@@ -200,6 +208,11 @@ const getters = {
   getInvoiceInfo (state) {
     return (invoice) => state.invoices[invoice]
   },
+  getConversionRate (state) {
+    return (from, to) => {
+      return state.currencyRates[from] ? state.currencyRates[from][to] : null
+    }
+  },
   transactions: state => state.transactions,
   payment: state => state.payment,
   paymentResult: state => state.paymentResult
@@ -208,6 +221,7 @@ const getters = {
 const vuexLocal = new VuexPersistence({
   storage: window.localStorage,
   reducer: state => ({
+    currencyRates: state.currencyRates,
     user: state.user,
     accessToken: state.accessToken,
     returnTo: state.returnTo

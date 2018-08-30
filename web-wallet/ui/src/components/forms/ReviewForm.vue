@@ -53,7 +53,8 @@
       <v-container pa-0 fluid>
         <v-layout row>
           <v-flex xs12 ml-3 mr-3 text-xs-center class="bi-bordered">
-            <span>TOTAL (FEES INCLUDED)</span><br>
+            <span>TOTAL (FEES INCLUDED)</span>
+            <br>
             <Amount :currency="payment.currency" :msatoshi="totalMsatoshi" :medium="true" />
           </v-flex>
         </v-layout>
@@ -65,6 +66,8 @@
           </v-flex>
           <v-flex xs6 pt-2 text-xs-center>
             <span>TOTAL FIAT VALUE</span>
+            <br>
+            <FiatAmount :currency="fiatCurrency" :amount="fiatAmount" :small="true" />
           </v-flex>
         </v-layout>
       </v-container>
@@ -77,6 +80,7 @@
 import { mapGetters, mapActions } from 'vuex'
 import BottomButton from '@/components/controls/BottomButton'
 import Amount from '@/components/Amount'
+import FiatAmount from '@/components/FiatAmount'
 
 import expiringItems from './expiringItems.json'
 const EMPTY_STRING = '- - -'
@@ -85,10 +89,11 @@ export default {
   name: 'ReviewForm',
   components: {
     BottomButton,
-    Amount
+    Amount,
+    FiatAmount
   },
   computed: {
-    ...mapGetters(['user', 'payment']),
+    ...mapGetters(['user', 'payment', 'getConversionRate']),
     expire () {
       var expiresAfter = expiringItems.find(item => item.value === this.payment.expiresAfter)
       return expiresAfter ? expiresAfter.text : EMPTY_STRING
@@ -96,6 +101,19 @@ export default {
     description () {
       var description = this.payment.description
       return description || EMPTY_STRING
+    },
+    fiatCurrency () {
+      return 'USD'
+    },
+    fiatAmount () {
+      const rate = this.getConversionRate('BTC', this.fiatCurrency)
+      // Rates may not be loaded yet (but should)
+      if (!rate) return null
+
+      return rate * this.totalBtc
+    },
+    totalBtc () {
+      return this.totalMsatoshi / 100000000000
     },
     totalMsatoshi () {
       // Truncate here so that we remove floating point errors before sending

@@ -22,6 +22,18 @@ export class API {
     this.accessToken = accessToken
   }
 
+  getCurrencyRates (currency) {
+    console.assert(currency === 'BTC')
+
+    return fetch(BASE_URL + '/rates/' + currency, {
+      headers: new Headers({
+        'Content-Type': 'application/json'
+      })
+    }).then(assertHttpOk)
+      .then(r => r.json())
+      .then(r => r.data)
+  }
+
   getWalletInfo () {
     return fetch(BASE_URL + '/wallet', {
       headers: new Headers({

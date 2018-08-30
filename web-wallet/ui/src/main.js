@@ -42,6 +42,8 @@ var app = new Vue({
 
 // window.app = app
 
+store.dispatch('init', {})
+
 router.beforeEach((to, from, next) => {
   store.dispatch('navigate', { to, from }).then(() => next())
 })
