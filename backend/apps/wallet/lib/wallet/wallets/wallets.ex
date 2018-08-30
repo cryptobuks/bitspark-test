@@ -330,6 +330,7 @@ defmodule Wallet.Wallets do
     dst_trn = get_transaction!(claimed_by)
 
     if wallet.id == dst_trn.wallet_id do
+      # Same wallet already claimed this transaction so just return original one
       {:ok, dst_trn}
     else
       # Should fail with already claimed error
