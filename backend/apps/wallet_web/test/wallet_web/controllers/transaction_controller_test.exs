@@ -25,7 +25,7 @@ defmodule WalletWeb.TransactionControllerTest do
     test "can be created & claimed", %{conn: conn} do
       # Create
       conn = post with_user(conn, "src"), transaction_path(conn, :create),
-        [to_email: "a@b.cz", msatoshi: 1000, description: "Hello", expires_after: 60]
+        [to_email: "to@example.com", msatoshi: 1000, description: "Hello", expires_after: 60]
 
       created = json_response(conn, 201)["data"]
       assert_value canonicalize(created) == %{
@@ -35,7 +35,8 @@ defmodule WalletWeb.TransactionControllerTest do
                      "inserted_at" => "<TIMESTAMP>",
                      "msatoshi" => -1000,
                      "processed_at" => nil,
-                     "state" => "initial"
+                     "state" => "initial",
+                     "to_email" => "to@example.com"
                    }
 
       # Claim

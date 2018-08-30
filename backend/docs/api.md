@@ -1,22 +1,22 @@
 
 # Table of Contents
 
-1.  [Wallet info](#org0450e08)
-2.  [Invoice info](#org9c05536)
-3.  [Process transaction (invoice)](#orgd3cfddc)
-4.  [List transactions](#org8011d26)
-5.  [Send Bitcoin to email address](#orge0cfe99)
-    1.  [Create transaction (payer)](#orgbf6e899)
-        1.  [With amount exceeding wallet balance](#org9f53b65)
-        2.  [With invalid amount](#orgf421fd6)
-    2.  [Claim transaction (payee)](#org12b5a70)
-        1.  [Success](#org235e9b8)
-        2.  [Failure: Expired](#org6bb1f68)
-    3.  [Payer sees that transaction has been claimed](#org937a7b8)
+1.  [Wallet info](#orgfb36dff)
+2.  [Invoice info](#org0469b82)
+3.  [Process transaction (invoice)](#org7d394d4)
+4.  [List transactions](#orgfa30844)
+5.  [Send Bitcoin to email address](#org1d39c56)
+    1.  [Create transaction (payer)](#org93864b3)
+        1.  [With amount exceeding wallet balance](#org132eddc)
+        2.  [With invalid amount](#org1785bcf)
+    2.  [Claim transaction (payee)](#orgba77550)
+        1.  [Success](#org85d2bc1)
+        2.  [Failure: Expired](#org0240cd0)
+    3.  [Payer sees that transaction has been claimed](#org49a812d)
 
 
 
-<a id="org0450e08"></a>
+<a id="orgfb36dff"></a>
 
 # Wallet info
 
@@ -29,12 +29,12 @@
         "balance": {
           "msatoshi": 1000000000
         },
-        "id": "81acc3b6-3c76-4446-917c-8d8849fbe08e"
+        "id": "a29513a1-6f40-42ec-8f1a-221fdb2008c4"
       }
     }
 
 
-<a id="org9c05536"></a>
+<a id="org0469b82"></a>
 
 # Invoice info
 
@@ -51,7 +51,7 @@
     }
 
 
-<a id="orgd3cfddc"></a>
+<a id="org7d394d4"></a>
 
 # Process transaction (invoice)
 
@@ -62,17 +62,17 @@
     {
       "data": {
         "description": "Foobar #ldq",
-        "id": "aea0d56a-3fba-48e6-bf4b-873fda1b28bd",
-        "inserted_at": "2018-08-28T22:05:48.508409",
+        "id": "d2f73e17-b242-48dc-86bc-5d0014db9cad",
+        "inserted_at": "2018-08-30T17:58:40.303354",
         "invoice": "lntb1500n1pd0c66dpp5p8rpzxck9u7umfl9u7dqratj8rlfthe29xl6ejhwt2exuaxfpftqdqvg9jxgg8zn2sscqzysyv8kgctq7haghaus4wqd262mxr9342mvp23gdsv6vmgkce9zgshjd0av06dq3xpe8cy6fucnj454smkqxuetyvu3h5jggx2w8ethlvcp6g3ldq",
         "msatoshi": -150000,
-        "processed_at": "2018-08-28T22:05:48.548452",
+        "processed_at": "2018-08-30T17:58:40.379003",
         "state": "approved"
       }
     }
 
 
-<a id="org8011d26"></a>
+<a id="orgfa30844"></a>
 
 # List transactions
 
@@ -84,17 +84,17 @@
       "data": [
         {
           "description": "Foobar #ldq",
-          "id": "aea0d56a-3fba-48e6-bf4b-873fda1b28bd",
-          "inserted_at": "2018-08-28T22:05:48.508409",
+          "id": "d2f73e17-b242-48dc-86bc-5d0014db9cad",
+          "inserted_at": "2018-08-30T17:58:40.303354",
           "invoice": "lntb1500n1pd0c66dpp5p8rpzxck9u7umfl9u7dqratj8rlfthe29xl6ejhwt2exuaxfpftqdqvg9jxgg8zn2sscqzysyv8kgctq7haghaus4wqd262mxr9342mvp23gdsv6vmgkce9zgshjd0av06dq3xpe8cy6fucnj454smkqxuetyvu3h5jggx2w8ethlvcp6g3ldq",
           "msatoshi": -150000,
-          "processed_at": "2018-08-28T22:05:48.548452",
+          "processed_at": "2018-08-30T17:58:40.379003",
           "state": "approved"
         },
         {
           "description": "Funding transaction",
-          "id": "d113f1bb-eb83-4a34-baa1-540039fc9fa0",
-          "inserted_at": "2018-08-28T22:05:48.261450",
+          "id": "88bbd6f8-ec98-4ca7-8995-b07f5f9f9892",
+          "inserted_at": "2018-08-30T17:58:39.986193",
           "msatoshi": 1000000000,
           "processed_at": null,
           "state": "approved"
@@ -103,17 +103,17 @@
     }
 
 
-<a id="orge0cfe99"></a>
+<a id="org1d39c56"></a>
 
 # Send Bitcoin to email address
 
 
-<a id="orgbf6e899"></a>
+<a id="org93864b3"></a>
 
 ## Create transaction (payer)
 
     email_src_trn = POST('/api/wallet/transactions', {
-        "to_email": "a@b.cz",
+        "to_email": "to@example.com",
         "msatoshi": 1000,
         "description": "Free BTC",    # optional - visible to both payee & payer
         "expires_after": 900          # in seconds
@@ -123,18 +123,19 @@
     
     {
       "data": {
-        "claim_expires_at": "2018-08-28T22:07:16.771441",
+        "claim_expires_at": "2018-08-30T18:11:50.486755",
         "description": "Free BTC",
-        "id": "4d8c598a-474a-40f6-8142-58def5269c0c",
-        "inserted_at": "2018-08-28T21:52:16.771519",
+        "id": "932deaaf-5969-4654-a8da-f9d43791721b",
+        "inserted_at": "2018-08-30T17:56:50.486867",
         "msatoshi": -1000,
         "processed_at": null,
-        "state": "initial"
+        "state": "initial",
+        "to_email": "to@example.com"
       }
     }
 
 
-<a id="org9f53b65"></a>
+<a id="org132eddc"></a>
 
 ### With amount exceeding wallet balance
 
@@ -152,18 +153,19 @@ It returns declined transaction.
     
     {
       "data": {
-        "claim_expires_at": "2018-08-28T22:20:48.728818",
+        "claim_expires_at": "2018-08-30T18:13:40.609864",
         "description": "Free BTC",
-        "id": "8ccbefaa-ece8-4d9b-b65b-2531bf9f14b9",
-        "inserted_at": "2018-08-28T22:05:48.728927",
+        "id": "e688bcf9-134c-4beb-99df-5488391bb05e",
+        "inserted_at": "2018-08-30T17:58:40.609941",
         "msatoshi": -999850001,
-        "processed_at": "2018-08-28T22:05:48.734953",
-        "state": "declined"
+        "processed_at": "2018-08-30T17:58:40.615997",
+        "state": "declined",
+        "to_email": "a@b.cz"
       }
     }
 
 
-<a id="orgf421fd6"></a>
+<a id="org1785bcf"></a>
 
 ### With invalid amount
 
@@ -183,44 +185,44 @@ It returns declined transaction.
     }
 
 
-<a id="org12b5a70"></a>
+<a id="orgba77550"></a>
 
 ## Claim transaction (payee)
 
 
-<a id="org235e9b8"></a>
+<a id="org85d2bc1"></a>
 
 ### Success
 
-    _ = POST('/api/wallet/transactions', {"claim_token": "4470892b-acef-4a9f-8b02-861ceadd6c39"})
+    _ = POST('/api/wallet/transactions', {"claim_token": "ebd5eef4-61c3-4fd9-87de-6ad7d719f131"})
 
     201 Created
     
     {
       "data": {
         "description": "Free BTC",
-        "id": "ab619809-5a0a-48b5-bf01-5ac53c4f5b2c",
-        "inserted_at": "2018-08-28T21:52:48.713919",
+        "id": "093a5c23-e637-4720-a69c-b1d43cabe83c",
+        "inserted_at": "2018-08-30T17:57:33.676110",
         "msatoshi": 1000,
-        "processed_at": "2018-08-28T21:52:48.713790",
+        "processed_at": "2018-08-30T17:57:33.676014",
         "state": "approved"
       }
     }
 
 When called multiple times it returns same transaction (i.e. it's idempotent).
 
-    _ = POST('/api/wallet/transactions', {"claim_token": "4470892b-acef-4a9f-8b02-861ceadd6c39"})
-    _ = POST('/api/wallet/transactions', {"claim_token": "4470892b-acef-4a9f-8b02-861ceadd6c39"})
+    _ = POST('/api/wallet/transactions', {"claim_token": "ebd5eef4-61c3-4fd9-87de-6ad7d719f131"})
+    _ = POST('/api/wallet/transactions', {"claim_token": "ebd5eef4-61c3-4fd9-87de-6ad7d719f131"})
 
     201 Created
     
     {
       "data": {
         "description": "Free BTC",
-        "id": "ab619809-5a0a-48b5-bf01-5ac53c4f5b2c",
-        "inserted_at": "2018-08-28T21:52:48.713919",
+        "id": "093a5c23-e637-4720-a69c-b1d43cabe83c",
+        "inserted_at": "2018-08-30T17:57:33.676110",
         "msatoshi": 1000,
-        "processed_at": "2018-08-28T21:52:48.713790",
+        "processed_at": "2018-08-30T17:57:33.676014",
         "state": "approved"
       }
     }
@@ -229,27 +231,27 @@ When called multiple times it returns same transaction (i.e. it's idempotent).
     {
       "data": {
         "description": "Free BTC",
-        "id": "ab619809-5a0a-48b5-bf01-5ac53c4f5b2c",
-        "inserted_at": "2018-08-28T21:52:48.713919",
+        "id": "093a5c23-e637-4720-a69c-b1d43cabe83c",
+        "inserted_at": "2018-08-30T17:57:33.676110",
         "msatoshi": 1000,
-        "processed_at": "2018-08-28T21:52:48.713790",
+        "processed_at": "2018-08-30T17:57:33.676014",
         "state": "approved"
       }
     }
 
 
-<a id="org6bb1f68"></a>
+<a id="org0240cd0"></a>
 
 ### Failure: Expired
 
     email_expired_src_trn = silent(lambda: POST('/api/wallet/transactions', {
-        "to_email": "a@b.cz",
+        "to_email": "to@example.com",
         "msatoshi": 1000,
         "description": "Free BTC",
         "expires_after": 0          # already expired
     }))['data']
 
-    _ = POST('/api/wallet/transactions', {"claim_token": "84507a20-852c-49c5-a2cb-1740766bdbb2"})
+    _ = POST('/api/wallet/transactions', {"claim_token": "ae6f77c6-ce90-4f22-9f3d-c239a05634e8"})
 
     400 Bad Request
     
@@ -260,7 +262,7 @@ When called multiple times it returns same transaction (i.e. it's idempotent).
     }
 
 
-<a id="org937a7b8"></a>
+<a id="org49a812d"></a>
 
 ## Payer sees that transaction has been claimed
 
@@ -272,13 +274,14 @@ Status of transaction is `approved` and `processed_at` field marks time of claim
     
     {
       "data": {
-        "claim_expires_at": "2018-08-28T22:07:16.771441",
+        "claim_expires_at": "2018-08-30T18:11:50.486755",
         "description": "Free BTC",
-        "id": "4d8c598a-474a-40f6-8142-58def5269c0c",
-        "inserted_at": "2018-08-28T21:52:16.771519",
+        "id": "932deaaf-5969-4654-a8da-f9d43791721b",
+        "inserted_at": "2018-08-30T17:56:50.486867",
         "msatoshi": -1000,
-        "processed_at": "2018-08-28T21:52:48.716889",
-        "state": "approved"
+        "processed_at": "2018-08-30T17:57:33.678304",
+        "state": "approved",
+        "to_email": "to@example.com"
       }
     }
 

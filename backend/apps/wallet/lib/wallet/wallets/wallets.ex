@@ -278,6 +278,7 @@ defmodule Wallet.Wallets do
          {:ok, trn} <- create_transaction(%{
                   wallet_id: wallet.id,
                   description: Keyword.get(opts, :description),
+                  to_email: Keyword.get(opts, :to_email),
                   claim_token: Ecto.UUID.generate,
                   claim_expires_at: NaiveDateTime.utc_now |> NaiveDateTime.add(expires_after, :second),
                   msatoshi: -msatoshi,

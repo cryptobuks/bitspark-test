@@ -160,7 +160,7 @@ defmodule Wallet.WalletsTest do
       Wallets.create_funding_transaction(wallet)
 
       assert {:ok, %Wallets.Transaction{} = transaction} = Wallets.create_claimable_transaction(
-        wallet, amount: {1, :satoshi}, description: "foo")
+        wallet, amount: {1, :satoshi}, description: "foo", to_email: "to@example.com")
 
       assert_value canonicalize(transaction) == %{
                      claim_expires_at: "<NAIVEDATETIME>",
@@ -175,6 +175,7 @@ defmodule Wallet.WalletsTest do
                      response: nil,
                      src_transaction_id: nil,
                      state: "initial",
+                     to_email: "to@example.com",
                      updated_at: "<NAIVEDATETIME>",
                      wallet_id: "<UUID>"
                    }
@@ -291,6 +292,7 @@ defmodule Wallet.WalletsTest do
                      response: "Expired",
                      src_transaction_id: nil,
                      state: "declined",
+                     to_email: nil,
                      updated_at: "<NAIVEDATETIME>",
                      wallet_id: "<UUID>"
                    }
