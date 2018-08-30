@@ -341,31 +341,35 @@ defmodule Wallet.Wallets do
 
   def claim_transaction(%Wallets.Wallet{} = wallet, %Wallets.Transaction{} = src_trn) do
     with :ok <- Validation.expect_claimable_transaction(src_trn),
-         {:ok, %Wallets.Transaction{} = dst_trn} <- Repo.transaction(fn ->
-           case create_transaction(
-                 %{"wallet_id" => wallet.id,
-                   "state" => "approved",
-                   "msatoshi" => -src_trn.msatoshi,
-                   "src_transaction_id" => src_trn.id,
-                   "processed_at" => NaiveDateTime.utc_now,
-                   "description" => src_trn.description}) do
-             {:ok, dst_trn} ->
-               {:ok, _} = update_transaction(
-               src_trn,
-               %{processed_at: NaiveDateTime.utc_now,
-                 state: Wallets.Transaction.approved,
-                 claimed_by: dst_trn.id})
-               dst_trn
-             {:error, _} = error ->
-               error
-           end
-         end)
+         {:ok, %Wallets.Transaction{} = dst_trn} <- _claim_transaction(wallet, src_trn)
       do
         {:ok, dst_trn}
       else
         {:error, _} = error ->
           error
     end
+  end
+
+  defp _claim_transaction(%Wallets.Wallet{} = wallet, %Wallets.Transaction{} = src_trn) do
+    Repo.transaction(fn ->
+      case create_transaction(
+            %{"wallet_id" => wallet.id,
+              "state" => "approved",
+              "msatoshi" => -src_trn.msatoshi,
+              "src_transaction_id" => src_trn.id,
+              "processed_at" => NaiveDateTime.utc_now,
+              "description" => src_trn.description}) do
+        {:ok, dst_trn} ->
+          {:ok, _} = update_transaction(
+            src_trn,
+            %{processed_at: NaiveDateTime.utc_now,
+              state: Wallets.Transaction.approved,
+              claimed_by: dst_trn.id})
+          dst_trn
+        {:error, _} = error ->
+          error
+      end
+    end)
   end
 
   @doc """
