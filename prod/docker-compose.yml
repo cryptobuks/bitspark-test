@@ -3,7 +3,7 @@ version: '2.1'
 services:
   web-wallet:
     build: ../web-wallet/
-    restart: always
+    restart: ${SERVICE_RESTART:-always}
     networks:
       - web
     environment:
@@ -15,7 +15,7 @@ services:
       context: ../backend/
       args:
         - FAKE_LND_ENABLED=${FAKE_LND_ENABLED}
-    restart: always
+    restart: ${SERVICE_RESTART:-always}
     expose:
       - "4000" # wallet API
       - "5000" # pay WEB
@@ -36,7 +36,7 @@ services:
 
   proxy:
     image: abiosoft/caddy
-    restart: always
+    restart: ${SERVICE_RESTART:-always}
     ports:
       - "80:80"
       - "443:443"
@@ -50,7 +50,7 @@ services:
 
   database:
     image: postgres:10.3
-    restart: always
+    restart: ${SERVICE_RESTART:-always}
     volumes:
       - database-volume:/var/lib/postgresql
     networks:
@@ -68,7 +68,7 @@ services:
 
   splunk:
     image: splunk/splunk
-    restart: always
+    restart: ${SERVICE_RESTART:-always}
     volumes:
       - splunk-etc-volume:/opt/splunk/etc
       - splunk-var-volume:/opt/splunk/var
