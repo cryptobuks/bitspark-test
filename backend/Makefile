@@ -1,5 +1,8 @@
 .PHONY: test
 
+dev-prod-auth:
+	$(MAKE) AUTH0_KEY=priv/auth/prod.pem dev
+
 dev:
 	$(MAKE) reset-db
 	$(MAKE) seed-db
