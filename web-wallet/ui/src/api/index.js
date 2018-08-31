@@ -76,6 +76,26 @@ export class API {
       })
   }
 
+  claimPayment (claimToken) {
+    return fetch(BASE_URL + '/wallet/transactions', {
+      method: 'POST',
+      cache: 'no-cache',
+      mode: 'cors',
+      body: JSON.stringify({
+        claim_token: claimToken
+      }),
+      headers: new Headers({
+        Authorization: 'Bearer ' + this.accessToken,
+        'Content-Type': 'application/json'
+      })
+    })
+      .then(assertHttpOk)
+      .then(r => r.json())
+      .then(r => {
+        return r.data
+      })
+  }
+
   getInvoiceInfo (invoice) {
     return fetch(BASE_URL + '/wallet/invoice/' + invoice, {
       headers: new Headers({

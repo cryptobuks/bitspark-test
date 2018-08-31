@@ -13,6 +13,7 @@ import WalletRoadmap from '@/components/pages/WalletRoadmap'
 import Send from '@/components/pages/Send'
 import Review from '@/components/pages/Review'
 import PaymentConfirmation from '@/components/pages/PaymentConfirmation'
+import ClaimPage from '@/components/pages/ClaimPage'
 
 Vue.use(Router)
 
@@ -63,6 +64,11 @@ export default new Router({
       path: '/confirmation',
       name: 'PaymentConfirmation',
       component: PaymentConfirmation
+    },
+    {
+      path: '/claim/:claimToken',
+      name: 'Claim',
+      component: ClaimPage
     },
     {
       path: '/faq',

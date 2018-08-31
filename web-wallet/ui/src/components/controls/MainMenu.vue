@@ -3,7 +3,7 @@
 
     <v-toolbar dark tabs grow fixed v-if="this.user">
       <v-toolbar-side-icon @click.stop="drawer = !drawer" v-if="!(this.routesWithoutMenu.indexOf($route.name) > -1)"></v-toolbar-side-icon>
-      <v-btn icon v-if="(this.routesWithoutMenu.indexOf($route.name) > -1) && $route.name !== 'PaymentConfirmation'" @click="$router.go(-1)">
+      <v-btn icon v-if="(this.routesWithoutMenu.indexOf($route.name) > -1) && $route.name !== 'PaymentConfirmation' && $route.name !== 'Claim'" @click="$router.go(-1)">
         <v-icon>arrow_back</v-icon>
       </v-btn>
 
@@ -92,8 +92,8 @@ export default {
   data () {
     return {
       routesWithoutMenuSlider: ['Faq', 'About', 'Roadmap', 'Send'],
-      routesWithoutMenu: ['Send', 'Review', 'PaymentConfirmation'],
-      routesWithoutBackButton: ['PaymentConfirmation'],
+      routesWithoutMenu: ['Send', 'Review', 'PaymentConfirmation', 'Claim'],
+      routesWithoutBackButton: ['PaymentConfirmation', 'Claim'],
       drawer: null
     }
   },

@@ -18,7 +18,8 @@ const state = {
   invoices: {},
   transactions: {},
   payment: null,
-  paymentResult: null
+  paymentResult: null,
+  claimResult: null
 }
 
 const mutations = {
@@ -39,6 +40,7 @@ const mutations = {
     state.transaction = {}
     state.payment = null
     state.paymentResult = null
+    state.claimResult = null
   },
   currencyRatesUpdate (state, rates) {
     state.currencyRates = rates
@@ -58,6 +60,12 @@ const mutations = {
   removePayment (state) {
     state.payment = null
     state.paymentResult = null
+  },
+  claimResult (state, claimResult) {
+    state.claimResult = claimResult
+  },
+  removeClaimResult (state) {
+    state.claimResult = null
   },
   beforeLogin (state, payload) {
     state.returnTo = payload.returnTo
@@ -191,11 +199,25 @@ const actions = {
         router.push({ name: 'PaymentConfirmation' })
       })
   },
+  claimToEmailPayment ({ commit, dispatch, getters: { api } }, claimToken) {
+    api.claimPayment(claimToken)
+      .catch(e => {
+        commit('apiError', e)
+        return e
+      })
+      .then(claimResult => {
+        dispatch('fetchUserInfo')
+        commit('claimResult', claimResult)
+      })
+  },
   createPayment ({ commit }, payment) {
     commit('payment', payment)
   },
   removePayment ({ commit }) {
     commit('removePayment')
+  },
+  removeClaimResult ({ commit }) {
+    commit('removeClaimResult')
   }
 }
 
@@ -215,7 +237,8 @@ const getters = {
   },
   transactions: state => state.transactions,
   payment: state => state.payment,
-  paymentResult: state => state.paymentResult
+  paymentResult: state => state.paymentResult,
+  claimResult: state => state.claimResult
 }
 
 const vuexLocal = new VuexPersistence({
