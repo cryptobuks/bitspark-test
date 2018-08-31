@@ -4,7 +4,6 @@ services:
   web-wallet:
     build: ../web-wallet/
     restart: always
-    user: 1005:1006  # bitspark:bitspark
     networks:
       - web
     environment:
