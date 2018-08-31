@@ -82,6 +82,7 @@ import BottomButton from '@/components/controls/BottomButton'
 import Amount from '@/components/Amount'
 import FiatAmount from '@/components/FiatAmount'
 
+import currency from '@/currency.js'
 import expiringItems from './expiringItems.json'
 const EMPTY_STRING = '- - -'
 
@@ -113,21 +114,13 @@ export default {
       return rate * this.totalBtc
     },
     totalBtc () {
-      return this.totalMsatoshi / 100000000000
+      return currency.toBtc(this.totalMsatoshi, 'msatoshi')
     },
     totalMsatoshi () {
       // Truncate here so that we remove floating point errors before sending
       // amount to API, but this should be handled correctly right at the
       // beginning (e.g., converting string entered by the user to msatoshi).
-      if (this.payment.currency === 'BTC') {
-        return Math.round(this.payment.amount * 100000000000)
-      }
-      if (this.payment.currency === 'mBTC') {
-        return Math.round(this.payment.amount * 100000000)
-      }
-      if (this.payment.currency === 'satoshi') {
-        return Math.round(this.payment.amount * 1000)
-      }
+      return Math.round(currency.toMiliSatoshi(this.payment.amount, this.payment.currency))
     }
   },
   methods: {

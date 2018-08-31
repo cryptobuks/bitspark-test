@@ -33,6 +33,7 @@ import CurencySelect from '@/components/forms/elements/CurencySelect'
 import AvailableBalanceModal from '@/components/forms/AvailableBalanceModal'
 import ValidationError from '@/components/forms/ValidationError'
 
+import currency from '@/currency.js'
 import expiringItems from './expiringItems.json'
 
 export default {
@@ -64,7 +65,7 @@ export default {
     ...mapGetters(['balance', 'payment']),
     btc () {
       if (this.balance && this.balance.msatoshi) {
-        return this.balance.msatoshi / 100000000000
+        return currency.toBtc(this.balance.msatoshi, 'msatoshi')
       }
     },
     isValid () {
@@ -146,26 +147,17 @@ export default {
     },
     validAmountExceed (amount) {
       if (this.currency === 'satoshi') {
-        return amount <= this.btc * 1000000 // satoshi
+        return amount <= currency.toSatoshi(this.btc, 'btc')
       }
       if (this.currency === 'mBTC') {
-        return amount <= this.btc * 1000 // mBTC
+        return amount <= currency.toMiliBtc(this.btc, 'btc')
       }
       if (this.currency === 'BTC') {
         return amount <= this.btc
       }
     },
     validAmountMinimum (amount) {
-      console.log(amount)
-      if (this.currency === 'satoshi') {
-        return amount >= 1
-      }
-      if (this.currency === 'mBTC') {
-        return amount >= 0.00001
-      }
-      if (this.currency === 'BTC') {
-        return amount >= 0.00000001
-      }
+      return currency.toSatoshi(amount, this.currency)
     },
     isEmptyString (string) {
       return (!string || string.length === 0)

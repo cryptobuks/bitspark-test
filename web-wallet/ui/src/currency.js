@@ -1,5 +1,5 @@
 function toBtc (amount, currency) {
-  switch (currency) {
+  switch (currency.toLowerCase()) {
     case 'msatoshi': return amount / 100000000000
     case 'satoshi': return amount / 100000000
     case 'mbtc': return amount / 1000
@@ -8,7 +8,7 @@ function toBtc (amount, currency) {
   }
 }
 function toMiliBtc (amount, currency) {
-  switch (currency) {
+  switch (currency.toLowerCase()) {
     case 'msatoshi': return amount / 100000000
     case 'satoshi': return amount / 100000
     case 'mbtc': return amount
@@ -17,7 +17,7 @@ function toMiliBtc (amount, currency) {
   }
 }
 function toSatoshi (amount, currency) {
-  switch (currency) {
+  switch (currency.toLowerCase()) {
     case 'msatoshi': return amount / 1000
     case 'satoshi': return amount
     case 'mbtc': return amount * 100000
@@ -26,7 +26,7 @@ function toSatoshi (amount, currency) {
   }
 }
 function toMiliSatoshi (amount, currency) {
-  switch (currency) {
+  switch (currency.toLowerCase()) {
     case 'msatoshi': return amount
     case 'satoshi': return amount * 1000
     case 'mbtc': return amount * 100000000

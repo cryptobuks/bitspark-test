@@ -6,12 +6,14 @@
 </template>
 
 <script>
+import currency from '@/currency.js'
+
 export default {
   name: 'TransactionAmount',
   props: ['msatoshi'],
   computed: {
     mbtc: function () {
-      return this.msatoshi / 100000000
+      return currency.toMiliBtc(this.msatoshi, 'msatoshi')
     }
   }
 }
