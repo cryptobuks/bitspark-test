@@ -9,10 +9,7 @@ services:
       - web
     environment:
       - HTTP_LOG_FORMAT=tiny
-      - WALLET_LND_REST_URL=${WALLET_LND_REST_URL}
-      - WALLET_LND_REST_MACAROON=${WALLET_LND_REST_MACAROON}
       - PORT=8080
-      - PGHOST=database
 
   backend:
     build:
