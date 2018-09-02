@@ -1,7 +1,7 @@
 <template>
   <v-form class="bi-form">
     <v-flex xs12 text-xs-right>
-      <Input :value="sendTo" :label="'To:'" :type="'text'" :placeholder="'Email or Address'" :tooltip="sendToTooltip" @valueInput="handleSendToValue" :tabindex="1" :autofocus="true" />
+      <Input :value="sendTo" :label="'To:'" :type="'email'" :placeholder="'Email or Address'" :tooltip="sendToTooltip" @valueInput="handleSendToValue" :tabindex="1" :autofocus="true" />
       <CurencySelect :currency="currency" :amount="amount" :placeholder="'Amount'" :tooltip="amountTooltip" @valueInput="handleAmountValue" :tabindex="2" />
     </v-flex>
     <v-layout row wrap>
@@ -190,7 +190,7 @@ span {
 }
 @media (max-width: 960px) {
   .bi-form {
-    margin-top: 0;
+    margin-top: -40px;
   }
 }
 </style>
