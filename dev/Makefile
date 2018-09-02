@@ -1,3 +1,4 @@
+export SERVICE_RESTART=no
 export LOGS_DST=syslog://splunk:1514
 
 export FAKE_LND_ENABLED=1

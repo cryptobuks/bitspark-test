@@ -1,32 +1,12 @@
 wallet.localhost:80 {
-    # Legacy
-    proxy /api/wallet/info web-wallet:8080 {
-        transparent
-    }
-
-    proxy /api/transactions web-wallet:8080 {
-        transparent
-    }
-
-    proxy /api/payment/invoice/info web-wallet:8080 {
-        transparent
-    }
-
-    proxy /api/payment/invoice/pay web-wallet:8080 {
-        transparent
-    }
-
-    # New API
     proxy /api backend:4000 {
         transparent
     }
 
-    # Fake LND
     proxy /fakelnd backend:4000 {
         transparent
     }
 
-    # UI
     proxy / web-wallet:8080 {
         transparent
     }
