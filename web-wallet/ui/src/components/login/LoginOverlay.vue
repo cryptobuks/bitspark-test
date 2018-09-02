@@ -56,7 +56,7 @@ export default {
 .bi-login-carousel {
   max-width: 300px;
   margin: auto;
-  margin-top: 200px;
+  margin-top: 100px;
 }
 
 @media (min-width: 960px) {

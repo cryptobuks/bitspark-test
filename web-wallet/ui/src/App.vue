@@ -1,7 +1,7 @@
 <template>
 
   <v-app id="app">
-    <v-layout column fill-height>
+    <v-layout column fill-height v-bind:style="{ height: innerHeight + 'px' }">
 
       <MainMenu />
       <router-view></router-view>
@@ -19,6 +19,11 @@ export default {
   name: 'app',
   components: {
     MainMenu
+  },
+  data () {
+    return {
+      innerHeight: window.innerHeight
+    }
   },
   created () {
     this.$store.dispatch('fetchUserInfo')
@@ -51,6 +56,9 @@ export default {
 <style>
 html {
   overflow-y: auto !important;
+  position: fixed;
+  height: 100vh;
+  width: 100vw;
 }
 body {
   margin: 0;
@@ -116,6 +124,9 @@ a:hover {
 @media (max-width: 1264px) {
   .bi-container {
     margin-top: 104px !important;
+  }
+  .application--wrap {
+    min-height: auto !important;
   }
 }
 </style>
