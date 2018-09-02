@@ -1,5 +1,5 @@
 <template>
-  <v-container class="bi-container" fluid>
+  <v-container class="bi-container bi-confirmation" fluid>
     <v-layout row wrap align-center justify-center text-xs-center>
       <div class="bi-confirmation-heading">
         <v-layout row wrap align-center justify-center text-xs-center>
@@ -18,7 +18,9 @@
       <v-flex xs12 class="bi-confirmation-info">
         <div v-if="isPending">
           <p class="charcoalGrey--text">Recipient has got 24hrs to accept this transaction.</p>
-          <p class="charcoalGrey--text">You can see transaction status in your <span class="bi-link" @click="handleGoToHistory">history.</span></p>
+          <p class="charcoalGrey--text">You can see transaction status in your
+            <span class="bi-link" @click="handleGoToHistory">history.</span>
+          </p>
         </div>
         <div v-else-if="isApproved">
           <p class="charcoalGrey--text">Recipient has received funds from you.</p>
@@ -26,7 +28,9 @@
         </div>
         <div v-else>
           <p class="charcoalGrey--text">We’re receiving too many transactions at the moment.</p>
-          <p class="charcoalGrey--text"><span class="bi-link" @click="handleTryAgain">Try again.</span></p>
+          <p class="charcoalGrey--text">
+            <span class="bi-link" @click="handleTryAgain">Try again.</span>
+          </p>
         </div>
       </v-flex>
       <BottomButton :label="'Done'" :onClick="handleDoneClick" :tabindex="1" />
@@ -54,7 +58,7 @@ export default {
   },
   mounted () {
     if (!this.paymentResult) {
-      this.$router.push({ path: '/' })
+      // this.$router.push({ path: '/' })
     }
   },
   methods: {
@@ -75,6 +79,9 @@ export default {
 </script>
 
 <style scoped>
+.bi-confirmation {
+  max-width: 1264px;
+}
 .bi-confirmation-heading {
   display: flex;
   align-items: center;
@@ -100,7 +107,7 @@ export default {
   transition: color 0.3s;
 }
 .bi-link {
-  color: #000
+  color: #000;
 }
 .approved {
   color: #417505 !important;
@@ -110,5 +117,13 @@ export default {
 }
 .declined {
   color: #d0021b !important;
+}
+
+@media (min-width: 1264px) {
+  .bi-confirmation {
+    max-width: 960px;
+    margin: auto !important;
+    margin-top: 140px !important;
+  }
 }
 </style>

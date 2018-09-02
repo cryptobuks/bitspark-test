@@ -1,5 +1,5 @@
 <template>
-  <v-container class="bi-container" fluid>
+  <v-container class="bi-container bi-claim" fluid>
     <v-layout row wrap align-center justify-center text-xs-center>
       <div class="bi-claim-heading">
         <v-layout row wrap align-center justify-center text-xs-center>
@@ -56,6 +56,9 @@ export default {
 </script>
 
 <style scoped>
+.bi-claim {
+  max-width: 1264px;
+}
 .bi-claim-heading {
   display: flex;
   align-items: center;
@@ -81,5 +84,13 @@ export default {
 }
 .declined {
   color: #d0021b !important;
+}
+
+@media (min-width: 1264px) {
+  .bi-claim {
+    max-width: 960px;
+    margin: auto !important;
+    margin-top: 140px !important;
+  }
 }
 </style>

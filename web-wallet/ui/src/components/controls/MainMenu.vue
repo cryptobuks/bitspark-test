@@ -104,6 +104,7 @@ export default {
         case 'Send': return 'Send / Pay'
         case 'Review': return 'Review & Confirm'
         case 'PaymentConfirmation': return 'Confirmation'
+        case 'Claim': return 'Claim funds'
         default: return 'Biluminate'
       }
     }
