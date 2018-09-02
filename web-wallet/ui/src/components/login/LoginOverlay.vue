@@ -66,5 +66,13 @@ export default {
   .bi-logo-container p {
     font-size: 14px;
   }
-} 
+}
+@media screen and (max-width: 960px) and (orientation: landscape) {
+  .bi-logo-container {
+    margin-top: 10px;
+  }
+  .bi-login-carousel {
+    margin-top: 20px;
+  }
+}
 </style>

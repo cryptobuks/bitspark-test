@@ -43,4 +43,9 @@ export default {
   min-width: 200px;
   font-size: 18px;
 }
+@media screen and (max-width: 960px) and (orientation: landscape) {
+  .bi-login-button {
+    position: fixed;
+  }
+}
 </style>
