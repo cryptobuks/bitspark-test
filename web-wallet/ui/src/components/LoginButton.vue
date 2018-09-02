@@ -29,7 +29,7 @@ export default {
 <style scoped>
 .bi-login-button {
   height: 56px;
-  position: absolute;
+  position: fixed;
   bottom: 0;
   right: 0;
   left: 0;
@@ -42,10 +42,5 @@ export default {
   margin-top: 100px;
   min-width: 200px;
   font-size: 18px;
-}
-@media screen and (max-width: 960px) and (orientation: landscape) {
-  .bi-login-button {
-    position: fixed;
-  }
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
 
   <v-app id="app">
-    <v-layout column fill-height v-bind:style="{ height: innerHeight + 'px' }">
+    <v-layout column>
 
       <MainMenu />
       <router-view></router-view>
@@ -56,9 +56,8 @@ export default {
 <style>
 html {
   overflow-y: auto !important;
-  position: fixed;
-  height: 100vh;
-  width: 100vw;
+  height: 100%;
+  width: 100%;
 }
 body {
   margin: 0;
@@ -130,9 +129,6 @@ a:hover {
 @media (max-width: 1264px) {
   .bi-container {
     margin-top: 104px !important;
-  }
-  .application--wrap {
-    min-height: auto !important;
   }
 }
 </style>
