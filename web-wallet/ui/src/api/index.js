@@ -1,4 +1,4 @@
-const BASE_URL = 'https://testwallet.biluminate.com/api'
+const BASE_URL = '/api'
 
 export function NotAuthorizedError (message) {
   this.message = message
