@@ -1,7 +1,9 @@
 <template>
   <v-container class="bi-container" fill-height fluid>
     <v-layout align-center justify-center>
-      <iframe class="bi-iframe" src="https://www.biluminate.com/about?type=a"></iframe>
+      <div class="scroll-wrapper">
+        <iframe class="bi-iframe" src="https://www.biluminate.com/about?type=a"></iframe>
+      </div>
       <FabButton />
     </v-layout>
   </v-container>

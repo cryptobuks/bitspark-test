@@ -64,7 +64,7 @@ body {
   margin: 0;
 }
 #app {
-  font-family: 'Lato', sans-serif;
+  font-family: "Lato", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #9b9b9b;
@@ -113,6 +113,12 @@ a:hover {
 }
 .bi-iframe {
   border: none;
+  height: 100%;
+  width: 100%;
+}
+.scroll-wrapper {
+  -webkit-overflow-scrolling: touch;
+  overflow-y: scroll;
   height: 100%;
   width: 100%;
 }
