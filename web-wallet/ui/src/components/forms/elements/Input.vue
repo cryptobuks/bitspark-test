@@ -46,13 +46,6 @@ export default {
 .tooltip-icon {
   cursor: pointer;
 }
-.bi-input-container input {
-  -moz-appearance: textfield;
-}
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-}
 </style>
 
 <style>

@@ -70,6 +70,13 @@ export default {
 .tooltip-cion {
   cursor: pointer;
 }
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
 </style>
 
 <style>
