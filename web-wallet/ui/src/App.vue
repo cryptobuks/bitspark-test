@@ -113,14 +113,14 @@ a:hover {
 }
 .bi-iframe {
   border: none;
-  height: 100%;
-  width: 100%;
+  height: 100vh;
+  width: 100vw;
 }
 .scroll-wrapper {
   -webkit-overflow-scrolling: touch;
   overflow-y: scroll;
-  height: 100%;
-  width: 100%;
+  height: 100vh;
+  width: 100vw;
 }
 .bi-container {
   margin: 0 !important;
