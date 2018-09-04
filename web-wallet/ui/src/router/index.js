@@ -56,12 +56,12 @@ export default new Router({
       component: Send
     },
     {
-      path: '/review',
+      path: '/send-review',
       name: 'Review',
       component: Review
     },
     {
-      path: '/confirmation',
+      path: '/send-confirmation',
       name: 'PaymentConfirmation',
       component: PaymentConfirmation
     },
