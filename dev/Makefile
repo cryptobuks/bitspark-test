@@ -4,6 +4,8 @@ export LOGS_DST=syslog://splunk:1514
 export FAKE_LND_ENABLED=1
 
 export PAY_WALLET_URL=http://wallet.localhost
+export WALLET_URL=http://wallet.localhost
+
 export CANTEEN_LND_REST_MACAROON=foobar
 export CANTEEN_LND_REST_URL=http://backend:4000/fakelnd
 

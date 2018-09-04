@@ -22,6 +22,7 @@ services:
     networks:
       - web
     environment:
+      - WALLET_URL=${WALLET_URL:-https://testwallet.biluminate.com}
       - WALLET_PORT=4000
       - WALLET_LND_REST_URL=${WALLET_LND_REST_URL}
       - WALLET_LND_REST_MACAROON=${WALLET_LND_REST_MACAROON}
@@ -32,6 +33,7 @@ services:
       - PAY_WALLET_URL=${PAY_WALLET_URL:-https://testwallet.biluminate.com}
       - CANTEEN_LND_REST_URL=${CANTEEN_LND_REST_URL}
       - CANTEEN_LND_REST_MACAROON=${CANTEEN_LND_REST_MACAROON}
+      - WALLET_MAILGUN_DOMAIN=${WALLET_MAILGUN_DOMAIN:-mailgun.biluminate.com}
       - WALLET_MAILGUN_API_KEY=${WALLET_MAILGUN_API_KEY}
 
   proxy:

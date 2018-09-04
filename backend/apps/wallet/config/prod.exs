@@ -5,6 +5,7 @@ config :wallet, Wallet.Mailer,
   api_key: System.get_env("WALLET_MAILGUN_API_KEY"),
   domain: System.get_env("WALLET_MAILGUN_DOMAIN") || "mailgun.biluminate.com"
 
+config :wallet, wallet_base_url: System.get_env("WALLET_URL") || "https://testwallet.biluminate.com"
 
 config :wallet, Lightning,
   lnd_base_url: System.get_env("WALLET_LND_REST_URL"),

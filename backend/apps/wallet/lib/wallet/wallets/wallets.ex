@@ -291,7 +291,9 @@ defmodule Wallet.Wallets do
           to_email ->
             Logger.info "Sending claim transaction email to #{to_email}"
 
-            Wallet.Email.claim_transaction_email(to_email, "https://testwallet.biluminate.com/#/claim/#{trn.claim_token}")
+            claim_url = "#{Application.get_env(:wallet, :wallet_base_url)}/#/claim/#{trn.claim_token}"
+
+            Wallet.Email.claim_transaction_email(to_email, claim_url)
             |> Wallet.Mailer.deliver_now
         end
 
