@@ -10,6 +10,9 @@ config :wallet, Lightning,
   lnd_base_url: System.get_env("WALLET_LND_REST_URL"),
   lnd_macaroon: System.get_env("WALLET_LND_REST_MACAROON")
 
+config :wallet, Wallet.CurrencyRates.Coinbase,
+  base_url: "https://api.coinbase.com"
+
 # Configure your database
 config :wallet, Wallet.Repo,
   adapter: Ecto.Adapters.Postgres,

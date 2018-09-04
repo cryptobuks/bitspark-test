@@ -6,7 +6,7 @@ defmodule WalletWeb.RatesView do
     %{data: render_one(rates, RatesView, "currency_rates.json")}
   end
 
-  def render("currency_rates.json", %{rates: %{currency: currency, rates: rates}}) do
+  def render("currency_rates.json", %{rates: %{"currency" => currency, "rates" => rates}}) do
     %{
       currency => rates
     }

@@ -43,6 +43,13 @@ defmodule WalletWeb.Router do
 
       forward "/", FakeLndWeb.Router
     end
+
+    alias FakeCoinbaseWeb
+    scope "/fakecoinbase" do
+      pipe_through [:api]
+
+      forward "/", FakeCoinbaseWeb.Router
+    end
   end
 
   def auth_on_error(conn, message) do
