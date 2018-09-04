@@ -80,8 +80,10 @@ export default {
       this.description = this.payment.description ? this.payment.description : ''
       if (this.payment.expiresAfter) {
         this.expiringActualItem = expiringItems.find(item => item.value === this.payment.expiresAfter)
+        this.expiresAfter = this.expiringActualItem.value
       } else {
         this.expiringActualItem = expiringItems[0]
+        this.expiresAfter = expiringItems[0].value
       }
     }
   },
