@@ -208,7 +208,8 @@ defmodule Wallet.Wallets do
     postprocess_transaction(trn, get_transaction_type(trn))
   end
 
-  def postprocess_transaction(%Wallets.Transaction{} = trn, :claimable) do
+  # Expire initial/pending claimable transactions
+  def postprocess_transaction(%Wallets.Transaction{state: "initial"} = trn, :claimable) do
     if NaiveDateTime.compare(trn.claim_expires_at, NaiveDateTime.utc_now) != :gt do
       {:ok, trn} = update_transaction(
         trn,
