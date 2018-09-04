@@ -103,6 +103,7 @@ export default {
   text-transform: none;
 }
 .bi-link {
+  cursor: pointer;
   text-decoration: underline;
   transition: color 0.3s;
 }
