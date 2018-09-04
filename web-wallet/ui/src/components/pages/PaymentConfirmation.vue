@@ -17,7 +17,7 @@
       </div>
       <v-flex xs12 class="bi-confirmation-info">
         <div v-if="isPending">
-          <p class="charcoalGrey--text">Recipient has got 24hrs to accept this transaction.</p>
+          <p class="charcoalGrey--text">Recipient has got {{timeToAccept}} to accept this transaction.</p>
           <p class="charcoalGrey--text">You can see transaction status in your
             <span class="bi-link" @click="handleGoToHistory">history.</span>
           </p>
@@ -41,6 +41,7 @@
 <script>
 import BottomButton from '@/components/controls/BottomButton'
 import { mapGetters, mapActions } from 'vuex'
+import expiringItems from '@/components/forms/expiringItems.json'
 
 export default {
   name: 'PaymentConfirmation',
@@ -48,17 +49,20 @@ export default {
     BottomButton
   },
   computed: {
-    ...mapGetters(['paymentResult']),
+    ...mapGetters(['paymentResult', 'payment']),
     isPending () {
       return this.paymentResult === 'pending' || this.paymentResult === 'initial'
     },
     isApproved () {
       return this.paymentResult === 'approved'
+    },
+    timeToAccept () {
+      return expiringItems.find(item => item.value === this.payment.expiresAfter).text.replace('Expiring in ', '')
     }
   },
   mounted () {
     if (!this.paymentResult) {
-      // this.$router.push({ path: '/' })
+      this.$router.push({ path: '/' })
     }
   },
   methods: {
