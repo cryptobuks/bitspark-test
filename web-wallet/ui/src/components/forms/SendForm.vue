@@ -159,7 +159,7 @@ export default {
       }
     },
     validAmountMinimum (amount) {
-      return currency.toSatoshi(amount, this.currency)
+      return currency.toSatoshi(amount, this.currency) >= 1
     },
     isEmptyString (string) {
       return (!string || string.length === 0)
