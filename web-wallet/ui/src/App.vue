@@ -46,6 +46,9 @@ export default {
     },
     '$route': function (value) {
       window.scrollTo(0, 0)
+      if (!this.user) {
+        this.$router.push({ path: '/' })
+      }
       if (value.name === 'History') {
         this.$store.dispatch('fetchTransactions')
       }
