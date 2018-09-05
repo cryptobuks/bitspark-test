@@ -1,5 +1,6 @@
 <template>
-  <v-container class="bi-container bi-claim" fluid>
+  <LoginOverlay v-if="!user" />
+  <v-container v-else class="bi-container bi-claim" fluid>
     <v-layout row wrap align-center justify-center text-xs-center>
       <div class="bi-claim-heading">
         <v-layout row wrap align-center justify-center text-xs-center>
@@ -29,15 +30,17 @@
 
 <script>
 import BottomButton from '@/components/controls/BottomButton'
+import LoginOverlay from '@/components/login/LoginOverlay'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'ClaimPage',
   components: {
+    LoginOverlay,
     BottomButton
   },
   computed: {
-    ...mapGetters(['claimResult']),
+    ...mapGetters(['user', 'claimResult']),
     isApproved () {
       return this.claimResult && this.claimResult.state === 'approved'
     }

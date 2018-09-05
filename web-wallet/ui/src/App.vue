@@ -46,7 +46,7 @@ export default {
     },
     '$route': function (value) {
       window.scrollTo(0, 0)
-      if (!this.user) {
+      if (!this.user && value.name !== 'Claim') {
         this.$router.push({ path: '/' })
       }
       if (value.name === 'History') {
