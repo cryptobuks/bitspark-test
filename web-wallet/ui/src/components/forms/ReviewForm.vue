@@ -176,7 +176,7 @@ span {
   width: 100%;
   padding: 15px;
   background-color: #fafafa;
-  margin-bottom: 56px;
+  margin-bottom: 0px;
   border-top: 1px solid #d1d1d1;
 }
 .bi-amounts-container .bi-bordered {
@@ -201,6 +201,9 @@ span {
     height: 100%;
     max-width: none;
     justify-content: space-between;
+  }
+  .bi-amounts-container {
+    margin-bottom: 56px;
   }
 }
 </style>

@@ -49,7 +49,7 @@ export default {
   text-transform: uppercase;
 }
 .bi-bottom-button-big-screen {
-  margin-top: 100px;
+  margin-top: 70px;
   min-width: 200px;
   font-size: 18px;
 }
