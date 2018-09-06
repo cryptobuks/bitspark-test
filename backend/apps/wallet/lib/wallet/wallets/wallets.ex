@@ -250,9 +250,12 @@ defmodule Wallet.Wallets do
       msatoshi: Bitcoin.to_msatoshi(Keyword.get(opts, :amount, {"10", :mbtc})),
       state: "approved"
     }
-    %Wallets.Transaction{}
-    |> Wallets.Transaction.changeset(attrs)
-    |> Repo.insert()
+
+    with {:ok, initial} <- create_transaction(attrs),
+         {:ok, processed} <- update_transaction(initial, %{processed_at: NaiveDateTime.utc_now})
+      do
+      {:ok, processed}
+    end
   end
 
   @doc """
