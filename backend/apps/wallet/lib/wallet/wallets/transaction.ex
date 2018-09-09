@@ -39,4 +39,22 @@ defmodule Wallet.Wallets.Transaction do
     |> foreign_key_constraint(:src_transaction_id)
     |> unique_constraint(:src_transaction_id)
   end
+
+  @doc """
+  Try to determine transaction type by it's properties
+  """
+  def get_transaction_type(%{claim_token: value}) when value != nil, do: :claimable
+  def get_transaction_type(%{invoice: value}) when value != nil, do: :lightning
+  def get_transaction_type(%{}), do: :other
+
+  @doc """
+  Decide whether system should expire given claimable transaction
+
+  Only initial with expired claim date should expire
+  """
+  def should_claimable_transaction_expire(%{state: "initial"} = trn) do
+    NaiveDateTime.compare(trn.claim_expires_at, NaiveDateTime.utc_now) != :gt
+  end
+
+  def should_claimable_transaction_expire(_), do: false
 end

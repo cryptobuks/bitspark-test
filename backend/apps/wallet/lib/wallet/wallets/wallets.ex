@@ -174,6 +174,22 @@ defmodule Wallet.Wallets do
   def get_transaction!(id), do: Repo.get!(Wallets.Transaction, id) |> postprocess_transaction
 
   @doc """
+  Gets a single transaction with "FOR UPDATE" lock.
+
+  Raises `Ecto.NoResultsError` if the Transaction does not exist.
+  """
+  def get_transaction_for_update!(id) do
+    Repo.one!(
+      from(
+        t in Wallets.Transaction,
+        select: t,
+        where: t.id == ^id,
+        lock: "FOR UPDATE"
+      )
+    )
+  end
+
+  @doc """
   Gets a transaction for given claim token (makes sure that it respects expiration).
 
   ## Example
@@ -192,38 +208,45 @@ defmodule Wallet.Wallets do
     end
   end
 
-  @doc """
-  Try to determine transaction type by it's properties
-  """
-  def get_transaction_type(%Wallets.Transaction{claim_token: value}) when value != nil, do: :claimable
-  def get_transaction_type(%Wallets.Transaction{invoice: value}) when value != nil, do: :lightning
-  def get_transaction_type(%Wallets.Transaction{}), do: :other
-
-  @doc """
-  Postprocess transaction before returning it to the user
-
-  E.g. expire claimable transactions
-  """
-  def postprocess_transaction(%Wallets.Transaction{} = trn) do
-    postprocess_transaction(trn, get_transaction_type(trn))
+  # Postprocess transaction before returning it to the user
+  # E.g. expire claimable transactions
+  defp postprocess_transaction(%Wallets.Transaction{} = trn) do
+    postprocess_transaction(trn, Wallets.Transaction.get_transaction_type(trn))
   end
 
   # Expire initial/pending claimable transactions
-  def postprocess_transaction(%Wallets.Transaction{state: "initial"} = trn, :claimable) do
-    if NaiveDateTime.compare(trn.claim_expires_at, NaiveDateTime.utc_now) != :gt do
-      {:ok, trn} = update_transaction(
-        trn,
-        %{processed_at: trn.claim_expires_at,
-          state: Wallets.Transaction.declined,
-          response: "Expired"}
-      )
-      trn
+  defp postprocess_transaction(%Wallets.Transaction{state: "initial"} = trn, :claimable) do
+    if Wallets.Transaction.should_claimable_transaction_expire(trn) do
+      case expire_claimable_transaction(trn) do
+        {:ok, expired_trn} -> expired_trn
+        {:error, _error} ->
+          Logger.warn "Failed to postprocess (expire) transaction trn_id=#{trn.id}"
+          # Be safe and return original non-expired transaction
+          trn
+      end
     else
       trn
     end
   end
 
-  def postprocess_transaction(%Wallets.Transaction{} = trn, _), do: trn
+  defp postprocess_transaction(%Wallets.Transaction{} = trn, _), do: trn
+
+  # Safely expire given claimable transaction
+  defp expire_claimable_transaction(%Wallets.Transaction{} = trn) do
+    Repo.transaction(fn ->
+      trn = get_transaction_for_update!(trn.id)
+
+      # Make sure that transaction is still ready to be expired
+      if Wallets.Transaction.should_claimable_transaction_expire(trn) do
+        {:ok, trn} = update_transaction(trn, %{processed_at: trn.claim_expires_at,
+                                               state: Wallets.Transaction.declined,
+                                               response: "Expired"})
+        trn
+      else
+        trn
+      end
+    end)
+  end
 
   @doc """
   Creates a transaction.
