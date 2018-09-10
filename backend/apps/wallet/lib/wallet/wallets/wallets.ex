@@ -220,8 +220,9 @@ defmodule Wallet.Wallets do
       case expire_claimable_transaction(trn) do
         {:ok, expired_trn} -> expired_trn
         {:error, _error} ->
+          # Postprocessing isn't (that) critical, so let's not fail here. Just
+          # log warning, and return original transaction.
           Logger.warn "Failed to postprocess (expire) transaction trn_id=#{trn.id}"
-          # Be safe and return original non-expired transaction
           trn
       end
     else
@@ -349,13 +350,16 @@ defmodule Wallet.Wallets do
 
   """
   def claim_transaction(%Wallets.Wallet{} = wallet, token) when is_bitstring(token) do
-    with {:ok, src_trn} <- get_transaction_by_token(token),
-         {:ok, dst_trn} <- claim_transaction(wallet, src_trn)
-      do
-      {:ok, dst_trn}
-    end
+    {:ok, result} = Repo.transaction(fn ->
+      with {:ok, src_trn_by_token} <- get_transaction_by_token(token) do
+        claim_transaction(wallet, get_transaction_for_update!(src_trn_by_token.id))
+      end
+    end)
+
+    result
   end
 
+  # Handle already claimed state
   def claim_transaction(%Wallets.Wallet{} = wallet, %Wallets.Transaction{claimed_by: claimed_by} = src_trn) when claimed_by != nil do
     dst_trn = get_transaction!(claimed_by)
 
@@ -368,37 +372,21 @@ defmodule Wallet.Wallets do
     end
   end
 
+  # Try to claim the transaction
   def claim_transaction(%Wallets.Wallet{} = wallet, %Wallets.Transaction{} = src_trn) do
     with :ok <- Validation.expect_claimable_transaction(src_trn),
-         {:ok, %Wallets.Transaction{} = dst_trn} <- _claim_transaction(wallet, src_trn)
-      do
-        {:ok, dst_trn}
-      else
-        {:error, _} = error ->
-          error
+         {:ok, dst_trn} <- create_transaction(%{"wallet_id" => wallet.id,
+                              "state" => "approved",
+                              "msatoshi" => -src_trn.msatoshi,
+                              "src_transaction_id" => src_trn.id,
+                              "processed_at" => NaiveDateTime.utc_now,
+                              "description" => src_trn.description}) do
+      # Mark source transaction as claimed
+      {:ok, _} = update_transaction(src_trn, %{processed_at: NaiveDateTime.utc_now,
+                                               state: Wallets.Transaction.approved,
+                                               claimed_by: dst_trn.id})
+      {:ok, dst_trn}
     end
-  end
-
-  defp _claim_transaction(%Wallets.Wallet{} = wallet, %Wallets.Transaction{} = src_trn) do
-    Repo.transaction(fn ->
-      case create_transaction(
-            %{"wallet_id" => wallet.id,
-              "state" => "approved",
-              "msatoshi" => -src_trn.msatoshi,
-              "src_transaction_id" => src_trn.id,
-              "processed_at" => NaiveDateTime.utc_now,
-              "description" => src_trn.description}) do
-        {:ok, dst_trn} ->
-          {:ok, _} = update_transaction(
-            src_trn,
-            %{processed_at: NaiveDateTime.utc_now,
-              state: Wallets.Transaction.approved,
-              claimed_by: dst_trn.id})
-          dst_trn
-        {:error, _} = error ->
-          error
-      end
-    end)
   end
 
   @doc """
