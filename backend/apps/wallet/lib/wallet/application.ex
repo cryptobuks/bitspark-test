@@ -14,6 +14,7 @@ defmodule Wallet.Application do
 
     Supervisor.start_link([
       supervisor(Wallet.Repo, []),
+      supervisor(TestableNaiveDateTime, []),
       supervisor(Wallet.CurrencyRates, []),
     ], strategy: :one_for_one, name: Wallet.Supervisor)
   end
