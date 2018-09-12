@@ -1,7 +1,9 @@
 defmodule Wallet.Email do
   import Bamboo.Email
 
-  def claim_transaction_email(to_email, claim_url) do
+  def claim_transaction_email(to_email, claim_token) do
+    claim_url = "#{Application.get_env(:wallet, :wallet_base_url)}/#/claim/#{claim_token}"
+
     new_email(
       from: "yes@biluminate.com",
       to: to_email,
