@@ -17,7 +17,7 @@ defmodule Utils do
 
   def canonicalize(x) when is_map(x) do
     # Drop Ecto internal stuff that we don't care about
-    x = Map.drop(x, [:__meta__, :__struct__])
+    x = Map.drop(x, [:__meta__])
 
     List.foldl(
       Map.keys(x),

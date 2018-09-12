@@ -163,6 +163,7 @@ defmodule Wallet.WalletsTest do
         wallet, amount: {1, :satoshi}, description: "foo", to_email: "to@example.com")
 
       assert_value canonicalize(transaction) == %{
+                     __struct__: Wallet.Wallets.Transaction,
                      claim_expires_at: "<NAIVEDATETIME>",
                      claim_token: "<UUID>",
                      claimed_by: nil,
@@ -280,6 +281,7 @@ defmodule Wallet.WalletsTest do
       # Source transaction should be declined now
       src_trn_after = Wallets.get_transaction!(src_trn.id)
       assert_value canonicalize(src_trn_after) == %{
+                     __struct__: Wallet.Wallets.Transaction,
                      claim_expires_at: "<NAIVEDATETIME>",
                      claim_token: "<UUID>",
                      claimed_by: nil,
