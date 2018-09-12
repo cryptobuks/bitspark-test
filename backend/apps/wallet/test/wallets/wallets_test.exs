@@ -2,6 +2,7 @@ defmodule Wallet.WalletsTest do
   import AssertValue
   import Utils, only: [canonicalize: 1]
   use Wallet.DataCase
+  use Bamboo.Test
 
   alias Wallet.Accounts
   alias Wallet.Accounts.User
@@ -161,7 +162,7 @@ defmodule Wallet.WalletsTest do
       trn
     end
 
-    test "create_claimable_transaction/2 with valid data creates a transaction with token" do
+    test "create_claimable_transaction/2 with valid data creates a transaction with token and sends email" do
       wallet = create_wallet()
       Wallets.create_funding_transaction(wallet)
 
@@ -186,6 +187,9 @@ defmodule Wallet.WalletsTest do
                      updated_at: "<NAIVEDATETIME>",
                      wallet_id: "<UUID>"
                    }
+
+      assert_delivered_email Wallet.Email.claim_transaction_email(
+        "to@example.com", transaction.claim_token)
     end
 
     test "create_claimable_transaction/2 fails if wallet doesn't have enough funds" do
