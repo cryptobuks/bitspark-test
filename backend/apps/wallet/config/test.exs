@@ -3,6 +3,8 @@ use Mix.Config
 config :wallet, Wallet.Mailer,
   adapter: Bamboo.TestAdapter
 
+config :wallet, wallet_base_url: "http://test:4000"
+
 config :wallet, Lightning,
   lnd_base_url: "http://localhost:4001/fakelnd",
   lnd_macaroon: "foobar"
