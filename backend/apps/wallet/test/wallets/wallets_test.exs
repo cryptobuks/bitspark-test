@@ -7,6 +7,12 @@ defmodule Wallet.WalletsTest do
   alias Wallet.Accounts.User
   alias Wallet.Wallets
 
+  setup do
+    on_exit(:reset, fn ->
+      TestableNaiveDateTime.reset()
+    end)
+  end
+
   describe "wallets" do
     @valid_attrs %{}
     @update_attrs %{}

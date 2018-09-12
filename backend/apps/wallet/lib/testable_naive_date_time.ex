@@ -17,6 +17,10 @@ defmodule TestableNaiveDateTime do
     Agent.update(__MODULE__, &Map.put(&1, :offset, ms))
   end
 
+  def reset() do
+    Agent.update(__MODULE__, &Map.put(&1, :offset, 0))
+  end
+
   def advance_by(ms) do
     Agent.update(__MODULE__, &Map.update!(&1, :offset, fn (current) -> current + ms end))
   end
