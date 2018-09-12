@@ -3,6 +3,10 @@ defmodule Utils do
     :crypto.strong_rand_bytes(length) |> Base.url_encode64 |> binary_part(0, length)
   end
 
+  def canonicalize({a, b}) do
+    {canonicalize(a), canonicalize(b)}
+  end
+
   def canonicalize(xs) when is_list(xs) do
     for x <- xs, do: canonicalize(x)
   end
