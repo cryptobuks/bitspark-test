@@ -276,7 +276,7 @@ defmodule Wallet.Wallets do
     }
 
     with {:ok, initial} <- create_transaction(attrs),
-         {:ok, processed} <- update_transaction(initial, %{processed_at: NaiveDateTime.utc_now})
+         {:ok, processed} <- update_transaction(initial, %{processed_at: TestableNaiveDateTime.utc_now})
       do
       {:ok, processed}
     end
@@ -308,7 +308,7 @@ defmodule Wallet.Wallets do
                   description: Keyword.get(opts, :description),
                   to_email: Keyword.get(opts, :to_email),
                   claim_token: Ecto.UUID.generate,
-                  claim_expires_at: NaiveDateTime.utc_now |> NaiveDateTime.add(expires_after, :second),
+                  claim_expires_at: TestableNaiveDateTime.utc_now |> NaiveDateTime.add(expires_after, :second),
                   msatoshi: -msatoshi,
                   state: Wallets.Transaction.initial
          }),
@@ -379,10 +379,10 @@ defmodule Wallet.Wallets do
                               "state" => "approved",
                               "msatoshi" => -src_trn.msatoshi,
                               "src_transaction_id" => src_trn.id,
-                              "processed_at" => NaiveDateTime.utc_now,
+                              "processed_at" => TestableNaiveDateTime.utc_now,
                               "description" => src_trn.description}) do
       # Mark source transaction as claimed
-      {:ok, _} = update_transaction(src_trn, %{processed_at: NaiveDateTime.utc_now,
+      {:ok, _} = update_transaction(src_trn, %{processed_at: TestableNaiveDateTime.utc_now,
                                                state: Wallets.Transaction.approved,
                                                claimed_by: dst_trn.id})
       {:ok, dst_trn}
@@ -434,7 +434,7 @@ defmodule Wallet.Wallets do
 
     # update trn with result
     with {:ok, processed_transaction} <- update_transaction(trn, Enum.into(
-                  %{processed_at: NaiveDateTime.utc_now,
+                  %{processed_at: TestableNaiveDateTime.utc_now,
                     response: Poison.encode!(update.response)},
                   update))
       do
@@ -458,7 +458,7 @@ defmodule Wallet.Wallets do
       {:ok, balance}
     else
       {:ok, declined_transaction} = update_transaction(
-        trn, %{processed_at: NaiveDateTime.utc_now,
+        trn, %{processed_at: TestableNaiveDateTime.utc_now,
                state: Wallets.Transaction.declined,
                response: "NSF"})
       {:error, Wallet.NonSufficientFunds.exception(wallet: wallet, transaction: declined_transaction)}
