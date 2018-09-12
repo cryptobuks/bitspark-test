@@ -209,12 +209,14 @@ defmodule Wallet.WalletsTest do
     end
 
     test "claimable transaction should be claimable" do
+      expires_after = 900
+
       src_wallet = create_wallet("sub1")
       Wallets.create_funding_transaction(src_wallet, amount: {1000, :msatoshi})
 
       # Source transaction
       {:ok, src_trn} = Wallets.create_claimable_transaction(
-        src_wallet, amount: {1000, :msatoshi}, description: "foo")
+        src_wallet, amount: {1000, :msatoshi}, description: "foo", expires_after: expires_after)
 
       # Claim
       dst_wallet = create_wallet("sub2")
@@ -235,6 +237,12 @@ defmodule Wallet.WalletsTest do
         src_transaction_id: "<UUID>",
         state: "approved"
       }
+
+      # Claimed transaction don't change after it's expiration
+      TestableNaiveDateTime.advance_by(:timer.seconds(expires_after + 1))
+
+      src_trn_after_expiration = Wallets.get_transaction!(src_trn.id)
+      assert_value canonicalize(src_trn_after_expiration) == canonicalize(src_trn_after)
     end
 
     test "claimable transaction should be only claimed once (same wallet)" do
