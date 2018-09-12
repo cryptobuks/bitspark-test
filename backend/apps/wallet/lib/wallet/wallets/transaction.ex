@@ -53,7 +53,7 @@ defmodule Wallet.Wallets.Transaction do
   Only initial with expired claim date should expire
   """
   def should_claimable_transaction_expire(%{state: "initial"} = trn) do
-    NaiveDateTime.compare(trn.claim_expires_at, NaiveDateTime.utc_now) != :gt
+    NaiveDateTime.compare(trn.claim_expires_at, TestableNaiveDateTime.utc_now) != :gt
   end
 
   def should_claimable_transaction_expire(_), do: false

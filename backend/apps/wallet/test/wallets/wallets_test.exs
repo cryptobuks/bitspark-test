@@ -267,11 +267,13 @@ defmodule Wallet.WalletsTest do
 
     test "claimable transaction isn't claimable after it expires" do
       # Source transaction (expired)
-      src_trn = claimable_trn_fixture(%{expires_after: 0})
+      src_trn = claimable_trn_fixture(%{expires_after: 900})
+
+      TestableNaiveDateTime.advance_by(:timer.seconds(900 + 1))
 
       # Claim
       dst_wallet = create_wallet("dst")
-      assert_value Wallets.claim_transaction(dst_wallet, src_trn.claim_token) ==
+      assert_value canonicalize(Wallets.claim_transaction(dst_wallet, src_trn.claim_token)) ==
                      {:error,
                       %Wallet.ValidationError{
                         details: "Non-initial state (declined)",
