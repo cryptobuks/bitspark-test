@@ -2,8 +2,8 @@ defmodule Wallet.CurrencyRates do
   use Agent
   alias Wallet.CurrencyRates.Coinbase
 
-  @ttl 60  # seconds
-  @max_client_wait_time 2000  # ms
+  @ttl :timer.seconds(60)
+  @max_client_wait_time :timer.seconds(2)
 
   def start_link() do
     Agent.start_link(fn -> %{} end, name: __MODULE__)
@@ -22,7 +22,7 @@ defmodule Wallet.CurrencyRates do
   def get_rates(currency = "BTC") do
     case get_cache(currency) do
       {:ok, %{rates: cached_rates, updated_at: updated_at}} ->
-        if NaiveDateTime.diff(NaiveDateTime.utc_now, updated_at) > @ttl do
+        if NaiveDateTime.diff(NaiveDateTime.utc_now, updated_at, :millisecond) > @ttl do
           refresh = Task.async(
             fn ->
               fresh_rates = Coinbase.get_rates(currency)
