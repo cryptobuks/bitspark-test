@@ -23,12 +23,7 @@ defmodule Wallet.CurrencyRates do
     case get_cache(currency) do
       {:ok, %{rates: cached_rates, updated_at: updated_at}} ->
         if NaiveDateTime.diff(NaiveDateTime.utc_now, updated_at, :millisecond) > @ttl do
-          refresh = Task.async(
-            fn ->
-              fresh_rates = Coinbase.get_rates(currency)
-              set_cache(currency, fresh_rates)
-              fresh_rates
-            end)
+          refresh = Task.async(fn -> force_get_rates(currency) end)
           # We don't want client to wait for too long so we better return cached
           # values even if they are old(er).
           case Task.yield(refresh, @max_client_wait_time) do
@@ -40,9 +35,13 @@ defmodule Wallet.CurrencyRates do
           cached_rates
         end
       :error ->
-        fresh_rates = Coinbase.get_rates(currency)
-        set_cache(currency, fresh_rates)
-        fresh_rates
+        force_get_rates(currency)
     end
+  end
+
+  defp force_get_rates(currency) do
+    fresh_rates = Coinbase.get_rates(currency)
+    set_cache(currency, fresh_rates)
+    fresh_rates
   end
 end
