@@ -19,10 +19,12 @@ defmodule Utils do
     "<NAIVEDATETIME>"
   end
 
-  def canonicalize(x) when is_map(x) do
+  def canonicalize(%{__meta__: meta} = x) when meta != "<META>" do
     # Drop Ecto internal stuff that we don't care about
-    x = Map.drop(x, [:__meta__])
+    canonicalize(Map.put(x, :__meta__, "<META>"))
+  end
 
+  def canonicalize(x) when is_map(x) do
     List.foldl(
       Map.keys(x),
       x,
