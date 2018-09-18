@@ -25,7 +25,7 @@ defmodule Canteen.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:lightning, in_umbrella: true},
+      {:bitcoin, in_umbrella: true},
     ]
   end
 end

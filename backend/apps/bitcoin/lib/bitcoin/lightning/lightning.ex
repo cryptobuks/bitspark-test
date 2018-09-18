@@ -97,7 +97,7 @@ defmodule Lightning do
   def create_invoice(config, %{description: description, msatoshi: msatoshi}) do
     %{body: body} =
       LndRest.xpost!(
-        config, "/v1/invoices", %{memo: description, value: Bitcoin.to_satoshi({msatoshi, :msatoshi})})
+        config, "/v1/invoices", %{memo: description, value: Bitcoin.Amount.to_satoshi({msatoshi, :msatoshi})})
 
     case body do
       %{"payment_request" => invoice} -> {:ok, invoice}

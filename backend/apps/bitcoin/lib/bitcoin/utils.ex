@@ -1,4 +1,4 @@
-defmodule Bitcoin do
+defmodule Bitcoin.Amount do
   alias Decimal, as: D
 
   @doc """
@@ -38,13 +38,13 @@ defmodule Bitcoin do
   @doc """
   Conversions
 
-      iex> Bitcoin.to_satoshi({1, :btc})
+      iex> Bitcoin.Amount.to_satoshi({1, :btc})
       100_000_000
 
-      iex> Bitcoin.to_satoshi({1, :mbtc})
+      iex> Bitcoin.Amount.to_satoshi({1, :mbtc})
       100_000
 
-      iex> Bitcoin.to_msatoshi({1, :btc})
+      iex> Bitcoin.Amount.to_msatoshi({1, :btc})
       100_000_000_000
 
   """

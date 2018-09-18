@@ -271,7 +271,7 @@ defmodule Wallet.Wallets do
     attrs = %{
       wallet_id: wallet.id,
       description: Keyword.get(opts, :description, "Funding transaction"),
-      msatoshi: Bitcoin.to_msatoshi(Keyword.get(opts, :amount, {"10", :mbtc})),
+      msatoshi: Bitcoin.Amount.to_msatoshi(Keyword.get(opts, :amount, {"10", :mbtc})),
       state: "approved"
     }
 
@@ -300,9 +300,9 @@ defmodule Wallet.Wallets do
     amount = Keyword.get(opts, :amount)
     expires_after = Keyword.get(opts, :expires_after, 86400)
 
-    with :ok <- Validation.maybe_validation_error(Bitcoin.validate_amount(amount)),
-         :ok <- Validation.maybe_validation_error(Bitcoin.is_positive_amount(amount)),
-         msatoshi <- Bitcoin.to_msatoshi(amount),
+    with :ok <- Validation.maybe_validation_error(Bitcoin.Amount.validate_amount(amount)),
+         :ok <- Validation.maybe_validation_error(Bitcoin.Amount.is_positive_amount(amount)),
+         msatoshi <- Bitcoin.Amount.to_msatoshi(amount),
          {:ok, trn} <- create_transaction(%{
                   wallet_id: wallet.id,
                   description: Keyword.get(opts, :description),

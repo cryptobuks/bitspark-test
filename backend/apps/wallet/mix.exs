@@ -40,7 +40,7 @@ defmodule Wallet.Mixfile do
       {:ecto, "~> 2.1"},
       {:bamboo, "~> 1.1"},
       {:gold, "~> 0.16"},
-      {:lightning, in_umbrella: true},
+      {:bitcoin, in_umbrella: true},
       {:assert_value, "~> 0.9.2", only: [:test, :dev]}
     ]
   end
