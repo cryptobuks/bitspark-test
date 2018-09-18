@@ -42,6 +42,7 @@ defmodule WalletWeb.Mixfile do
       {:phoenix_ecto, "~> 3.2"},
       {:gettext, "~> 0.11"},
       {:wallet, in_umbrella: true},
+      {:bitcoin, in_umbrella: true},
       {:cowboy, "~> 1.0"},
       {:cors_plug, "~> 1.5"},
       {:joken, "~> 1.5"},

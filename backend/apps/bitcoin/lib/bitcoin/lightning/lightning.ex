@@ -1,15 +1,15 @@
-defmodule Lightning do
+defmodule Bitcoin.Lightning do
   @moduledoc """
   Lightning functions.
   """
 
-  alias Lightning.LndRest
-  alias Lightning.Invoice
+  alias Bitcoin.Lightning.LndRest
+  alias Bitcoin.Lightning.Invoice
 
   @doc """
   Return info stored in invoice.
 
-      iex> Wallet.lightning_config |> Lightning.decode_invoice("lntb1500n1pd0c66dpp5p8rpzxck9u7umfl9u7dqratj8rlfthe29xl6ejhwt2exuaxfpftqdqvg9jxgg8zn2sscqzysyv8kgctq7haghaus4wqd262mxr9342mvp23gdsv6vmgkce9zgshjd0av06dq3xpe8cy6fucnj454smkqxuetyvu3h5jggx2w8ethlvcp6g3ldq")
+      iex> Wallet.lightning_config |> Bitcoin.Lightning.decode_invoice("lntb1500n1pd0c66dpp5p8rpzxck9u7umfl9u7dqratj8rlfthe29xl6ejhwt2exuaxfpftqdqvg9jxgg8zn2sscqzysyv8kgctq7haghaus4wqd262mxr9342mvp23gdsv6vmgkce9zgshjd0av06dq3xpe8cy6fucnj454smkqxuetyvu3h5jggx2w8ethlvcp6g3ldq")
       {:ok,
         %{
           description: "Foobar #ldq",
@@ -22,7 +22,7 @@ defmodule Lightning do
   def decode_invoice(config, invoice) do
     %{body: body} = LndRest.xget!(config, "/v1/payreq/#{invoice}")
 
-    changeset = Lightning.Invoice.changeset(
+    changeset = Bitcoin.Lightning.Invoice.changeset(
       %Invoice{},
       %{
         "description": body["description"],
@@ -39,7 +39,7 @@ defmodule Lightning do
   @doc """
   Get list of invoices from LND database.
 
-      Wallet.lightning_config |> Lightning.get_invoices()
+      Wallet.lightning_config |> Bitcoin.Lightning.get_invoices()
       [
         %{
           "cltv_expiry" => "144",
@@ -70,7 +70,7 @@ defmodule Lightning do
   @doc """
   Return basic information about given node
 
-      iex> Wallet.lightning_config |> Lightning.get_node_info("02212d3ec887188b284dbb7b2e6eb40629a6e14fb049673f22d2a0aa05f902090e")
+      iex> Wallet.lightning_config |> Bitcoin.Lightning.get_node_info("02212d3ec887188b284dbb7b2e6eb40629a6e14fb049673f22d2a0aa05f902090e")
       {:ok, %{alias: "SomeNodeAlias #022"}}
 
   """
@@ -89,7 +89,7 @@ defmodule Lightning do
   @doc """
   Create lightning invoice
 
-      iex> Canteen.lightning_config |> Lightning.create_invoice(%{description: "Thing", msatoshi: 1000})
+      iex> Canteen.lightning_config |> Bitcoin.Lightning.create_invoice(%{description: "Thing", msatoshi: 1000})
       {:ok, "lntb1230n1pdselh0pp5nlmxmjhf6w7uy4sqrwe4tputzd5m2y9a22p7l2dvxrxtfc8aq3dqdqdgfskwat9w36x2cqzys4gyv0cd7kg0wa54h4h5x9d75303rpks50d47fc26hahw9wv3z68kslw3x2xx6ghcf5ld77u0q6sx20y0y4het8kfgauamspjwn4s6zcpv36uz6"}
 
   """
@@ -108,7 +108,7 @@ defmodule Lightning do
   @doc """
   Pay given invoice
 
-      iex> Canteen.lightning_config |> Lightning.pay_invoice("lntb10n1pdctf20pp5s6aj9rum8rez4w93058a7hheqdtq2vmex8a7j8e87jxcqgqlx32sdqg235xjmn8cqzysttrrdt3yucpl6dfzrke47cp3pxea5km99ujgj2ttagx80s9xmznqh778gctz87azkm6cvr3qqxxyecayfa78r7j00mfuae40n468wccp3f0mlv")
+      iex> Canteen.lightning_config |> Bitcoin.Lightning.pay_invoice("lntb10n1pdctf20pp5s6aj9rum8rez4w93058a7hheqdtq2vmex8a7j8e87jxcqgqlx32sdqg235xjmn8cqzysttrrdt3yucpl6dfzrke47cp3pxea5km99ujgj2ttagx80s9xmznqh778gctz87azkm6cvr3qqxxyecayfa78r7j00mfuae40n468wccp3f0mlv")
       {:ok,
         %{
           "payment_preimage" => "+b9n1eSD0DlPhIdh8JowwMhQfJXEAsxV6RAspa4OJRA=",

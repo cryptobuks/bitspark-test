@@ -1,4 +1,4 @@
-defmodule Lightning.LndRest do
+defmodule Bitcoin.Lightning.LndRest do
   @moduledoc """
   Low level LND REST API client.
 
@@ -22,7 +22,7 @@ defmodule Lightning.LndRest do
   @doc """
   Issue GET request to given LND.
 
-      Wallet.lightning_config |> Lightning.LndRest.xget!("/v1/getinfo")
+      Wallet.lightning_config |> Bitcoin.Lightning.LndRest.xget!("/v1/getinfo")
 
   """
   def xget!(config, path) do
@@ -33,7 +33,7 @@ defmodule Lightning.LndRest do
   @doc """
   Issue POST request to given LND.
 
-      Wallet.lightning_config |> Lightning.LndRest.xpost!("/v1/invoices", %{memo: "...description", value: 12345, receipt: Base.encode64("...receipt")})
+      Wallet.lightning_config |> Bitcoin.Lightning.LndRest.xpost!("/v1/invoices", %{memo: "...description", value: 12345, receipt: Base.encode64("...receipt")})
 
   """
   def xpost!(config, path, data) do

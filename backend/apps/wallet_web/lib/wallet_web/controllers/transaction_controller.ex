@@ -20,7 +20,7 @@ defmodule WalletWeb.TransactionController do
   def create(conn, %{"invoice" => invoice}) do
     invoice = String.downcase(invoice)
 
-    unless Bitcoin.is_invoice(invoice) do
+    unless Bitcoin.Lightning.Invoice.is_invoice(invoice) do
       Logger.warn "Invalid invoice '#{invoice}' given."
       raise WalletWeb.InvalidInvoice, invoice: invoice
     end

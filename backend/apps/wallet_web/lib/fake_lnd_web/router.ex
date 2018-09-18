@@ -7,7 +7,7 @@ defmodule FakeLndWeb.Router do
   plug :dispatch
 
   get "/v1/payreq/:invoice" do
-    num_satoshis = Bitcoin.invoice_satoshi(invoice)
+    num_satoshis = Bitcoin.Lightning.Invoice.invoice_satoshi(invoice)
 
     payload = %{
       "cltv_expiry" => "144",
@@ -52,7 +52,7 @@ defmodule FakeLndWeb.Router do
 
   post "/v1/channels/transactions" do
     invoice = conn.body_params["payment_request"]
-    total_amt = Bitcoin.invoice_satoshi(invoice)
+    total_amt = Bitcoin.Lightning.Invoice.invoice_satoshi(invoice)
     fee = 1
 
     case String.slice(invoice, -3, 3) do

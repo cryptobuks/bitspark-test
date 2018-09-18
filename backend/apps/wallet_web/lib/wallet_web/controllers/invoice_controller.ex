@@ -6,8 +6,8 @@ defmodule WalletWeb.InvoiceController do
   def show(conn, %{"id" => id}) do
     id = String.downcase(id)
 
-    {:ok, invoice} = Lightning.decode_invoice(Wallet.lightning_config, id)
-    {:ok, node} = Lightning.get_node_info(Wallet.lightning_config, invoice.dst_pub_key)
+    {:ok, invoice} = Bitcoin.Lightning.decode_invoice(Wallet.lightning_config, id)
+    {:ok, node} = Bitcoin.Lightning.get_node_info(Wallet.lightning_config, invoice.dst_pub_key)
     invoice = Map.put(invoice, :dst_alias, node.alias)
     render(conn, "show.json", invoice: invoice)
   end

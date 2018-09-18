@@ -300,8 +300,8 @@ defmodule Wallet.Wallets do
     amount = Keyword.get(opts, :amount)
     expires_after = Keyword.get(opts, :expires_after, 86400)
 
-    with :ok <- Validation.maybe_validation_error(Bitcoin.Amount.validate_amount(amount)),
-         :ok <- Validation.maybe_validation_error(Bitcoin.Amount.is_positive_amount(amount)),
+    with :ok <- Validation.maybe_validation_error(Bitcoin.Amount.validate(amount)),
+         :ok <- Validation.maybe_validation_error(Bitcoin.Amount.is_positive(amount)),
          msatoshi <- Bitcoin.Amount.to_msatoshi(amount),
          {:ok, trn} <- create_transaction(%{
                   wallet_id: wallet.id,
@@ -400,7 +400,7 @@ defmodule Wallet.Wallets do
 
   """
   def pay_invoice(wallet_id, invoice) do
-    {:ok, payload} = Lightning.decode_invoice(Wallet.lightning_config, invoice)
+    {:ok, payload} = Bitcoin.Lightning.decode_invoice(Wallet.lightning_config, invoice)
 
     # initial
     {:ok, trn} = create_transaction(
@@ -419,7 +419,7 @@ defmodule Wallet.Wallets do
         "Error: Non-sufficient funds"
       %{state: Wallets.Transaction.declined, response: "NSF"}
     else
-      case Lightning.pay_invoice(Wallet.lightning_config, invoice) do
+      case Bitcoin.Lightning.pay_invoice(Wallet.lightning_config, invoice) do
         {:ok, payload} ->
           %{state: Wallets.Transaction.approved, response: payload}
 

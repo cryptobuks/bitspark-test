@@ -3,7 +3,7 @@ defmodule Canteen do
 
   def create_invoice(:piccolo) do
     lightning_config()
-    |> Lightning.create_invoice(
+    |> Bitcoin.Lightning.create_invoice(
       %{
         description: "☕ Piccolo",
         msatoshi: Bitcoin.Amount.to_msatoshi({"1", :satoshi})
@@ -12,7 +12,7 @@ defmodule Canteen do
 
   def create_invoice(:lunch_special) do
     lightning_config()
-    |> Lightning.create_invoice(
+    |> Bitcoin.Lightning.create_invoice(
       %{
         description: "🍔 Lunch Special",
         msatoshi: Bitcoin.Amount.to_msatoshi({"1.5", :mbtc})
@@ -21,7 +21,7 @@ defmodule Canteen do
 
   def create_invoice(:coffee) do
     lightning_config()
-    |> Lightning.create_invoice(
+    |> Bitcoin.Lightning.create_invoice(
       %{
         description: "☕ Coffee",
         msatoshi: Bitcoin.Amount.to_msatoshi({"0.5", :mbtc})
@@ -30,7 +30,7 @@ defmodule Canteen do
 
   def create_invoice(:baguette) do
     lightning_config()
-    |> Lightning.create_invoice(
+    |> Bitcoin.Lightning.create_invoice(
       %{
         description: "🌭 Baguette",
         msatoshi: Bitcoin.Amount.to_msatoshi({"0.5", :mbtc})
