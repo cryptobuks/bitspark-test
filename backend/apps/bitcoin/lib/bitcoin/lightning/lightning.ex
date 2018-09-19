@@ -25,9 +25,9 @@ defmodule Bitcoin.Lightning do
     changeset = Bitcoin.Lightning.Invoice.changeset(
       %Invoice{},
       %{
-        "description": body["description"],
-        "msatoshi": String.to_integer(body["num_satoshis"]) * 1000,
-        "dst_pub_key": body["destination"]
+        description: body["description"],
+        msatoshi: String.to_integer(body["num_satoshis"]) * 1000,
+        dst_pub_key: body["destination"]
       })
 
     case changeset.valid? do
