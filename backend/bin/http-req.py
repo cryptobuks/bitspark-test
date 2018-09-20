@@ -48,6 +48,6 @@ if __name__ == "__main__":
     url = get_arg(2, 'url')
     data = None
     if method != 'GET':
-        data = get_arg(3, 'data')
+        data = json.loads(get_arg(3, 'data'))
 
     api(method, url, data)
