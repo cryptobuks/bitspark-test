@@ -38,6 +38,7 @@ defmodule Wallet.Mixfile do
     [
       {:postgrex, ">= 0.0.0"},
       {:ecto, "~> 2.1"},
+      {:absinthe, "~> 1.4.0"},
       {:bamboo, "~> 1.1"},
       {:gold, "~> 0.16"},
       {:bitcoin, in_umbrella: true},
