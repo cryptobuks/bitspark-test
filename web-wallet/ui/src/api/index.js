@@ -35,13 +35,16 @@ export class API {
   }
 
   getWalletInfo () {
-    return fetch(BASE_URL + '/wallet', {
+    return fetch('/api/q', {
+      method: 'POST',
       headers: new Headers({
         'Authorization': 'Bearer ' + this.accessToken,
         'Content-Type': 'application/json'
-      })
+      }),
+      body: JSON.stringify({ query: '{ currentUserWallet { id, balance { msatoshi } } }' })
     }).then(assertHttpOk)
-      .then(r => r.json())
+      .then(res => res.json())
+      .then(res => res.data.currentUserWallet)
   }
 
   getTransactions () {

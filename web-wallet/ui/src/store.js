@@ -46,7 +46,7 @@ const mutations = {
     state.currencyRates = rates
   },
   walletInfo (state, walletInfo) {
-    state.wallet = walletInfo.data
+    state.wallet = walletInfo
   },
   transactions (state, transactions) {
     state.transactions = transactions

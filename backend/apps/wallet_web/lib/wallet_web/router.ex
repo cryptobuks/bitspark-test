@@ -9,6 +9,7 @@ defmodule WalletWeb.Router do
     plug Joken.Plug,
       verify: &WalletWeb.Auth0.verify_function/0,
       on_error: &__MODULE__.auth_on_error/2
+    plug WalletWeb.Absinthe.AuthPlug
   end
 
   # Public API
@@ -23,6 +24,19 @@ defmodule WalletWeb.Router do
     pipe_through [:api]
 
     resources "/invoice", InvoiceController, only: [:show] # only show is safe
+  end
+
+  # With auth (GraphQL)
+  scope "/api" do
+    pipe_through [:api, :auth]
+
+    forward "/q", Absinthe.Plug,
+      schema: Wallet.Wallets.Schema
+
+    forward "/graphiql", Absinthe.Plug.GraphiQL,
+      schema: Wallet.Wallets.Schema,
+      interface: :advanced,
+      context: %{pubsub: WalletWeb.Endpoint}
   end
 
   # With auth
