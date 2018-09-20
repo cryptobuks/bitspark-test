@@ -6,7 +6,9 @@ defmodule WalletWeb.Router do
   end
 
   pipeline :auth do
-    plug Joken.Plug, verify: &WalletWeb.Auth0.verify_function/0, on_error: &__MODULE__.auth_on_error/2
+    plug Joken.Plug,
+      verify: &WalletWeb.Auth0.verify_function/0,
+      on_error: &__MODULE__.auth_on_error/2
   end
 
   # Public API
