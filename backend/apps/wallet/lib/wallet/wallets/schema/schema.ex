@@ -27,6 +27,25 @@ defmodule Wallet.Wallets.Schema do
     end
   end
 
+  subscription do
+    field :current_user_wallet_updated, :wallet do
+      config fn _, %{context: context} ->
+        wallet = context.assigns.joken_claims["sub"]
+        |> Accounts.login!
+        |> Wallets.get_or_create_wallet!
+
+        {:ok, topic: wallet.id}
+      end
+
+      resolve &get_wallet/3
+    end
+  end
+
+  def get_wallet(%Wallets.Transaction{wallet_id: wallet_id}, _args, _context) do
+    wallet = Wallets.get_wallet!(wallet_id)
+    {:ok, wallet}
+  end
+
   def get_wallet(_root, _args, %{context: context}) do
     account = Accounts.login!(context.assigns.joken_claims["sub"])
     wallet = Wallets.get_or_create_wallet!(account)

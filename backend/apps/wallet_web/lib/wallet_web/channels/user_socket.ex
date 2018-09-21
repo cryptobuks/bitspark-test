@@ -1,5 +1,7 @@
 defmodule WalletWeb.UserSocket do
   use Phoenix.Socket
+  use Absinthe.Phoenix.Socket,
+    schema: Wallet.Wallets.Schema
 
   ## Channels
   # channel "room:*", WalletWeb.RoomChannel
@@ -19,8 +21,17 @@ defmodule WalletWeb.UserSocket do
   #
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
-  def connect(_params, socket) do
-    {:ok, socket}
+  def connect(params, socket) do
+    with "Bearer " <> token <- params["Authorization"],
+         %Joken.Token{error: nil, claims: claims} <- WalletWeb.Auth0.verify_token(token) do
+
+      socket = socket
+      |> Absinthe.Phoenix.Socket.put_options(context: %{assigns: %{joken_claims: claims}})
+      {:ok, socket}
+
+      else
+        _ -> :error
+    end
   end
 
   # Socket id's are topics that allow you to identify all sockets for a given user:

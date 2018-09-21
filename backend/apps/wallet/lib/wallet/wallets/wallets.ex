@@ -262,9 +262,16 @@ defmodule Wallet.Wallets do
 
   """
   def create_transaction(attrs \\ %{}) do
-    %Wallets.Transaction{}
+    result = %Wallets.Transaction{}
     |> Wallets.Transaction.changeset(attrs)
     |> Repo.insert()
+
+    with {:ok, trn} <- result do
+      Absinthe.Subscription.publish(WalletWeb.Endpoint, trn,
+        current_user_wallet_updated: trn.wallet_id)
+    end
+
+    result
   end
 
   def create_funding_transaction(wallet, opts \\ []) do

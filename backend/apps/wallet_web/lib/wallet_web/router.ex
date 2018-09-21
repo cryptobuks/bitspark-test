@@ -35,6 +35,7 @@ defmodule WalletWeb.Router do
 
     forward "/graphiql", Absinthe.Plug.GraphiQL,
       schema: Wallet.Wallets.Schema,
+      socket: WalletWeb.UserSocket,
       interface: :advanced,
       context: %{pubsub: WalletWeb.Endpoint}
   end

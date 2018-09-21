@@ -8,6 +8,8 @@ defmodule WalletWeb.Application do
     children = [
       # Start the endpoint when the application starts
       supervisor(WalletWeb.Endpoint, []),
+      # Absinthe
+      supervisor(Absinthe.Subscription, [WalletWeb.Endpoint]),
       # Start the Auth0
       supervisor(WalletWeb.Auth0, []),
       # Start your own worker by calling: WalletWeb.Worker.start_link(arg1, arg2, arg3)

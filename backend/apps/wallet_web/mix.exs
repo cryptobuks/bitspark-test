@@ -49,6 +49,7 @@ defmodule WalletWeb.Mixfile do
       {:tesla, "1.0.0-beta.1"},
       {:bamboo, "~> 1.1"},
       {:absinthe_plug, "~> 1.4.0"},
+      {:absinthe_phoenix, "~> 1.4.0"},
       {:assert_value, "~> 0.9.2", only: [:test, :dev]}
     ]
   end

@@ -1,7 +1,8 @@
 defmodule WalletWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :wallet_web
+  use Absinthe.Phoenix.Endpoint
 
-  socket "/socket", WalletWeb.UserSocket
+  socket "/api/socket", WalletWeb.UserSocket
 
   # Serve at "/" the static files from "priv/static" directory.
   #
