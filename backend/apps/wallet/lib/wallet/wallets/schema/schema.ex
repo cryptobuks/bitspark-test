@@ -19,6 +19,7 @@ defmodule Wallet.Wallets.Schema do
     field :id, non_null(:id)
     field :state, non_null(:string)
     field :msatoshi, non_null(:integer)
+    field :wallet, non_null(:wallet), resolve: &get_wallet/3
   end
 
   query do
