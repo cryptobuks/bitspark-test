@@ -1,10 +1,13 @@
 bit-1.biluminate.net,
 testwallet.biluminate.com {
-    tls marian.schubert@gmail.com
+    tls marian.schubert@gmail.com {
+      alpn http/1.1
+    }
 
     # New API
     proxy /api backend:4000 {
         transparent
+        websocket
     }
 
     # Fake LND

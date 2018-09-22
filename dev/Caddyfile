@@ -1,5 +1,6 @@
 wallet.localhost:80 {
     proxy /api backend:4000 {
+        websocket
         transparent
     }
 

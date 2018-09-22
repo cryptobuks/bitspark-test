@@ -16,6 +16,7 @@ config :wallet_web, WalletWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "O4TlOvrI9TKTulX1QANJSkvKuIefrF9JU9EyuXue3D3+DFL78YendjgTdXWQ1V+J",
   render_errors: [view: WalletWeb.ErrorView, accepts: ~w(json)],
+  check_origin: false,
   pubsub: [name: WalletWeb.PubSub,
            adapter: Phoenix.PubSub.PG2]
 
