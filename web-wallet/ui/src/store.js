@@ -123,7 +123,8 @@ const actions = {
     api.getCurrencyRates('BTC')
       .then(rates => commit('currencyRatesUpdate', rates))
   },
-  logout: ({ commit }) => {
+  logout: ({ commit, getters: { api } }) => {
+    api.logout()
     commit('clearStore')
   },
   fetchUserInfo: ({ commit, getters: { api, user } }) => {

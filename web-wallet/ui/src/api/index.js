@@ -1,3 +1,6 @@
+import GraphQlClient from './graphql.js'
+import gql from 'graphql-tag'
+
 const BASE_URL = '/api'
 
 export function NotAuthorizedError (message) {
@@ -20,6 +23,11 @@ function assertHttpOk (res) {
 export class API {
   constructor (accessToken) {
     this.accessToken = accessToken
+    this.graphql = new GraphQlClient({accessToken})
+  }
+
+  logout () {
+    this.graphql.clearStore()
   }
 
   getCurrencyRates (currency) {
@@ -35,16 +43,10 @@ export class API {
   }
 
   getWalletInfo () {
-    return fetch('/api/q', {
-      method: 'POST',
-      headers: new Headers({
-        'Authorization': 'Bearer ' + this.accessToken,
-        'Content-Type': 'application/json'
-      }),
-      body: JSON.stringify({ query: '{ currentUserWallet { id, balance { msatoshi } } }' })
-    }).then(assertHttpOk)
-      .then(res => res.json())
-      .then(res => res.data.currentUserWallet)
+    return this.graphql.query({
+      query: gql`{ currentUserWallet { id, balance { msatoshi } } }`
+    }).then(r => r.data.currentUserWallet)
+    // TODO: handle errors
   }
 
   getTransactions () {

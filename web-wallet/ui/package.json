@@ -14,7 +14,13 @@
     "lint": "eslint --ext .js,.vue src test/unit/specs test/e2e/specs"
   },
   "dependencies": {
+    "@absinthe/socket-apollo-link": "^0.1.11",
+    "apollo-cache-inmemory": "^1.2.10",
+    "apollo-client": "^2.4.2",
+    "apollo-link-context": "^1.0.9",
+    "apollo-link-http": "^1.5.5",
     "auth0-lock": "^11.3.1",
+    "graphql-tag": "^2.9.2",
     "mdi": "^2.1.99",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1",
