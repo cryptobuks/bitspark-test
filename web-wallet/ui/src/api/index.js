@@ -49,6 +49,21 @@ export class API {
     // TODO: handle errors
   }
 
+  subscribeToWalletInfo (fn) {
+    var sub = this.graphql.subscribe({
+      query: gql`subscription { currentUserWalletUpdated { id, balance { msatoshi } } }`
+    })
+
+    sub.subscribe({
+      next ({ data }) {
+        fn(data.currentUserWalletUpdated)
+      },
+      error (err) {
+        console.error('subscribeToWalletInfo failed', err)
+      }
+    })
+  }
+
   getTransactions () {
     return fetch(BASE_URL + '/wallet/transactions', {
       headers: new Headers({

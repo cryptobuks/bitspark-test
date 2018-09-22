@@ -130,6 +130,10 @@ const actions = {
   fetchUserInfo: ({ commit, getters: { api, user } }) => {
     if (!user) return null
 
+    api.subscribeToWalletInfo(walletInfo => {
+      commit('walletInfo', walletInfo)
+    })
+
     return api.getWalletInfo()
       .then(r => commit('walletInfo', r))
       .catch(err => commit('apiError', err))
