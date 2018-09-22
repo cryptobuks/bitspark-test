@@ -1,24 +1,21 @@
 import ApolloClient from 'apollo-client'
-import { createHttpLink } from 'apollo-link-http'
-import { setContext } from 'apollo-link-context'
 import { InMemoryCache } from 'apollo-cache-inmemory'
 
-export default function createClient ({ accessToken }) {
-  const httpLink = createHttpLink({
-    uri: '/api/q'
-  })
+import * as AbsintheSocket from '@absinthe/socket'
+import {createAbsintheSocketLink} from '@absinthe/socket-apollo-link'
+import {Socket as PhoenixSocket} from 'phoenix'
 
-  const authLink = setContext((_, { headers }) => {
-    return {
-      headers: {
-        ...headers,
-        authorization: `Bearer ${accessToken}`
+export default function createClient ({ accessToken }) {
+  const socketLink = createAbsintheSocketLink(AbsintheSocket.create(
+    new PhoenixSocket('/api/socket', {
+      params: {
+        Authorization: `Bearer ${accessToken}`
       }
-    }
-  })
+    })
+  ))
 
   return new ApolloClient({
-    link: authLink.concat(httpLink),
+    link: socketLink,
     cache: new InMemoryCache({
       addTypename: false
     })
