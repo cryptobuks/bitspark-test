@@ -83,7 +83,7 @@ import Amount from '@/components/Amount'
 import FiatAmount from '@/components/FiatAmount'
 
 import currency from '@/currency.js'
-import expiringItems from './expiringItems.json'
+import expiringItems from './expiringItems.js'
 const EMPTY_STRING = '- - -'
 
 export default {

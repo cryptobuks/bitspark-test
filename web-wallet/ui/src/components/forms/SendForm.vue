@@ -34,7 +34,7 @@ import AvailableBalanceModal from '@/components/forms/AvailableBalanceModal'
 import ValidationError from '@/components/forms/ValidationError'
 
 import currency from '@/currency.js'
-import expiringItems from './expiringItems.json'
+import expiringItems from './expiringItems.js'
 
 export default {
   name: 'SendForm',

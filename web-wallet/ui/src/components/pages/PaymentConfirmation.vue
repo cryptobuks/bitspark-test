@@ -41,7 +41,7 @@
 <script>
 import BottomButton from '@/components/controls/BottomButton'
 import { mapGetters, mapActions } from 'vuex'
-import expiringItems from '@/components/forms/expiringItems.json'
+import expiringItems from '@/components/forms/expiringItems.js'
 
 export default {
   name: 'PaymentConfirmation',
