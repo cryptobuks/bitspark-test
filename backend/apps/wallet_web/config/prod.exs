@@ -2,7 +2,7 @@ use Mix.Config
 
 config :wallet_web, WalletWeb.Endpoint,
   load_from_system_env: true,
-  url: [host: "biluminate.com", port: 80],
+  url: [host: "testwallet.biluminate.com", port: 443],
   secret_key_base: System.get_env("SECRET_KEY_BASE")
 
 config :wallet_web, :auth0,
