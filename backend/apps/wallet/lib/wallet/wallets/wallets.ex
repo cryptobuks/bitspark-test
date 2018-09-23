@@ -9,6 +9,7 @@ defmodule Wallet.Wallets do
 
   alias Lightning
   alias Wallet.Wallets
+  alias Wallet.Events
   alias Wallet.Validation
 
   @doc """
@@ -262,16 +263,10 @@ defmodule Wallet.Wallets do
 
   """
   def create_transaction(attrs \\ %{}) do
-    result = %Wallets.Transaction{}
+    %Wallets.Transaction{}
     |> Wallets.Transaction.changeset(attrs)
     |> Repo.insert()
-
-    with {:ok, trn} <- result do
-      Absinthe.Subscription.publish(WalletWeb.Endpoint, trn,
-        current_user_wallet_updated: trn.wallet_id)
-    end
-
-    result
+    |> on_success(&Events.transaction_created/1)
   end
 
   def create_funding_transaction(wallet, opts \\ []) do
@@ -486,6 +481,7 @@ defmodule Wallet.Wallets do
     transaction
     |> Wallets.Transaction.changeset(attrs)
     |> Repo.update()
+    |> on_success(&Events.transaction_updated/1)
   end
 
   @doc """
@@ -500,4 +496,11 @@ defmodule Wallet.Wallets do
   def change_transaction(%Wallets.Transaction{} = transaction) do
     Wallets.Transaction.changeset(transaction, %{})
   end
+
+  defp on_success({:ok, data} = result, fun) do
+    fun.(data)
+    result
+  end
+
+  defp on_success(result, _fun), do: result
 end
