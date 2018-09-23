@@ -21,4 +21,9 @@ const items = [
   })
 ]
 
+if (process.env.NODE_ENV === 'development') {
+  items.push(createItem({ expiresAfter: 5, text: 'Expiring in 5 seconds (dev only)' }))
+  items.push(createItem({ expiresAfter: 60, text: 'Expiring in 60 seconds (dev only)' }))
+}
+
 export default items
