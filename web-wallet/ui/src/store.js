@@ -199,7 +199,6 @@ const actions = {
         return e
       })
       .then(paymentResult => {
-        dispatch('fetchUserInfo')
         commit('paymentResult', paymentResult.message)
         router.push({ name: 'PaymentConfirmation' })
       })
@@ -211,7 +210,6 @@ const actions = {
         return e
       })
       .then(claimResult => {
-        dispatch('fetchUserInfo')
         commit('claimResult', claimResult)
       })
   },
