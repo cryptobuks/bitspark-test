@@ -325,6 +325,12 @@ defmodule Wallet.Wallets do
             |> Wallet.Mailer.deliver_now
         end
 
+        Task.start(fn ->
+          # Poor man's expiration triggering :) (Doesn't survive server restart)
+          :timer.sleep(:timer.seconds(expires_after + 1))
+          get_transaction!(trn.id)
+        end)
+
         {:ok, trn}
       else
         {:error, %Wallet.NonSufficientFunds{transaction: declined_transaction}} ->
