@@ -54,6 +54,11 @@ export default {
       this.removeClaimResult()
       this.$router.push({ path: '/' })
     }
+  },
+  watch: {
+    user () {
+      this.claimToEmailPayment(this.$route.params.claimToken)
+    }
   }
 }
 </script>
