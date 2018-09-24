@@ -30,6 +30,9 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
+      '/sent_emails': {
+        target: 'http://localhost:4000'
+      },
       '/api': {
         target: 'http://localhost:4000',
         ws: true
