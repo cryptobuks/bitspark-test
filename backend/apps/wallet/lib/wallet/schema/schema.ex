@@ -1,4 +1,4 @@
-defmodule Wallet.Wallets.Schema do
+defmodule Wallet.Schema do
   use Absinthe.Schema
   require Logger
 

@@ -1,7 +1,7 @@
 defmodule WalletWeb.UserSocket do
   use Phoenix.Socket
   use Absinthe.Phoenix.Socket,
-    schema: Wallet.Wallets.Schema
+    schema: Wallet.Schema
 
   ## Channels
   # channel "room:*", WalletWeb.RoomChannel

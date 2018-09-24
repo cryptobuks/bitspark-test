@@ -31,10 +31,10 @@ defmodule WalletWeb.Router do
     pipe_through [:api, :auth]
 
     forward "/q", Absinthe.Plug,
-      schema: Wallet.Wallets.Schema
+      schema: Wallet.Schema
 
     forward "/graphiql", Absinthe.Plug.GraphiQL,
-      schema: Wallet.Wallets.Schema,
+      schema: Wallet.Schema,
       socket: WalletWeb.UserSocket,
       interface: :advanced,
       context: %{pubsub: WalletWeb.Endpoint}
