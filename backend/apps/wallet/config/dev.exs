@@ -4,7 +4,7 @@ config :wallet, Wallet.Mailer,
   adapter: Bamboo.LocalAdapter,
   open_email_in_browser_url: "http://localhost:4000/sent_emails"
 
-config :wallet, wallet_base_url: "http://localhost:4000"
+config :wallet, wallet_base_url: "http://localhost:8080"
 
 config :wallet, Lightning,
   lnd_base_url: "http://localhost:4000/fakelnd",

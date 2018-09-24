@@ -11,8 +11,8 @@ config :wallet_web,
   ecto_repos: [Wallet.Repo],
   generators: [binary_id: true]
 
-url = with %URI{host: host, scheme: scheme} <- URI.parse(System.get_env("WALLET_URL") || "http://localhost") do
-  [host: host, scheme: scheme]
+url = with %URI{host: host, scheme: scheme, port: port} <- URI.parse(System.get_env("WALLET_URL") || "http://localhost:8080") do
+  [host: host, scheme: scheme, port: port]
 end
 
 # Configures the endpoint
