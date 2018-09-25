@@ -12,12 +12,30 @@ defmodule WalletWeb.Router do
     plug WalletWeb.Absinthe.AuthPlug
   end
 
+  pipeline :basic_auth do
+    plug BasicAuth, callback: &__MODULE__.verify_basic_auth/3, realm: "Biluminate"
+  end
+
   # Public API
-  scope "/api", WalletWeb do
+  scope "/api"  do
     pipe_through [:api]
 
-    get "/rates/:currency", RatesController, :show
+    get "/rates/:currency", WalletWeb.RatesController, :show
   end
+
+  # GraphiQL
+  scope "/api/graphiql"  do
+    pipe_through [:api, :basic_auth]
+
+    forward "/", Absinthe.Plug.GraphiQL,
+      schema: Wallet.Schema,
+      socket: WalletWeb.UserSocket,
+      interface: :advanced,
+      context: %{pubsub: WalletWeb.Endpoint},
+      default_url: "/api/q",
+      default_headers: {__MODULE__, :graphiql_headers}
+  end
+
 
   # Wallet API without auth (only safe handlers here)
   scope "/api/wallet", WalletWeb do
@@ -32,12 +50,6 @@ defmodule WalletWeb.Router do
 
     forward "/q", Absinthe.Plug,
       schema: Wallet.Schema
-
-    forward "/graphiql", Absinthe.Plug.GraphiQL,
-      schema: Wallet.Schema,
-      socket: WalletWeb.UserSocket,
-      interface: :advanced,
-      context: %{pubsub: WalletWeb.Endpoint}
   end
 
   # With auth
@@ -71,5 +83,21 @@ defmodule WalletWeb.Router do
 
   def auth_on_error(conn, message) do
     {conn, %{"error" => %{"detail" => message}}}
+  end
+
+  def verify_basic_auth(conn, token, _password) do
+    with %Joken.Token{error: nil, claims: claims} <- WalletWeb.Auth0.verify_token(token) do
+      Plug.Conn.assign(conn, :joken_claims, claims)
+      Plug.Conn.assign(conn, :token, token)
+    else
+      _ ->
+        Plug.Conn.halt(conn)
+    end
+  end
+
+  def graphiql_headers(conn) do
+    %{
+      "Authorization" => "Bearer " <> conn.assigns[:token]
+    }
   end
 end
