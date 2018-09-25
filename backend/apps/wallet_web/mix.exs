@@ -40,6 +40,7 @@ defmodule WalletWeb.Mixfile do
       {:phoenix, "~> 1.3.2"},
       {:phoenix_pubsub, "~> 1.0"},
       {:phoenix_ecto, "~> 3.2"},
+      {:basic_auth, "~> 2.2.2"},
       {:gettext, "~> 0.11"},
       {:wallet, in_umbrella: true},
       {:bitcoin, in_umbrella: true},
