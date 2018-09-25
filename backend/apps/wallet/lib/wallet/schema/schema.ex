@@ -6,13 +6,20 @@ defmodule Wallet.Schema do
   alias Wallet.Wallets
 
   import_types Absinthe.Type.Custom
+  import_types Wallet.Schema.Scalars
 
   object :wallet_balance do
-    field :msatoshi, :integer
+    field :msatoshi, :msatoshi
   end
 
   object :wallet do
     field :id, non_null(:id)
+    @desc """
+    Spendable balance
+
+    - Includes pending outgoing transactions (e.g., non-claimed email transactions)
+    - Doesn't include pending incomming transactions (e.g., unconfirmed on-chain transactions)
+    """
     field :balance, non_null(:wallet_balance), resolve: &get_wallet_balance/3
     field :transactions, list_of(:transaction), resolve: &find_transactions/3
   end
@@ -20,7 +27,9 @@ defmodule Wallet.Schema do
   interface :transaction do
     field :id, non_null(:id)
     field :state, non_null(:string)
-    field :msatoshi, non_null(:integer)
+    @desc "Transaction amount"
+    field :msatoshi, non_null(:msatoshi)
+    @desc "Human readable description (e.g., purchased item description)"
     field :description, non_null(:string)
 
     resolve_type &transaction_type_resolver/2
@@ -38,7 +47,7 @@ defmodule Wallet.Schema do
   object :base_transaction do
     field :id, non_null(:id)
     field :state, non_null(:string)
-    field :msatoshi, non_null(:integer)
+    field :msatoshi, non_null(:msatoshi)
     field :description, non_null(:string)
   end
 
@@ -67,12 +76,18 @@ defmodule Wallet.Schema do
   end
 
   query do
+    @desc """
+    Wallet of currently authenticated user (via JWT token).
+    """
     field :current_user_wallet, non_null(:wallet) do
       resolve &get_wallet/3
     end
   end
 
   subscription do
+    @desc """
+    Returns updated Wallet object when wallet is somehow modified (e.g., new transaction is created).
+    """
     field :current_user_wallet_updated, :wallet do
       config fn _, %{context: context} ->
         wallet = context.assigns.joken_claims["sub"]
