@@ -7,8 +7,10 @@ defmodule Wallet.Schema do
 
   import_types Absinthe.Type.Custom
   import_types Wallet.Schema.Scalars
+  import_types Wallet.Schema.Enums
 
   object :wallet_balance do
+    @desc "Amount in milli-satoshi (0.001 satoshi)."
     field :msatoshi, :msatoshi
   end
 
@@ -21,15 +23,17 @@ defmodule Wallet.Schema do
     - Doesn't include pending incomming transactions (e.g., unconfirmed on-chain transactions)
     """
     field :balance, non_null(:wallet_balance), resolve: &get_wallet_balance/3
+    @desc "List of transactions associated with the wallet."
     field :transactions, list_of(:transaction), resolve: &find_transactions/3
   end
 
   interface :transaction do
     field :id, non_null(:id)
-    field :state, non_null(:string)
-    @desc "Transaction amount"
+    @desc "Transaction processing state."
+    field :state, non_null(:transaction_state)
+    @desc "Transaction amount."
     field :msatoshi, non_null(:msatoshi)
-    @desc "Human readable description (e.g., purchased item description)"
+    @desc "Human readable description (e.g., purchased item description)."
     field :description, non_null(:string)
 
     resolve_type &transaction_type_resolver/2
@@ -46,7 +50,8 @@ defmodule Wallet.Schema do
 
   object :base_transaction do
     field :id, non_null(:id)
-    field :state, non_null(:string)
+    field :state, non_null(:transaction_state),
+      resolve: fn %Wallet.Wallets.Transaction{state: state}, _, _ -> {:ok, String.to_atom(state)} end
     field :msatoshi, non_null(:msatoshi)
     field :description, non_null(:string)
   end
@@ -58,13 +63,16 @@ defmodule Wallet.Schema do
 
   object :lightning_transaction do
     import_fields :base_transaction
+    @desc "Lightning invoice (e.g., lntb32u1p...4qax)."
     field :invoice, non_null(:string)
     interface :transaction
   end
 
   object :to_email_transaction do
     import_fields :base_transaction
+    @desc "Email of payee who will receive instructions how to claim this transaction."
     field :to_email, non_null(:string)
+    @desc "Date after which payee will be no longer able to claim the transaction."
     field :claim_expires_at, non_null(:naive_datetime)
 
     interface :transaction
