@@ -5,6 +5,8 @@ defmodule Wallet.Schema do
   alias Wallet.Accounts
   alias Wallet.Wallets
 
+  import_types Absinthe.Type.Custom
+
   object :wallet_balance do
     field :msatoshi, :integer
   end
@@ -15,11 +17,53 @@ defmodule Wallet.Schema do
     field :transactions, list_of(:transaction), resolve: &find_transactions/3
   end
 
-  object :transaction do
+  interface :transaction do
     field :id, non_null(:id)
     field :state, non_null(:string)
     field :msatoshi, non_null(:integer)
-    field :wallet, non_null(:wallet), resolve: &get_wallet/3
+    field :description, non_null(:string)
+
+    resolve_type &transaction_type_resolver/2
+  end
+
+  def transaction_type_resolver(%Wallet.Wallets.Transaction{} = trn, _) do
+    case trn do
+      %{description: "Funding transaction"} -> :funding_transaction
+      %{invoice: "" <> _} -> :lightning_transaction
+      %{to_email: "" <> _} -> :to_email_transaction
+      _ -> :other_transaction
+    end
+  end
+
+  object :base_transaction do
+    field :id, non_null(:id)
+    field :state, non_null(:string)
+    field :msatoshi, non_null(:integer)
+    field :description, non_null(:string)
+  end
+
+  object :funding_transaction do
+    import_fields :base_transaction
+    interface :transaction
+  end
+
+  object :lightning_transaction do
+    import_fields :base_transaction
+    field :invoice, non_null(:string)
+    interface :transaction
+  end
+
+  object :to_email_transaction do
+    import_fields :base_transaction
+    field :to_email, non_null(:string)
+    field :claim_expires_at, non_null(:naive_datetime)
+
+    interface :transaction
+  end
+
+  object :other_transaction do
+    import_fields :base_transaction
+    interface :transaction
   end
 
   query do
