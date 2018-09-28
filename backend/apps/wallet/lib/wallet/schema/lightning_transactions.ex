@@ -16,8 +16,10 @@ defmodule Wallet.Schema.LightningTransactions do
     with {:ok, %Wallet.Wallets.Transaction{} = trn} <- Wallet.Wallets.pay_invoice(wallet.id, input.invoice) do
       {:ok, %{transaction: trn}}
     else
-      error ->
-        {:error, error}
+      {:error, reason} ->
+        {:error, reason}
+      _ ->
+        {:error, "Unknown error"}
     end
   end
 end

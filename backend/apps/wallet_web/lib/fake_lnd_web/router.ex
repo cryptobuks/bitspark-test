@@ -7,20 +7,24 @@ defmodule FakeLndWeb.Router do
   plug :dispatch
 
   get "/v1/payreq/:invoice" do
-    {:ok, num_satoshis} = Bitcoin.Lightning.Invoice.invoice_satoshi(invoice)
+    with {:ok, num_satoshis} <- Bitcoin.Lightning.Invoice.invoice_satoshi(invoice) do
+      payload = %{
+        "cltv_expiry" => "144",
+        "description" => "Foobar #" <> String.slice(invoice, -3, 3),
+        "destination" => "039cc950286a8fa99218283d1adc2456e0d5e81be558da77dd6e85ba9a1fff5ad3",
+        "expiry" => "3600",
+        "num_satoshis" => "#{num_satoshis}",
+        "payment_hash" => "4ce6edd6cddecfd12b6114900dcc5442e35415a4136091d79b7250cd05747600",
+        "timestamp" => to_string(Joken.current_time - 60)
+      }
 
-    payload = %{
-      "cltv_expiry" => "144",
-      "description" => "Foobar #" <> String.slice(invoice, -3, 3),
-      "destination" => "039cc950286a8fa99218283d1adc2456e0d5e81be558da77dd6e85ba9a1fff5ad3",
-      "expiry" => "3600",
-      "num_satoshis" => "#{num_satoshis}",
-      "payment_hash" => "4ce6edd6cddecfd12b6114900dcc5442e35415a4136091d79b7250cd05747600",
-      "timestamp" => to_string(Joken.current_time - 60)
-    }
-
-    conn
-    |> json(200, payload)
+      conn
+      |> json(200, payload)
+    else
+      {:error, reason} ->
+        conn
+        |> json(500, %{"code" => 2, "error" => "invalid invoice"})
+    end
   end
 
   get "/v1/graph/node/:node_pub_key" do

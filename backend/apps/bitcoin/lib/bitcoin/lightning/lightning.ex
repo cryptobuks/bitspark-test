@@ -20,19 +20,22 @@ defmodule Bitcoin.Lightning do
 
   """
   def decode_invoice(config, invoice) do
-    %{body: body} = LndRest.xget!(config, "/v1/payreq/#{invoice}")
+    with %{status: 200, body: body} <- LndRest.xget!(config, "/v1/payreq/#{invoice}") do
+      changeset = Bitcoin.Lightning.Invoice.changeset(
+        %Invoice{},
+        %{
+          description: body["description"],
+          msatoshi: String.to_integer(body["num_satoshis"]) * 1000,
+          dst_pub_key: body["destination"]
+        })
 
-    changeset = Bitcoin.Lightning.Invoice.changeset(
-      %Invoice{},
-      %{
-        description: body["description"],
-        msatoshi: String.to_integer(body["num_satoshis"]) * 1000,
-        dst_pub_key: body["destination"]
-      })
-
-    case changeset.valid? do
-      true -> {:ok, changeset.changes}
-      false -> {:error, changeset.errors}
+      case changeset.valid? do
+        true -> {:ok, changeset.changes}
+        false -> {:error, changeset.errors}
+      end
+    else
+      %{status: 500} ->
+        {:error, "Failed to decode invoice"}
     end
   end
 
