@@ -44,23 +44,31 @@ defmodule Bitcoin.Lightning.Invoice do
 
   """
   def invoice_satoshi(invoice) do
-    # https://github.com/lightningnetwork/lightning-rfc/blob/master/11-payment-encoding.md
-    {amount, rest} = Integer.parse(String.slice(invoice, 4, 100))
-    multiplier =
-      case String.slice(rest, 0, 1) do
-        "m" -> "0.001" |> D.new
-        "u" -> "0.000001" |> D.new
-        "n" -> "0.000000001" |> D.new
-        "p" -> "0.000000000001" |> D.new
-        _ -> raise "Unknown invoice amount multiplier"
-      end
-
-    {:ok, Bitcoin.Amount.to_satoshi({D.mult(amount, multiplier), :btc})}
+    with {:valid?, true} <- {:valid?, is_invoice(invoice)},
+         {amount, rest} <- Integer.parse(String.slice(invoice, 4, 100)),
+         {:ok, multiplier} <- parse_multiplier(String.slice(rest, 0, 1)) do
+      {:ok, Bitcoin.Amount.to_satoshi({D.mult(amount, multiplier), :btc})}
+    else
+      {:error, reason} ->
+        {:error, "Invalid invoice '#{invoice}' - #{reason}"}
+      _ ->
+        {:error, "Invalid invoice '#{invoice}'"}
+    end
   end
 
   def invoice_msatoshi(invoice) do
     with {:ok, satoshi} <- invoice_satoshi(invoice) do
       satoshi * 1000
+    end
+  end
+
+  defp parse_multiplier(char) do
+    case char do
+      "m" -> {:ok, "0.001" |> D.new}
+      "u" -> {:ok, "0.000001" |> D.new}
+      "n" -> {:ok, "0.000000001" |> D.new}
+      "p" -> {:ok, "0.000000000001" |> D.new}
+      _ -> {:error, "Invalid multiplier: #{char}"}
     end
   end
 end
