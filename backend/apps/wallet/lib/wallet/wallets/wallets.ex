@@ -400,7 +400,7 @@ defmodule Wallet.Wallets do
 
   ## Examples
 
-      iex> pay_invoice(%{invoice: invoice})
+      iex> pay_invoice(invoice)
       {:ok, %Transaction{}}
 
       iex> pay_invoice(%{field: bad_value})
@@ -442,11 +442,12 @@ defmodule Wallet.Wallets do
     with {:ok, processed_transaction} <- update_transaction(trn, Enum.into(
                   %{processed_at: TestableNaiveDateTime.utc_now,
                     response: Poison.encode!(update.response)},
-                  update))
-      do
+                  update)) do
       Wallet.Log.processed_transaction(processed_transaction)
       {:ok, processed_transaction}
-      else err -> err
+    else
+      err ->
+        err
     end
 
   end

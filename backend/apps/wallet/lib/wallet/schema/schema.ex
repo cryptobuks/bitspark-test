@@ -92,6 +92,26 @@ defmodule Wallet.Schema do
     end
   end
 
+  @desc "The payload for lightning transaction processing."
+  object :process_lightning_transaction_payload do
+    @desc "Processed transaction."
+    field :transaction, non_null(:lightning_transaction)
+  end
+
+  @desc "The input for lightning transaction processing."
+  input_object :process_lightning_transaction_input do
+    field :invoice, non_null(:string)
+  end
+
+  mutation do
+    @desc "Process lightning transaction."
+    field :process_lightning_transaction, type: :process_lightning_transaction_payload do
+      arg :input, non_null(:process_lightning_transaction_input)
+
+      resolve &Wallet.Schema.LightningTransactions.process_lightning_transaction/2
+    end
+  end
+
   subscription do
     @desc """
     Returns updated Wallet object when wallet is somehow modified (e.g., new transaction is created).
