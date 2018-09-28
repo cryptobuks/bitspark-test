@@ -408,48 +408,41 @@ defmodule Wallet.Wallets do
 
   """
   def pay_invoice(wallet_id, invoice) do
-    {:ok, payload} = Bitcoin.Lightning.decode_invoice(Wallet.lightning_config, invoice)
+    with {:ok, payload} <- Bitcoin.Lightning.decode_invoice(Wallet.lightning_config, invoice),
+         # initial
+         {:ok, trn} <- create_transaction(%{"wallet_id" => wallet_id,
+                                            "invoice" => invoice,
+                                            "state" => "initial",
+                                            "msatoshi" => -payload.msatoshi,
+                                            "description" => payload.description}),
+         # check balance
+         %{balance: balance} <- get_wallet!(wallet_id) do
+      # process
+      update = if balance < 0 do
+        Logger.info "Failed to process transaction [#{trn.id}]. " <>
+          "Error: Non-sufficient funds"
+        %{state: Wallets.Transaction.declined, response: "NSF"}
+      else
+        case Bitcoin.Lightning.pay_invoice(Wallet.lightning_config, invoice) do
+          {:ok, payload} ->
+            %{state: Wallets.Transaction.approved, response: payload}
 
-    # initial
-    {:ok, trn} = create_transaction(
-      %{"wallet_id" => wallet_id,
-        "invoice" => invoice,
-        "state" => "initial",
-        "msatoshi" => -payload.msatoshi,
-        "description" => payload.description})
+          {:error, error} ->
+            Logger.error "Failed to process transaction [#{trn.id}]. " <>
+              "Error: #{inspect error}"
+            %{state: Wallets.Transaction.declined, response: error}
+        end
+      end
 
-    # check balance
-    %{balance: balance} = get_wallet!(wallet_id)
-
-    # process
-    update = if balance < 0 do
-      Logger.info "Failed to process transaction [#{trn.id}]. " <>
-        "Error: Non-sufficient funds"
-      %{state: Wallets.Transaction.declined, response: "NSF"}
-    else
-      case Bitcoin.Lightning.pay_invoice(Wallet.lightning_config, invoice) do
-        {:ok, payload} ->
-          %{state: Wallets.Transaction.approved, response: payload}
-
-        {:error, error} ->
-          Logger.error "Failed to process transaction [#{trn.id}]. " <>
-            "Error: #{inspect error}"
-          %{state: Wallets.Transaction.declined, response: error}
+      # update trn with result
+      with {:ok, processed_transaction} <- update_transaction(trn, Enum.into(
+                    %{processed_at: TestableNaiveDateTime.utc_now,
+                      response: Poison.encode!(update.response)},
+                    update)) do
+        Wallet.Log.processed_transaction(processed_transaction)
+        {:ok, processed_transaction}
       end
     end
-
-    # update trn with result
-    with {:ok, processed_transaction} <- update_transaction(trn, Enum.into(
-                  %{processed_at: TestableNaiveDateTime.utc_now,
-                    response: Poison.encode!(update.response)},
-                  update)) do
-      Wallet.Log.processed_transaction(processed_transaction)
-      {:ok, processed_transaction}
-    else
-      err ->
-        err
-    end
-
   end
 
   @doc """
