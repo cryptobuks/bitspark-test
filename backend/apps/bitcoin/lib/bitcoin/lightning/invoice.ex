@@ -40,7 +40,7 @@ defmodule Bitcoin.Lightning.Invoice do
   Returns amount stored in invoice in satoshi
 
       iex> Bitcoin.Lightning.Invoice.invoice_satoshi("lntb10n1pdctf20pp5s6aj9rum8rez4w93058a7hheqdtq2vmex8a7j8e87jxcqgqlx32sdqg235xjmn8cqzysttrrdt3yucpl6dfzrke47cp3pxea5km99ujgj2ttagx80s9xmznqh778gctz87azkm6cvr3qqxxyecayfa78r7j00mfuae40n468wccp3f0mlv")
-      1
+      {:ok, 1}
 
   """
   def invoice_satoshi(invoice) do
@@ -55,10 +55,12 @@ defmodule Bitcoin.Lightning.Invoice do
         _ -> raise "Unknown invoice amount multiplier"
       end
 
-    Bitcoin.Amount.to_satoshi({D.mult(amount, multiplier), :btc})
+    {:ok, Bitcoin.Amount.to_satoshi({D.mult(amount, multiplier), :btc})}
   end
 
   def invoice_msatoshi(invoice) do
-    invoice_satoshi(invoice) * 1000
+    with {:ok, satoshi} <- invoice_satoshi(invoice) do
+      satoshi * 1000
+    end
   end
 end
