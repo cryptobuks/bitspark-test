@@ -39,14 +39,14 @@ defmodule WalletWeb.Auth0 do
     |> Joken.verify
   end
 
-  def create_token(auth_scopes \\ %{sub: "testing"}) do
+  def create_token(auth_scopes \\ %{sub: "testing"}, opts \\ []) do
     config = get_config()
 
     %Joken.Token{claims: auth_scopes}
     |> Joken.with_signer(Joken.rs256(config[:key]))
     |> Joken.with_aud(config[:aud])
     |> Joken.with_iat
-    |> Joken.with_exp(Joken.current_time + (86_400 * 14))
+    |> Joken.with_exp(Joken.current_time + Keyword.get(opts, :expires_after, 86_400 * 14))
     |> Joken.with_iss(config[:issuer])
     |> Joken.sign
     |> Joken.get_compact
@@ -58,5 +58,9 @@ defmodule WalletWeb.Auth0 do
 
   def print_random_token() do
     IO.puts(create_token(%{sub: Utils.random_string(32)}))
+  end
+
+  def print_expired_token() do
+    IO.puts(create_token(%{sub: Utils.random_string(32)}, expires_after: 0))
   end
 end

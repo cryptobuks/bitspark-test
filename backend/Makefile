@@ -38,5 +38,8 @@ seed:
 token:
 	@mix run -e "WalletWeb.Auth0.print_random_token"
 
+expired-token:
+	@mix run -e "WalletWeb.Auth0.print_expired_token"
+
 routes:
 	@mix phx.routes WalletWeb.Router
