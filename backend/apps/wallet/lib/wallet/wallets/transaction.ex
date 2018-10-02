@@ -34,6 +34,7 @@ defmodule Wallet.Wallets.Transaction do
           :wallet_id, :state, :description, :msatoshi, :invoice, :response, :processed_at,
           :to_email, :claim_token, :claim_expires_at, :claimed_by, :src_transaction_id])
     |> validate_required([:wallet_id, :state, :msatoshi])
+    |> validate_final_state()
     |> foreign_key_constraint(:state)
     |> foreign_key_constraint(:claimed_by)
     |> foreign_key_constraint(:src_transaction_id)
@@ -57,4 +58,27 @@ defmodule Wallet.Wallets.Transaction do
   end
 
   def should_claimable_transaction_expire(_), do: false
+
+  @doc """
+  Validate we don't change final transaction.
+  """
+  def validate_final_state(%Ecto.Changeset{errors: errors} = changeset) do
+    from = changeset.data.state
+    to = Map.get(changeset.changes, :state, from)
+
+    valid? = case {from, to} do
+      {"approved", "approved"} -> true
+      {"approved", _} -> false
+      {"declined", "declined"} -> true
+      {"declined", _} -> false
+      _ -> true
+    end
+
+    case valid? do
+      true ->
+        changeset
+      false ->
+        %{changeset | errors: ["Can't modify state of final transaction (#{from} -> #{to})."] ++ errors, valid?: false}
+    end
+  end
 end
