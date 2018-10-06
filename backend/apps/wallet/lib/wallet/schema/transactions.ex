@@ -127,7 +127,9 @@ defmodule Wallet.Schema.Transactions do
            expires_after: input.expires_after) do
       {:ok, %{transaction: trn}}
     else
-      {:error, reason} ->
+      {:error, %Wallet.ValidationError{message: message}} ->
+        {:error, message}
+      {:error, "" <> reason} ->
         {:error, reason}
       _ ->
         {:error, "Unknown error"}

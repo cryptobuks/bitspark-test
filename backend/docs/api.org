@@ -33,7 +33,8 @@
     if verbose:
       print("{} {}".format(response.status, response.reason))
     if response.status >= 200 and response.status <= 500:
-      data = json.loads(response.read().decode())
+      result = response.read().decode()
+      data = json.loads(result)
       if verbose:
         print()
         print(json.dumps(data, indent=2, sort_keys=True))
@@ -44,11 +45,27 @@
 
   def POST(url, data):
     return api('POST', url, data)
+
+  def gql(query, **kw):
+    return POST('/api/q', {"query": query, "variables": kw})
 #+END_SRC
 
 * Wallet info
 #+BEGIN_SRC python
-  _ = GET('/api/wallet')
+  _ = gql("""
+    query {
+      currentUserWallet {
+        id
+        balance { msatoshi }
+        transactions {
+          id
+          msatoshi
+          description
+          state
+        }
+       }
+    }
+  """)
 #+END_SRC
 
 #+RESULTS:
@@ -57,13 +74,24 @@
 
 {
   "data": {
-    "balance": {
-      "msatoshi": 1000000000
-    },
-    "id": "f5ae407f-3600-4c9f-a297-76a406c7f80b"
+    "currentUserWallet": {
+      "balance": {
+        "msatoshi": 1000000000
+      },
+      "id": "f4af3ee3-47d9-4f40-9741-3329917b582b",
+      "transactions": [
+        {
+          "description": "Funding transaction",
+          "id": "5634abea-d277-4158-b666-856be5996ca3",
+          "msatoshi": 1000000000,
+          "state": "APPROVED"
+        }
+      ]
+    }
   }
 }
 #+end_example
+
 * Invoice info
 #+BEGIN_SRC python
   _ = GET('/api/wallet/invoice/lntb1500n1pd0c66dpp5p8rpzxck9u7umfl9u7dqratj8rlfthe29xl6ejhwt2exuaxfpftqdqvg9jxgg8zn2sscqzysyv8kgctq7haghaus4wqd262mxr9342mvp23gdsv6vmgkce9zgshjd0av06dq3xpe8cy6fucnj454smkqxuetyvu3h5jggx2w8ethlvcp6g3ldq')
@@ -79,30 +107,20 @@
 :     "msatoshi": 150000
 :   }
 : }
-* Process transaction (invoice)
+* Process lightning transaction
 #+BEGIN_SRC python
-  _ = POST('/api/wallet/transactions', {"invoice": "lntb1500n1pd0c66dpp5p8rpzxck9u7umfl9u7dqratj8rlfthe29xl6ejhwt2exuaxfpftqdqvg9jxgg8zn2sscqzysyv8kgctq7haghaus4wqd262mxr9342mvp23gdsv6vmgkce9zgshjd0av06dq3xpe8cy6fucnj454smkqxuetyvu3h5jggx2w8ethlvcp6g3ldq"})
-#+END_SRC
-
-#+RESULTS:
-#+begin_example
-201 Created
-
-{
-  "data": {
-    "description": "Foobar #ldq",
-    "id": "1f986192-6493-4fbd-83f2-2dc75ca745fd",
-    "inserted_at": "2018-08-30T17:56:37.589777",
-    "invoice": "lntb1500n1pd0c66dpp5p8rpzxck9u7umfl9u7dqratj8rlfthe29xl6ejhwt2exuaxfpftqdqvg9jxgg8zn2sscqzysyv8kgctq7haghaus4wqd262mxr9342mvp23gdsv6vmgkce9zgshjd0av06dq3xpe8cy6fucnj454smkqxuetyvu3h5jggx2w8ethlvcp6g3ldq",
-    "msatoshi": -150000,
-    "processed_at": "2018-08-30T17:56:37.651368",
-    "state": "approved"
-  }
-}
-#+end_example
-* List transactions
-#+BEGIN_SRC python
-  _ = GET('/api/wallet/transactions')
+  _ = gql(
+      """
+          mutation processLightningTransaction($input: ProcessLightningTransactionInput!) {
+            processLightningTransaction(input: $input) {
+              transaction {
+                id
+                msatoshi
+              }
+            }
+          }
+      """,
+      input={"invoice": "lntb1500n1pd0c66dpp5p8rpzxck9u7umfl9u7dqratj8rlfthe29xl6ejhwt2exuaxfpftqdqvg9jxgg8zn2sscqzysyv8kgctq7haghaus4wqd262mxr9342mvp23gdsv6vmgkce9zgshjd0av06dq3xpe8cy6fucnj454smkqxuetyvu3h5jggx2w8ethlvcp6g3ldq"})
 #+END_SRC
 
 #+RESULTS:
@@ -110,106 +128,142 @@
 200 OK
 
 {
-  "data": [
-    {
-      "description": "Foobar #ldq",
-      "id": "1f986192-6493-4fbd-83f2-2dc75ca745fd",
-      "inserted_at": "2018-08-30T17:56:37.589777",
-      "invoice": "lntb1500n1pd0c66dpp5p8rpzxck9u7umfl9u7dqratj8rlfthe29xl6ejhwt2exuaxfpftqdqvg9jxgg8zn2sscqzysyv8kgctq7haghaus4wqd262mxr9342mvp23gdsv6vmgkce9zgshjd0av06dq3xpe8cy6fucnj454smkqxuetyvu3h5jggx2w8ethlvcp6g3ldq",
-      "msatoshi": -150000,
-      "processed_at": "2018-08-30T17:56:37.651368",
-      "state": "approved"
-    },
-    {
-      "description": "Funding transaction",
-      "id": "c569e7e1-7cf8-4bab-9db4-0b4ef1319c00",
-      "inserted_at": "2018-08-30T17:56:12.491531",
-      "msatoshi": 1000000000,
-      "processed_at": null,
-      "state": "approved"
+  "data": {
+    "processLightningTransaction": {
+      "transaction": {
+        "id": "36c218e4-945f-41a9-a296-d06db467c090",
+        "msatoshi": -150000
+      }
     }
-  ]
+  }
 }
 #+end_example
 * Send Bitcoin to email address
 ** Create transaction (payer)
-#+BEGIN_SRC python :cache yes
-  email_src_trn = POST('/api/wallet/transactions', {
-      "to_email": "to@example.com",
-      "msatoshi": 1000,
-      "description": "Free BTC",    # optional - visible to both payee & payer
-      "expires_after": 900          # in seconds
-  })['data']
+#+BEGIN_SRC python
+  _ = gql(
+      """
+          mutation processEmailTransaction($input: ProcessEmailTransactionInput!) {
+            processEmailTransaction(input: $input) {
+              transaction {
+                id
+                state
+                msatoshi
+                description
+              }
+            }
+          }
+      """,
+      input={
+        "toEmail": "to@example.com",
+        "msatoshi": 1000,
+        "description": "Free BTC",
+        "expiresAfter": 900
+      })
 #+END_SRC
 
-#+RESULTS[98ca104282dcf30badcfde829dd28ac668bdb6e8]:
+#+RESULTS:
 #+begin_example
-201 Created
+200 OK
 
 {
   "data": {
-    "claim_expires_at": "2018-08-30T18:11:50.486755",
-    "description": "Free BTC",
-    "id": "932deaaf-5969-4654-a8da-f9d43791721b",
-    "inserted_at": "2018-08-30T17:56:50.486867",
-    "msatoshi": -1000,
-    "processed_at": null,
-    "state": "initial",
-    "to_email": "to@example.com"
+    "processEmailTransaction": {
+      "transaction": {
+        "description": "Free BTC",
+        "id": "9ba57331-7252-4a50-be07-5ba5bde67e9d",
+        "msatoshi": -1000,
+        "state": "INITIAL"
+      }
+    }
   }
 }
-#+end_example
 
+#+end_example
 *** With amount exceeding wallet balance
 It returns declined transaction.
 
 #+BEGIN_SRC python
-  wallet = silent(lambda: GET('/api/wallet'))
-  _ = POST('/api/wallet/transactions', {
-      "to_email": "a@b.cz",
-      "msatoshi": wallet['data']['balance']['msatoshi'] + 1,
-      "description": "Free BTC",
-      "expires_after": 900
-  })
+  balance = silent(lambda: query('{ currentUserWallet { balance { msatoshi } } }'))['data']['currentUserWallet']['balance']
+  _ = gql(
+      """
+          mutation processEmailTransaction($input: ProcessEmailTransactionInput!) {
+            processEmailTransaction(input: $input) {
+              transaction {
+                state
+              }
+            }
+          }
+      """,
+      input={
+        "toEmail": "to@example.com",
+        "msatoshi": balance['msatoshi'] + 1,
+        "description": "Free BTC",
+        "expiresAfter": 900
+      })
 #+END_SRC
 
 #+RESULTS:
 #+begin_example
-201 Created
+200 OK
 
 {
   "data": {
-    "claim_expires_at": "2018-08-30T18:12:02.069414",
-    "description": "Free BTC",
-    "id": "a71c7d42-1018-45ae-b493-a9d136fefa0c",
-    "inserted_at": "2018-08-30T17:57:02.069524",
-    "msatoshi": -999849001,
-    "processed_at": "2018-08-30T17:57:02.078259",
-    "state": "declined",
-    "to_email": "a@b.cz"
+    "processEmailTransaction": {
+      "transaction": {
+        "state": "DECLINED"
+      }
+    }
   }
 }
 #+end_example
-
 *** With invalid amount
 #+BEGIN_SRC python
-  _ = POST('/api/wallet/transactions', {
-      "to_email": "a@b.cz",
-      "msatoshi": -1000, # <- can't send negative amount
-      "description": "Free BTC",
-      "expires_after": 900
-  })
+  _ = gql(
+      """
+          mutation processEmailTransaction($input: ProcessEmailTransactionInput!) {
+            processEmailTransaction(input: $input) {
+              transaction {
+                id
+                state
+                msatoshi
+                description
+              }
+            }
+          }
+      """,
+      input={
+        "toEmail": "to@example.com",
+        "msatoshi": -1000,
+        "description": "Free BTC",
+        "expiresAfter": 900
+      })
 #+END_SRC
 
 #+RESULTS:
-: 400 Bad Request
-: 
-: {
-:   "error": {
-:     "detail": "Non-positive amount given"
-:   }
-: }
+#+begin_example
+200 OK
 
+{
+  "data": {
+    "processEmailTransaction": null
+  },
+  "errors": [
+    {
+      "locations": [
+        {
+          "column": 0,
+          "line": 3
+        }
+      ],
+      "message": "Non-positive amount given",
+      "path": [
+        "processEmailTransaction"
+      ]
+    }
+  ]
+}
+#+end_example
 ** Claim transaction (payee)
 *** Success
 #+BEGIN_SRC python :cache yes
