@@ -26,6 +26,13 @@ defmodule Wallet.Schema do
 
       resolve &Wallet.Schema.Transactions.process_lightning_transaction/2
     end
+
+    @desc "Process email transaction."
+    field :process_email_transaction, type: :process_email_transaction_payload do
+      arg :input, non_null(:process_email_transaction_input)
+
+      resolve &Wallet.Schema.Transactions.process_email_transaction/2
+    end
   end
 
   subscription do

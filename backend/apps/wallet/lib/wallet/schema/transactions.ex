@@ -22,7 +22,7 @@ defmodule Wallet.Schema.Transactions do
     case trn do
       %{description: "Funding transaction"} -> :funding_transaction
       %{invoice: "" <> _} -> :lightning_transaction
-      %{to_email: "" <> _} -> :to_email_transaction
+      %{to_email: "" <> _} -> :email_transaction
       _ -> :other_transaction
     end
   end
@@ -40,22 +40,12 @@ defmodule Wallet.Schema.Transactions do
     interface :transaction
   end
 
-  object :to_email_transaction do
-    import_fields :base_transaction
-    @desc "Email of payee who will receive instructions how to claim this transaction."
-    field :to_email, non_null(:string)
-    @desc "Date after which payee will be no longer able to claim the transaction."
-    field :claim_expires_at, non_null(:naive_datetime)
-
-    interface :transaction
-  end
-
   object :other_transaction do
     import_fields :base_transaction
     interface :transaction
   end
 
-  ### Lightning
+  ### Lightning transactions
   object :lightning_transaction do
     import_fields :base_transaction
     @desc "Lightning invoice (e.g., lntb32u1p...4qax)."
@@ -83,6 +73,58 @@ defmodule Wallet.Schema.Transactions do
     |> Wallets.get_or_create_wallet!
 
     with {:ok, %Wallet.Wallets.Transaction{} = trn} <- Wallet.Wallets.pay_invoice(wallet.id, input.invoice) do
+      {:ok, %{transaction: trn}}
+    else
+      {:error, reason} ->
+        {:error, reason}
+      _ ->
+        {:error, "Unknown error"}
+    end
+  end
+
+  ### Email transactions
+  object :email_transaction do
+    import_fields :base_transaction
+    @desc "Email of payee who will receive instructions how to claim this transaction."
+    field :to_email, non_null(:string)
+    @desc "Date after which payee will be no longer able to claim the transaction."
+    field :claim_expires_at, non_null(:naive_datetime)
+
+    interface :transaction
+  end
+
+  @desc "The payload for email transaction processing."
+  object :process_email_transaction_payload do
+    @desc "Processed transaction."
+    field :transaction, non_null(:email_transaction)
+  end
+
+  @desc "The input for email transaction processing."
+  input_object :process_email_transaction_input do
+    @desc "Payee email."
+    field :to_email, non_null(:string)
+    @desc "Transaction amount."
+    field :msatoshi, non_null(:msatoshi)
+    @desc "Transaction description visible to both payer & payee."
+    field :description, :string
+    @desc "Number of seconds after which transactions will no longer be claimable by payee."
+    field :expires_after, non_null(:integer)
+  end
+
+  @doc """
+  Process email transaction.
+  """
+  def process_email_transaction(%{input: input}, %{context: context}) do
+    wallet = context.assigns.joken_claims["sub"]
+    |> Accounts.login!
+    |> Wallets.get_or_create_wallet!
+
+    with {:ok, %Wallet.Wallets.Transaction{} = trn} <- Wallet.Wallets.create_claimable_transaction(
+           wallet,
+           to_email: input.to_email,
+           amount: {input.msatoshi, :msatoshi},
+           description: input.description,
+           expires_after: input.expires_after) do
       {:ok, %{transaction: trn}}
     else
       {:error, reason} ->
