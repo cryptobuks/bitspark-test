@@ -46,6 +46,9 @@
   def POST(url, data):
     return api('POST', url, data)
 
+  def load(query_name):
+    return open('../../queries/{}.graphql'.format(query_name)).read()
+
   def gql(query, **kw):
     return POST('/api/q', {"query": query, "variables": kw})
 #+END_SRC
@@ -140,25 +143,28 @@
 #+end_example
 * Send Bitcoin to email address
 ** Create transaction (payer)
+#+NAME: processEmailTransaction
+#+BEGIN_SRC text :tangle ../../queries/processEmailTransaction.graphql
+mutation processEmailTransaction($input: ProcessEmailTransactionInput!) {
+  processEmailTransaction(input: $input) {
+    transaction {
+      id
+      state
+      msatoshi
+      description
+    }
+  }
+}
+#+END_SRC
+
 #+BEGIN_SRC python
   _ = gql(
-      """
-          mutation processEmailTransaction($input: ProcessEmailTransactionInput!) {
-            processEmailTransaction(input: $input) {
-              transaction {
-                id
-                state
-                msatoshi
-                description
-              }
-            }
-          }
-      """,
+      load('processEmailTransaction'),
       input={
-        "toEmail": "to@example.com",
-        "msatoshi": 1000,
-        "description": "Free BTC",
-        "expiresAfter": 900
+          "toEmail": "to@example.com",
+          "msatoshi": 1000,
+          "description": "Free BTC",
+          "expiresAfter": 900
       })
 #+END_SRC
 
@@ -171,14 +177,13 @@
     "processEmailTransaction": {
       "transaction": {
         "description": "Free BTC",
-        "id": "9ba57331-7252-4a50-be07-5ba5bde67e9d",
+        "id": "e7705617-61f2-4811-816a-fdce6c564877",
         "msatoshi": -1000,
         "state": "INITIAL"
       }
     }
   }
 }
-
 #+end_example
 *** With amount exceeding wallet balance
 It returns declined transaction.
@@ -186,15 +191,7 @@ It returns declined transaction.
 #+BEGIN_SRC python
   balance = silent(lambda: query('{ currentUserWallet { balance { msatoshi } } }'))['data']['currentUserWallet']['balance']
   _ = gql(
-      """
-          mutation processEmailTransaction($input: ProcessEmailTransactionInput!) {
-            processEmailTransaction(input: $input) {
-              transaction {
-                state
-              }
-            }
-          }
-      """,
+      load('processEmailTransaction'),
       input={
         "toEmail": "to@example.com",
         "msatoshi": balance['msatoshi'] + 1,
@@ -211,141 +208,105 @@ It returns declined transaction.
   "data": {
     "processEmailTransaction": {
       "transaction": {
+        "description": "Free BTC",
+        "id": "dc827eca-bfc1-494a-b59f-2a20f4402c05",
+        "msatoshi": -999999001,
         "state": "DECLINED"
       }
     }
   }
 }
 #+end_example
-*** With invalid amount
-#+BEGIN_SRC python
+
+** Claim transaction (payee)
+*** Success
+#+NAME: claimTransaction
+#+BEGIN_SRC text :tangle ../../queries/claimTransaction.graphql
+mutation claimTransaction($input: ClaimTransactionInput!) {
+  claimTransaction(input: $input) {
+    transaction {
+      id
+      state
+      msatoshi
+      description
+    }
+  }
+}
+#+END_SRC
+
+When called multiple times it returns same transaction (i.e. it's idempotent).
+
+#+BEGIN_SRC python :cache yes
   _ = gql(
-      """
-          mutation processEmailTransaction($input: ProcessEmailTransactionInput!) {
-            processEmailTransaction(input: $input) {
-              transaction {
-                id
-                state
-                msatoshi
-                description
-              }
-            }
-          }
-      """,
+      load('claimTransaction'),
       input={
-        "toEmail": "to@example.com",
-        "msatoshi": -1000,
-        "description": "Free BTC",
-        "expiresAfter": 900
+        "claimToken": "cb4db7e1-c1c9-4f42-82ab-ab4b829d0389"
       })
 #+END_SRC
 
-#+RESULTS:
+#+RESULTS[cce1a198edf90d8b0426dea5c03f96994ec8c0e0]:
 #+begin_example
 200 OK
 
 {
   "data": {
-    "processEmailTransaction": null
+    "claimTransaction": {
+      "transaction": {
+        "description": "Free BTC",
+        "id": "e4a65fd0-c786-4aac-b70b-e87b6c519203",
+        "msatoshi": 1000,
+        "state": "APPROVED"
+      }
+    }
+  }
+}
+#+end_example
+*** Failure: Expired
+#+BEGIN_SRC python
+  _ = silent(lambda: gql(
+      load('processEmailTransaction'),
+      input={
+        "toEmail": "to@example.com",
+        "msatoshi": 1000,
+        "description": "Free BTC",
+        "expiresAfter": 0          # already expired
+      }))
+#+END_SRC
+
+#+RESULTS:
+
+#+BEGIN_SRC python :cache yes
+  _ = gql(
+      load('claimTransaction'),
+      input={
+        "claimToken": "7b9af26f-4b70-4807-8f9e-b64ad0cc843c"
+      })
+#+END_SRC
+
+#+RESULTS[44a0e4029eb4dbb42931dd16b731e987d7f8afcf]:
+#+begin_example
+200 OK
+
+{
+  "data": {
+    "claimTransaction": null
   },
   "errors": [
     {
       "locations": [
         {
           "column": 0,
-          "line": 3
+          "line": 2
         }
       ],
-      "message": "Non-positive amount given",
+      "message": "Non-claimable transaction",
       "path": [
-        "processEmailTransaction"
+        "claimTransaction"
       ]
     }
   ]
 }
 #+end_example
-** Claim transaction (payee)
-*** Success
-#+BEGIN_SRC python :cache yes
-  _ = POST('/api/wallet/transactions', {"claim_token": "ebd5eef4-61c3-4fd9-87de-6ad7d719f131"})
-#+END_SRC
-
-#+RESULTS[eb2b319aacd43456490c8c375806479933dbb4a9]:
-#+begin_example
-201 Created
-
-{
-  "data": {
-    "description": "Free BTC",
-    "id": "093a5c23-e637-4720-a69c-b1d43cabe83c",
-    "inserted_at": "2018-08-30T17:57:33.676110",
-    "msatoshi": 1000,
-    "processed_at": "2018-08-30T17:57:33.676014",
-    "state": "approved"
-  }
-}
-#+end_example
-
-When called multiple times it returns same transaction (i.e. it's idempotent).
-
-#+BEGIN_SRC python :cache yes
-  _ = POST('/api/wallet/transactions', {"claim_token": "ebd5eef4-61c3-4fd9-87de-6ad7d719f131"})
-  _ = POST('/api/wallet/transactions', {"claim_token": "ebd5eef4-61c3-4fd9-87de-6ad7d719f131"})
-#+END_SRC
-
-#+RESULTS[efffb2068e6dbfc3b749e67e8fd000c88b192cf3]:
-#+begin_example
-201 Created
-
-{
-  "data": {
-    "description": "Free BTC",
-    "id": "093a5c23-e637-4720-a69c-b1d43cabe83c",
-    "inserted_at": "2018-08-30T17:57:33.676110",
-    "msatoshi": 1000,
-    "processed_at": "2018-08-30T17:57:33.676014",
-    "state": "approved"
-  }
-}
-201 Created
-
-{
-  "data": {
-    "description": "Free BTC",
-    "id": "093a5c23-e637-4720-a69c-b1d43cabe83c",
-    "inserted_at": "2018-08-30T17:57:33.676110",
-    "msatoshi": 1000,
-    "processed_at": "2018-08-30T17:57:33.676014",
-    "state": "approved"
-  }
-}
-#+end_example
-
-*** Failure: Expired
-#+BEGIN_SRC python :cache yes
-  email_expired_src_trn = silent(lambda: POST('/api/wallet/transactions', {
-      "to_email": "to@example.com",
-      "msatoshi": 1000,
-      "description": "Free BTC",
-      "expires_after": 0          # already expired
-  }))['data']
-#+END_SRC
-
-#+RESULTS[49de308740b101cc401aedfec024e87cf4197e7d]:
-
-#+BEGIN_SRC python :cache yes
-  _ = POST('/api/wallet/transactions', {"claim_token": "ae6f77c6-ce90-4f22-9f3d-c239a05634e8"})
-#+END_SRC
-
-#+RESULTS[39feceade0eda652e77d73849fbee12dbfa9373f]:
-: 400 Bad Request
-: 
-: {
-:   "error": {
-:     "detail": "Non-claimable transaction"
-:   }
-: }
-
 ** Payer sees that transaction has been claimed
 Status of transaction is =approved= and =processed_at= field marks time of claim event.
 

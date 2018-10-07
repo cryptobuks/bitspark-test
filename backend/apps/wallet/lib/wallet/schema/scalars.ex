@@ -3,6 +3,27 @@ defmodule Wallet.Schema.Scalars do
 
   @moduledoc false
 
+  alias Ecto.UUID
+
+  ## uuid
+  scalar :uuid, name: "UUID" do
+    serialize &UUID.cast!/1
+    parse &cast_uuid/1
+  end
+
+  defp cast_uuid(%Absinthe.Blueprint.Input.String{value: value}) do
+    UUID.cast(value)
+  end
+
+  defp cast_uuid(%Absinthe.Blueprint.Input.Null{}) do
+    {:ok, nil}
+  end
+
+  defp cast_uuid(_) do
+    :error
+  end
+
+  ## msatoshi
   scalar :msatoshi, name: "MilliSatoshi" do
     description """
     Integer representing amount in milli-satoshi (0.001 satoshi). Fits safely into JavaScript integer range.

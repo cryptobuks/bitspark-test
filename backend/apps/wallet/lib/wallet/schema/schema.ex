@@ -33,6 +33,13 @@ defmodule Wallet.Schema do
 
       resolve &Wallet.Schema.Transactions.process_email_transaction/2
     end
+
+    @desc "Claim transaction."
+    field :claim_transaction, type: :claim_transaction_payload do
+      arg :input, non_null(:claim_transaction_input)
+
+      resolve &Wallet.Schema.Transactions.claim_transaction/2
+    end
   end
 
   subscription do

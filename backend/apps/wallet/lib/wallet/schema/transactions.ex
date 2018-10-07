@@ -23,7 +23,7 @@ defmodule Wallet.Schema.Transactions do
       %{description: "Funding transaction"} -> :funding_transaction
       %{invoice: "" <> _} -> :lightning_transaction
       %{to_email: "" <> _} -> :email_transaction
-      _ -> :other_transaction
+      _ -> :generic_transaction
     end
   end
 
@@ -40,7 +40,7 @@ defmodule Wallet.Schema.Transactions do
     interface :transaction
   end
 
-  object :other_transaction do
+  object :generic_transaction do
     import_fields :base_transaction
     interface :transaction
   end
@@ -125,6 +125,41 @@ defmodule Wallet.Schema.Transactions do
            amount: {input.msatoshi, :msatoshi},
            description: input.description,
            expires_after: input.expires_after) do
+      {:ok, %{transaction: trn}}
+    else
+      {:error, %Wallet.ValidationError{message: message}} ->
+        {:error, message}
+      {:error, "" <> reason} ->
+        {:error, reason}
+      _ ->
+        {:error, "Unknown error"}
+    end
+  end
+
+  ### Claim transactions
+  @desc "The payload for claimed transaction."
+  object :claim_transaction_payload do
+    @desc "Claimed transaction."
+    field :transaction, non_null(:generic_transaction)
+  end
+
+  @desc "The input for claim transaction."
+  input_object :claim_transaction_input do
+    @desc "Claim token (e.g., one sent to payee of email transaction)."
+    field :claim_token, non_null(:uuid)
+  end
+
+  @doc """
+  Claim transaction.
+  """
+  def claim_transaction(%{input: input}, %{context: context}) do
+    wallet = context.assigns.joken_claims["sub"]
+    |> Accounts.login!
+    |> Wallets.get_or_create_wallet!
+
+    with {:ok, %Wallet.Wallets.Transaction{} = trn} <- Wallet.Wallets.claim_transaction(
+           wallet,
+           input.claim_token) do
       {:ok, %{transaction: trn}}
     else
       {:error, %Wallet.ValidationError{message: message}} ->
