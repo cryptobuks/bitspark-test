@@ -160,8 +160,8 @@ const actions = {
   loginFailure: ({ commit }, payload) => {
     commit('loginFailure', payload)
 
-    // Payment page supports non-authorized user so stay there
-    if (router.currentRoute.name !== 'PayInvoice') {
+    // Payment & Claim pages support non-authorized user so stay there
+    if (!['PayInvoice', 'Claim'].includes(router.currentRoute.name)) {
       router.push('/')
     }
   },
