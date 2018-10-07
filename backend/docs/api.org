@@ -119,6 +119,7 @@
               transaction {
                 id
                 msatoshi
+                state
               }
             }
           }
@@ -134,8 +135,9 @@
   "data": {
     "processLightningTransaction": {
       "transaction": {
-        "id": "36c218e4-945f-41a9-a296-d06db467c090",
-        "msatoshi": -150000
+        "id": "dd93b279-2f7e-44cd-94b6-bc9d1d4f6605",
+        "msatoshi": -150000,
+        "state": "APPROVED"
       }
     }
   }
@@ -158,7 +160,7 @@ mutation processEmailTransaction($input: ProcessEmailTransactionInput!) {
 #+END_SRC
 
 #+BEGIN_SRC python
-  _ = gql(
+  email_src_trn = gql(
       load('processEmailTransaction'),
       input={
           "toEmail": "to@example.com",
@@ -177,7 +179,7 @@ mutation processEmailTransaction($input: ProcessEmailTransactionInput!) {
     "processEmailTransaction": {
       "transaction": {
         "description": "Free BTC",
-        "id": "e7705617-61f2-4811-816a-fdce6c564877",
+        "id": "01f3e37e-0af1-4745-8ccf-bbaf701f6ba9",
         "msatoshi": -1000,
         "state": "INITIAL"
       }
@@ -262,7 +264,7 @@ When called multiple times it returns same transaction (i.e. it's idempotent).
 }
 #+end_example
 *** Failure: Expired
-#+BEGIN_SRC python
+#+BEGIN_SRC python :cache yes
   _ = silent(lambda: gql(
       load('processEmailTransaction'),
       input={
@@ -273,7 +275,7 @@ When called multiple times it returns same transaction (i.e. it's idempotent).
       }))
 #+END_SRC
 
-#+RESULTS:
+#+RESULTS[7b8c3e874a546ff6cd48b021636292cb3bc0daf8]:
 
 #+BEGIN_SRC python :cache yes
   _ = gql(
@@ -311,7 +313,7 @@ When called multiple times it returns same transaction (i.e. it's idempotent).
 Status of transaction is =approved= and =processed_at= field marks time of claim event.
 
 #+BEGIN_SRC python
-  _ = GET('/api/wallet/transactions/' + email_src_trn['id'])
+  _ = GET('/api/wallet/transactions/' + email_src_trn['data']['processEmailTransaction']['transaction']['id'])
 #+END_SRC
 
 #+RESULTS:
@@ -320,13 +322,13 @@ Status of transaction is =approved= and =processed_at= field marks time of claim
 
 {
   "data": {
-    "claim_expires_at": "2018-08-30T18:11:50.486755",
+    "claim_expires_at": "2018-10-07T14:12:29.323637",
     "description": "Free BTC",
-    "id": "932deaaf-5969-4654-a8da-f9d43791721b",
-    "inserted_at": "2018-08-30T17:56:50.486867",
+    "id": "01f3e37e-0af1-4745-8ccf-bbaf701f6ba9",
+    "inserted_at": "2018-10-07T13:57:29.323746",
     "msatoshi": -1000,
-    "processed_at": "2018-08-30T17:57:33.678304",
-    "state": "approved",
+    "processed_at": null,
+    "state": "initial",
     "to_email": "to@example.com"
   }
 }
