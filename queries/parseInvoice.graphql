@@ -1,0 +1,6 @@
+query parseInvoice($input: ParseInvoiceInput!) {
+  parseInvoice(input: $input) {
+    msatoshi
+    description
+  }
+}

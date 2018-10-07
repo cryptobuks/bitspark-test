@@ -5,6 +5,14 @@ defmodule Wallet.Schema.Scalars do
 
   alias Ecto.UUID
 
+  ## lightning invoice
+  scalar :lightning_invoice do
+    description "Lightning invoice (e.g., lnbc1500n1...vref7cpwff2hj)"
+
+    serialize &to_string/1
+    parse parse_with([Absinthe.Blueprint.Input.String], &parse_string/1)
+  end
+
   ## uuid
   scalar :uuid, name: "UUID" do
     serialize &UUID.cast!/1
@@ -45,6 +53,15 @@ defmodule Wallet.Schema.Scalars do
   end
 
   defp parse_msatoshi(_) do
+    :error
+  end
+
+  @spec parse_string(any) :: {:ok, binary} | :error
+  defp parse_string(value) when is_binary(value) do
+    {:ok, value}
+  end
+
+  defp parse_string(_) do
     :error
   end
 

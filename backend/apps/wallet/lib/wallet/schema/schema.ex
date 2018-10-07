@@ -9,6 +9,7 @@ defmodule Wallet.Schema do
   import_types Wallet.Schema.Enums
   import_types Wallet.Schema.Wallets
   import_types Wallet.Schema.Transactions
+  import_types Wallet.Schema.Lightning
 
   query do
     @desc """
@@ -16,6 +17,15 @@ defmodule Wallet.Schema do
     """
     field :current_user_wallet, non_null(:wallet) do
       resolve &Wallet.Schema.Wallets.get_wallet/3
+    end
+
+    @desc """
+    Parse Lightning invoice.
+    """
+    field :parse_invoice, non_null(:parsed_invoice) do
+      arg :input, non_null(:parse_invoice_input)
+
+      resolve &Wallet.Schema.Lightning.parse_invoice/3
     end
   end
 

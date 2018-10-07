@@ -96,34 +96,52 @@
 #+end_example
 
 * Invoice info
+#+NAME: parseInvoice
+#+BEGIN_SRC text :tangle ../../queries/parseInvoice.graphql
+query parseInvoice($input: ParseInvoiceInput!) {
+  parseInvoice(input: $input) {
+    msatoshi
+    description
+  }
+}
+#+END_SRC
+
 #+BEGIN_SRC python
-  _ = GET('/api/wallet/invoice/lntb1500n1pd0c66dpp5p8rpzxck9u7umfl9u7dqratj8rlfthe29xl6ejhwt2exuaxfpftqdqvg9jxgg8zn2sscqzysyv8kgctq7haghaus4wqd262mxr9342mvp23gdsv6vmgkce9zgshjd0av06dq3xpe8cy6fucnj454smkqxuetyvu3h5jggx2w8ethlvcp6g3ldq')
+  _ = gql(load('parseInvoice'), input={
+      "invoice": "lntb1500n1pdm5wrkpp5aauchrela4k3c5uekm5vwjt6zvhvcxeh99kg4tek786mp9rvtaqqdqvg9jxgg8zn2sscqzysxqr23s6tuchzms8ry7rs28v5s4ntufxs5y4pn4duys0xkcmkkc6l0yyyake3lq55r3m5f2sdk5a2kg49rm4va8sg975mtlnntc8yvf2xy259qqujel4e"
+  })
 #+END_SRC
 
 #+RESULTS:
-: 200 OK
-: 
-: {
-:   "data": {
-:     "description": "Foobar #ldq",
-:     "dst_alias": "SomeNodeAlias #039",
-:     "msatoshi": 150000
-:   }
-: }
+#+begin_example
+200 OK
+
+{
+  "data": {
+    "parseInvoice": {
+      "description": "Foobar #l4e",
+      "msatoshi": 150000
+    }
+  }
+}
+#+end_example
 * Process lightning transaction
+#+NAME: processLightningTransaction
+#+BEGIN_SRC text :tangle ../../queries/processLightningTransaction.graphql
+mutation processLightningTransaction($input: ProcessLightningTransactionInput!) {
+  processLightningTransaction(input: $input) {
+    transaction {
+      id
+      msatoshi
+      state
+    }
+  }
+}
+#+END_SRC
+
 #+BEGIN_SRC python
   _ = gql(
-      """
-          mutation processLightningTransaction($input: ProcessLightningTransactionInput!) {
-            processLightningTransaction(input: $input) {
-              transaction {
-                id
-                msatoshi
-                state
-              }
-            }
-          }
-      """,
+      load('processLightningTransaction'),
       input={"invoice": "lntb1500n1pd0c66dpp5p8rpzxck9u7umfl9u7dqratj8rlfthe29xl6ejhwt2exuaxfpftqdqvg9jxgg8zn2sscqzysyv8kgctq7haghaus4wqd262mxr9342mvp23gdsv6vmgkce9zgshjd0av06dq3xpe8cy6fucnj454smkqxuetyvu3h5jggx2w8ethlvcp6g3ldq"})
 #+END_SRC
 
@@ -135,7 +153,7 @@
   "data": {
     "processLightningTransaction": {
       "transaction": {
-        "id": "dd93b279-2f7e-44cd-94b6-bc9d1d4f6605",
+        "id": "58d7bf15-e006-4905-a8ff-a35d4516e4a0",
         "msatoshi": -150000,
         "state": "APPROVED"
       }
