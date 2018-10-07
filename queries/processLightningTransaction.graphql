@@ -1,0 +1,9 @@
+mutation processLightningTransaction($input: ProcessLightningTransactionInput!) {
+  processLightningTransaction(input: $input) {
+    transaction {
+      id
+      msatoshi
+      state
+    }
+  }
+}

@@ -1,0 +1,10 @@
+mutation claimTransaction($input: ClaimTransactionInput!) {
+  claimTransaction(input: $input) {
+    transaction {
+      id
+      state
+      msatoshi
+      description
+    }
+  }
+}

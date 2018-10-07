@@ -1,0 +1,10 @@
+mutation processEmailTransaction($input: ProcessEmailTransactionInput!) {
+  processEmailTransaction(input: $input) {
+    transaction {
+      id
+      state
+      msatoshi
+      description
+    }
+  }
+}
