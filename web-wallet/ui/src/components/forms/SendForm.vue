@@ -1,7 +1,7 @@
 <template>
   <v-form class="bi-form">
     <v-flex xs12 text-xs-right>
-      <Input :value="sendTo" :label="'To:'" :type="'email'" :placeholder="'Email or Address'" :tooltip="sendToTooltip" @valueInput="handleSendToValue" :tabindex="1" :autofocus="true" />
+      <Input :value="sendTo" :label="'To:'" :type="'email'" :placeholder="'Email'" :tooltip="sendToTooltip" @valueInput="handleSendToValue" :tabindex="1" :autofocus="true" />
       <CurencySelect :currency="currency" :amount="amount" :placeholder="'Amount'" :tooltip="amountTooltip" @valueInput="handleAmountValue" :tabindex="2" />
     </v-flex>
     <v-layout row wrap>
@@ -44,7 +44,7 @@ export default {
       amount: '',
       description: '',
       currency: 'BTC',
-      sendToTooltip: '1. Email - Recipients with email address either get funds instantly (if they already have Biluminate account) or have to create Biluminate account and then the funds will be transfered. The email transfer has expiration that you can adjust in advanced settings. <br><br> 2. Address - Recipients with address will receive funds once the transaction is verified.',
+      sendToTooltip: '1. Email - Recipients with email address either get funds instantly (if they already have Biluminate account) or have to create Biluminate account and then the funds will be transfered. The email transfer has expiration that you can adjust in advanced settings.',
       amountTooltip: 'View amount in crypto or FIAT currency and its available denominations.',
       showAvailableBalanceModal: false,
       expiresAfter: expiringItems[0].value,

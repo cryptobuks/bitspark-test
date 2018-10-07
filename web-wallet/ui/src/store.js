@@ -6,10 +6,19 @@ import { API, NotAuthorizedError } from './api'
 
 Vue.use(Vuex)
 
-var stringifiedFeatureToggles = localStorage.getItem('featureToggles')
+const stringifiedFeatureToggles = localStorage.getItem('featureToggles')
+
+const featureToggles = Object.assign(
+  {
+    qrScan: false,
+    recieve: false,
+    paymentToEmail: true
+  },
+  stringifiedFeatureToggles ? JSON.parse(stringifiedFeatureToggles) : {}
+)
 
 const state = {
-  featureToggles: stringifiedFeatureToggles ? JSON.parse(stringifiedFeatureToggles) : {},
+  featureToggles,
   currencyRates: {}, // {"BTC": {"USD": 6000, ...}}
   user: undefined, // currently authorized user
   accessToken: undefined,
