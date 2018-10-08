@@ -1,0 +1,8 @@
+query getTransaction($id: ID!) {
+  currentUserWallet {
+    transaction(id: $id) {
+      id
+      state
+    }
+  }
+}

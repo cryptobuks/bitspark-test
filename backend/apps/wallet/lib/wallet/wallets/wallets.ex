@@ -174,6 +174,16 @@ defmodule Wallet.Wallets do
   """
   def get_transaction!(id), do: Repo.get!(Wallets.Transaction, id) |> postprocess_transaction
 
+  def get_transaction!(%Wallets.Wallet{} = wallet, id) do
+    Repo.one!(
+      from(
+        t in Wallets.Transaction,
+        select: t,
+        where: t.id == ^id and t.wallet_id == ^wallet.id
+      )
+    )
+  end
+
   @doc """
   Gets a single transaction with "FOR UPDATE" lock.
 

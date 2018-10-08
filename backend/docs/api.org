@@ -197,7 +197,7 @@ mutation processEmailTransaction($input: ProcessEmailTransactionInput!) {
     "processEmailTransaction": {
       "transaction": {
         "description": "Free BTC",
-        "id": "01f3e37e-0af1-4745-8ccf-bbaf701f6ba9",
+        "id": "890a5fa7-2a52-4ad3-97a4-4d023a817eb2",
         "msatoshi": -1000,
         "state": "INITIAL"
       }
@@ -209,7 +209,7 @@ mutation processEmailTransaction($input: ProcessEmailTransactionInput!) {
 It returns declined transaction.
 
 #+BEGIN_SRC python
-  balance = silent(lambda: query('{ currentUserWallet { balance { msatoshi } } }'))['data']['currentUserWallet']['balance']
+  balance = silent(lambda: gql('{ currentUserWallet { balance { msatoshi } } }'))['data']['currentUserWallet']['balance']
   _ = gql(
       load('processEmailTransaction'),
       input={
@@ -229,8 +229,8 @@ It returns declined transaction.
     "processEmailTransaction": {
       "transaction": {
         "description": "Free BTC",
-        "id": "dc827eca-bfc1-494a-b59f-2a20f4402c05",
-        "msatoshi": -999999001,
+        "id": "2764634e-2dfc-4505-b0af-ee031ebe3c32",
+        "msatoshi": -999849001,
         "state": "DECLINED"
       }
     }
@@ -260,11 +260,11 @@ When called multiple times it returns same transaction (i.e. it's idempotent).
   _ = gql(
       load('claimTransaction'),
       input={
-        "claimToken": "cb4db7e1-c1c9-4f42-82ab-ab4b829d0389"
+        "claimToken": "6da99b2f-cc3f-4021-9359-d3129f8a80a5"
       })
 #+END_SRC
 
-#+RESULTS[cce1a198edf90d8b0426dea5c03f96994ec8c0e0]:
+#+RESULTS[50a6f71a7f99499313efd782c5597fbe848e0031]:
 #+begin_example
 200 OK
 
@@ -273,7 +273,7 @@ When called multiple times it returns same transaction (i.e. it's idempotent).
     "claimTransaction": {
       "transaction": {
         "description": "Free BTC",
-        "id": "e4a65fd0-c786-4aac-b70b-e87b6c519203",
+        "id": "af2e4768-891b-4b85-bf1c-0bba2ea39279",
         "msatoshi": 1000,
         "state": "APPROVED"
       }
@@ -281,6 +281,7 @@ When called multiple times it returns same transaction (i.e. it's idempotent).
   }
 }
 #+end_example
+
 *** Failure: Expired
 #+BEGIN_SRC python :cache yes
   _ = silent(lambda: gql(
@@ -330,8 +331,22 @@ When called multiple times it returns same transaction (i.e. it's idempotent).
 ** Payer sees that transaction has been claimed
 Status of transaction is =approved= and =processed_at= field marks time of claim event.
 
+#+NAME: getTransaction
+#+BEGIN_SRC text :tangle ../../queries/getTransaction.graphql
+query getTransaction($id: ID!) {
+  currentUserWallet {
+    transaction(id: $id) {
+      id
+      state
+    }
+  }
+}
+#+END_SRC
+
 #+BEGIN_SRC python
-  _ = GET('/api/wallet/transactions/' + email_src_trn['data']['processEmailTransaction']['transaction']['id'])
+  _ = gql(
+      load('getTransaction'),
+      id=email_src_trn['data']['processEmailTransaction']['transaction']['id'])
 #+END_SRC
 
 #+RESULTS:
@@ -340,14 +355,12 @@ Status of transaction is =approved= and =processed_at= field marks time of claim
 
 {
   "data": {
-    "claim_expires_at": "2018-10-07T14:12:29.323637",
-    "description": "Free BTC",
-    "id": "01f3e37e-0af1-4745-8ccf-bbaf701f6ba9",
-    "inserted_at": "2018-10-07T13:57:29.323746",
-    "msatoshi": -1000,
-    "processed_at": null,
-    "state": "initial",
-    "to_email": "to@example.com"
+    "currentUserWallet": {
+      "transaction": {
+        "id": "890a5fa7-2a52-4ad3-97a4-4d023a817eb2",
+        "state": "APPROVED"
+      }
+    }
   }
 }
 #+end_example

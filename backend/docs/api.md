@@ -1,22 +1,22 @@
 
 # Table of Contents
 
-1.  [Wallet info](#orgb705e53)
-2.  [Invoice info](#orgd804c7c)
-3.  [Process lightning transaction](#org6b1b0ed)
-4.  [Send Bitcoin to email address](#org595594f)
-    1.  [Create transaction (payer)](#orga663150)
-        1.  [With amount exceeding wallet balance](#org0edfdca)
-    2.  [Claim transaction (payee)](#orga8c4667)
-        1.  [Success](#org2780384)
-        2.  [Failure: Expired](#orge7f9781)
-    3.  [Payer sees that transaction has been claimed](#org33ada83)
-5.  [Other](#orge951b9f)
-    1.  [Currency Rates](#org3e89bab)
+1.  [Wallet info](#org7529696)
+2.  [Invoice info](#org19c8f8d)
+3.  [Process lightning transaction](#org1f1436f)
+4.  [Send Bitcoin to email address](#orgaf95f5f)
+    1.  [Create transaction (payer)](#org26c936c)
+        1.  [With amount exceeding wallet balance](#org08e9e61)
+    2.  [Claim transaction (payee)](#org60c33ea)
+        1.  [Success](#orgbc4a2a3)
+        2.  [Failure: Expired](#org65df052)
+    3.  [Payer sees that transaction has been claimed](#org21863ee)
+5.  [Other](#org5cc803b)
+    1.  [Currency Rates](#org087dad4)
 
 
 
-<a id="orgb705e53"></a>
+<a id="org7529696"></a>
 
 # Wallet info
 
@@ -43,11 +43,11 @@
           "balance": {
             "msatoshi": 1000000000
           },
-          "id": "ddb4ce40-a47b-4eba-861a-64c7e0ee3e5a",
+          "id": "6d9bd794-8ecf-42d4-82e2-1856522b190b",
           "transactions": [
             {
               "description": "Funding transaction",
-              "id": "fa2a5122-5630-4e98-978e-9fc5f3bdbab5",
+              "id": "fa5c923f-d604-4fd8-8729-83fb94b2c1dc",
               "msatoshi": 1000000000,
               "state": "APPROVED"
             }
@@ -57,39 +57,49 @@
     }
 
 
-<a id="orgd804c7c"></a>
+<a id="org19c8f8d"></a>
 
 # Invoice info
 
-    _ = GET('/api/wallet/invoice/lntb1500n1pd0c66dpp5p8rpzxck9u7umfl9u7dqratj8rlfthe29xl6ejhwt2exuaxfpftqdqvg9jxgg8zn2sscqzysyv8kgctq7haghaus4wqd262mxr9342mvp23gdsv6vmgkce9zgshjd0av06dq3xpe8cy6fucnj454smkqxuetyvu3h5jggx2w8ethlvcp6g3ldq')
+    query parseInvoice($input: ParseInvoiceInput!) {
+      parseInvoice(input: $input) {
+        msatoshi
+        description
+      }
+    }
+
+    _ = gql(load('parseInvoice'), input={
+        "invoice": "lntb1500n1pdm5wrkpp5aauchrela4k3c5uekm5vwjt6zvhvcxeh99kg4tek786mp9rvtaqqdqvg9jxgg8zn2sscqzysxqr23s6tuchzms8ry7rs28v5s4ntufxs5y4pn4duys0xkcmkkc6l0yyyake3lq55r3m5f2sdk5a2kg49rm4va8sg975mtlnntc8yvf2xy259qqujel4e"
+    })
 
     200 OK
     
     {
       "data": {
-        "description": "Foobar #ldq",
-        "dst_alias": "SomeNodeAlias #039",
-        "msatoshi": 150000
+        "parseInvoice": {
+          "description": "Foobar #l4e",
+          "msatoshi": 150000
+        }
       }
     }
 
 
-<a id="org6b1b0ed"></a>
+<a id="org1f1436f"></a>
 
 # Process lightning transaction
 
+    mutation processLightningTransaction($input: ProcessLightningTransactionInput!) {
+      processLightningTransaction(input: $input) {
+        transaction {
+          id
+          msatoshi
+          state
+        }
+      }
+    }
+
     _ = gql(
-        """
-            mutation processLightningTransaction($input: ProcessLightningTransactionInput!) {
-              processLightningTransaction(input: $input) {
-                transaction {
-                  id
-                  msatoshi
-                  state
-                }
-              }
-            }
-        """,
+        load('processLightningTransaction'),
         input={"invoice": "lntb1500n1pd0c66dpp5p8rpzxck9u7umfl9u7dqratj8rlfthe29xl6ejhwt2exuaxfpftqdqvg9jxgg8zn2sscqzysyv8kgctq7haghaus4wqd262mxr9342mvp23gdsv6vmgkce9zgshjd0av06dq3xpe8cy6fucnj454smkqxuetyvu3h5jggx2w8ethlvcp6g3ldq"})
 
     200 OK
@@ -98,7 +108,7 @@
       "data": {
         "processLightningTransaction": {
           "transaction": {
-            "id": "00c07c52-2d12-4768-89ca-1e7c0dd11f64",
+            "id": "3047f6f7-5b95-471a-bd12-b2ecd36f86ed",
             "msatoshi": -150000,
             "state": "APPROVED"
           }
@@ -107,12 +117,12 @@
     }
 
 
-<a id="org595594f"></a>
+<a id="orgaf95f5f"></a>
 
 # Send Bitcoin to email address
 
 
-<a id="orga663150"></a>
+<a id="org26c936c"></a>
 
 ## Create transaction (payer)
 
@@ -143,7 +153,7 @@
         "processEmailTransaction": {
           "transaction": {
             "description": "Free BTC",
-            "id": "28e582ca-f870-4233-a234-0cd4dc13b462",
+            "id": "130e013e-4945-4726-9e83-981586103d82",
             "msatoshi": -1000,
             "state": "INITIAL"
           }
@@ -152,13 +162,13 @@
     }
 
 
-<a id="org0edfdca"></a>
+<a id="org08e9e61"></a>
 
 ### With amount exceeding wallet balance
 
 It returns declined transaction.
 
-    balance = silent(lambda: query('{ currentUserWallet { balance { msatoshi } } }'))['data']['currentUserWallet']['balance']
+    balance = silent(lambda: gql('{ currentUserWallet { balance { msatoshi } } }'))['data']['currentUserWallet']['balance']
     _ = gql(
         load('processEmailTransaction'),
         input={
@@ -175,7 +185,7 @@ It returns declined transaction.
         "processEmailTransaction": {
           "transaction": {
             "description": "Free BTC",
-            "id": "5cef53d9-1fb8-40d6-bc43-3d82daa27b85",
+            "id": "cb93f501-ef58-4a36-bbed-0724e0ede07d",
             "msatoshi": -999849001,
             "state": "DECLINED"
           }
@@ -184,12 +194,12 @@ It returns declined transaction.
     }
 
 
-<a id="orga8c4667"></a>
+<a id="org60c33ea"></a>
 
 ## Claim transaction (payee)
 
 
-<a id="org2780384"></a>
+<a id="orgbc4a2a3"></a>
 
 ### Success
 
@@ -209,7 +219,7 @@ When called multiple times it returns same transaction (i.e. it's idempotent).
     _ = gql(
         load('claimTransaction'),
         input={
-          "claimToken": "cb4db7e1-c1c9-4f42-82ab-ab4b829d0389"
+          "claimToken": "6da99b2f-cc3f-4021-9359-d3129f8a80a5"
         })
 
     200 OK
@@ -219,7 +229,7 @@ When called multiple times it returns same transaction (i.e. it's idempotent).
         "claimTransaction": {
           "transaction": {
             "description": "Free BTC",
-            "id": "e4a65fd0-c786-4aac-b70b-e87b6c519203",
+            "id": "af2e4768-891b-4b85-bf1c-0bba2ea39279",
             "msatoshi": 1000,
             "state": "APPROVED"
           }
@@ -228,7 +238,7 @@ When called multiple times it returns same transaction (i.e. it's idempotent).
     }
 
 
-<a id="orge7f9781"></a>
+<a id="org65df052"></a>
 
 ### Failure: Expired
 
@@ -270,36 +280,45 @@ When called multiple times it returns same transaction (i.e. it's idempotent).
     }
 
 
-<a id="org33ada83"></a>
+<a id="org21863ee"></a>
 
 ## Payer sees that transaction has been claimed
 
 Status of transaction is `approved` and `processed_at` field marks time of claim event.
 
-    _ = GET('/api/wallet/transactions/' + email_src_trn['data']['processEmailTransaction']['transaction']['id'])
+    query getTransaction($id: ID!) {
+      currentUserWallet {
+        transaction(id: $id) {
+          id
+          state
+        }
+      }
+    }
+
+    _ = gql(
+        load('getTransaction'),
+        id=email_src_trn['data']['processEmailTransaction']['transaction']['id'])
 
     200 OK
     
     {
       "data": {
-        "claim_expires_at": "2018-10-07T14:16:39.430881",
-        "description": "Free BTC",
-        "id": "28e582ca-f870-4233-a234-0cd4dc13b462",
-        "inserted_at": "2018-10-07T14:01:39.430991",
-        "msatoshi": -1000,
-        "processed_at": null,
-        "state": "initial",
-        "to_email": "to@example.com"
+        "currentUserWallet": {
+          "transaction": {
+            "id": "130e013e-4945-4726-9e83-981586103d82",
+            "state": "INITIAL"
+          }
+        }
       }
     }
 
 
-<a id="orge951b9f"></a>
+<a id="org5cc803b"></a>
 
 # Other
 
 
-<a id="org3e89bab"></a>
+<a id="org087dad4"></a>
 
 ## Currency Rates
 

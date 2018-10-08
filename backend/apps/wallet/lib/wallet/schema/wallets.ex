@@ -22,6 +22,13 @@ defmodule Wallet.Schema.Wallets do
     field :balance, non_null(:wallet_balance), resolve: &get_wallet_balance/3
     @desc "List of transactions associated with the wallet."
     field :transactions, list_of(:transaction), resolve: &find_transactions/3
+
+    @desc "Find particular wallet transaction by id."
+    field :transaction, :transaction do
+      arg :id, non_null(:id)
+
+      resolve &find_transaction/3
+    end
   end
 
   ## Resolvers
@@ -39,6 +46,15 @@ defmodule Wallet.Schema.Wallets do
   def get_wallet_balance(wallet, _args, _info) do
     balance = Wallets.get_wallet_balance(wallet)
     {:ok, %{msatoshi: balance}}
+  end
+
+  def find_transaction(wallet, %{id: id}, _info) do
+    try do
+      transaction = Wallets.get_transaction!(wallet, id)
+      {:ok, transaction}
+    rescue
+      _ -> {:error, "Not found"}
+    end
   end
 
   def find_transactions(wallet, _args, _info) do
