@@ -6,7 +6,7 @@ dev-prod-auth:
 dev:
 	$(MAKE) reset-db
 	$(MAKE) seed-db
-	mix phx.server
+	elixir --name wallet@127.0.0.1 -S mix phx.server
 
 test:
 	$(MAKE) MIX_ENV=test reset-db
@@ -17,7 +17,7 @@ test-watch:
 	mix test.watch
 
 shell:
-	ERL_AFLAGS="-kernel shell_history enabled" iex -S mix
+	ERL_AFLAGS="-kernel shell_history enabled" iex --name wallet-console@127.0.0.1 --remsh wallet@127.0.0.1
 
 reset-db:
 	mix do ecto.drop, ecto.create, ecto.migrate
