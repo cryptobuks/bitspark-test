@@ -16,6 +16,7 @@ EXPOSE $PORT
 
 COPY mix.lock ./
 COPY mix.exs ./
+COPY docker/run-backend ./
 COPY apps/wallet/mix.exs ./apps/wallet/
 COPY apps/wallet_web/mix.exs ./apps/wallet_web/
 COPY apps/pay/mix.exs ./apps/pay/
@@ -29,4 +30,4 @@ COPY . .
 RUN mix compile
 
 
-CMD mix do ecto.migrate, phx.server
+CMD ./run-backend
