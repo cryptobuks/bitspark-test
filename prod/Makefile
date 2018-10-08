@@ -22,7 +22,7 @@ logs:
 	papertrail --group biluminate --follow
 
 shell:
-	docker-compose exec backend iex -S mix
+	docker-compose exec backend iex --name wallet-console@127.0.0.1 --remsh wallet@127.0.0.1
 
 bash:
 	bash
