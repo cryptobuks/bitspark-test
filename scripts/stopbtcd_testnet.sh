@@ -5,6 +5,6 @@ export PATH=$PATH:/mnt/data/lightning/lightning/cli
 
 /mnt/data/bitcoin/bitcoinbin/bin/bitcoin-cli \
     -testnet \
-    -rpcuser=bitspark \
-    -rpcpassword=bitspark \
+    -rpcuser=biluminate \
+    -rpcpassword=biluminate \
     stop
