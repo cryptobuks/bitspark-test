@@ -13,5 +13,7 @@ export PATH=$PATH:/mnt/data/lightning/lightning/cli
     -txindex=1 \
     -rpcuser=biluminate \
     -rpcpassword=biluminate \
+    -rpcallowip='172.0.0.0/8' \
+    -rpcallowip='127.0.0.1' \
     --zmqpubrawblock=tcp://127.0.0.1:28332 \
     --zmqpubrawtx=tcp://127.0.0.1:28333
