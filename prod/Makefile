@@ -1,3 +1,5 @@
+export WALLET_BTCD_PORT=18332
+export WALLET_BTCD_HOST=bit-1.c.bitspark-195811.internal
 export WALLET_LND_REST_URL=https://bit-1.c.bitspark-195811.internal:29735
 export CANTEEN_LND_REST_URL=https://bit-1.c.bitspark-195811.internal:29736
 

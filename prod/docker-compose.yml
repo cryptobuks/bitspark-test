@@ -24,6 +24,7 @@ services:
     environment:
       - WALLET_URL=${WALLET_URL:-https://testwallet.biluminate.com}
       - WALLET_PORT=4000
+      - WALLET_BTCD_HOST=${WALLET_BTCD_HOST}
       - WALLET_BTCD_PORT=${WALLET_BTCD_PORT}
       - WALLET_BTCD_USER=${WALLET_BTCD_USER}
       - WALLET_BTCD_PASSWORD=${WALLET_BTCD_PASSWORD}
