@@ -38,6 +38,12 @@ defmodule Bitcoin.Amount do
   @doc """
   Conversions
 
+      iex> Bitcoin.Amount.to_btc({1, :btc})
+      #Decimal<1>
+
+      iex> Bitcoin.Amount.to_btc({1, :mbtc})
+      #Decimal<0.001>
+
       iex> Bitcoin.Amount.to_satoshi({1, :btc})
       100_000_000
 
@@ -48,6 +54,10 @@ defmodule Bitcoin.Amount do
       100_000_000_000
 
   """
+  def to_btc({amount, unit}) do
+    D.div(to_msatoshi({amount, unit}), 100_000_000_000)
+  end
+
   def to_satoshi({amount, unit}) do
     D.div(to_msatoshi({amount, unit}), 1000) |> D.round |> D.to_integer
   end
