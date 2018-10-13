@@ -3,4 +3,8 @@
 export PATH=$PATH:/mnt/data/bitcoin/bitcoinbin/bin
 export PATH=$PATH:/mnt/data/lightning/lightning/cli
 
-/mnt/data/bitcoin/bitcoinbin/bin/bitcoin-cli -testnet -rpcuser=bitspark -rpcpassword=bitspark stop
+/mnt/data/bitcoin/bitcoinbin/bin/bitcoin-cli \
+    -testnet \
+    -rpcuser=bitspark \
+    -rpcpassword=bitspark \
+    stop
