@@ -14,6 +14,10 @@ defmodule Wallet.Wallets.Transaction do
     field :description, :string
     # Lightning
     field :invoice, :string
+    # On-chain
+    field :on_chain_address_id, :binary_id
+    field :on_chain_txid, :string
+    field :on_chain_confirmations, :integer
     # External claim (e.g., via email)
     field :to_email, :string
     field :claim_token, :binary_id
@@ -32,7 +36,8 @@ defmodule Wallet.Wallets.Transaction do
     transaction
     |> cast(attrs, [
           :wallet_id, :state, :description, :msatoshi, :invoice, :response, :processed_at,
-          :to_email, :claim_token, :claim_expires_at, :claimed_by, :src_transaction_id])
+          :to_email, :claim_token, :claim_expires_at, :claimed_by, :src_transaction_id,
+          :on_chain_address_id, :on_chain_txid, :on_chain_confirmations])
     |> validate_required([:wallet_id, :state, :msatoshi])
     |> validate_final_state()
     |> foreign_key_constraint(:state)
