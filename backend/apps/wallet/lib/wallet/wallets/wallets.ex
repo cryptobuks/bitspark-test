@@ -201,6 +201,25 @@ defmodule Wallet.Wallets do
   end
 
   @doc """
+  Gets a transaction associated with given on-chain txid.
+
+  ## Example
+
+      iex> get_transaction_by_on_chain_txid("92633f69aacfd7595baa923243f249e0f36db52e45ae67e6571b6661df2b6745")
+      {:ok, %Transaction{}}
+
+  """
+  def get_transaction_by_on_chain_txid(on_chain_txid) do
+    case Repo.get_by(Wallets.Transaction, on_chain_txid: on_chain_txid) do
+      %Wallets.Transaction{} = trn ->
+        {:ok, trn}
+
+      nil ->
+        {:error, :transaction_not_found}
+    end
+  end
+
+  @doc """
   Gets a transaction for given claim token (makes sure that it respects expiration).
 
   ## Example
@@ -453,6 +472,50 @@ defmodule Wallet.Wallets do
         {:ok, processed_transaction}
       end
     end
+  end
+
+  @doc """
+  Create new address for incomming on-chain payments and assign it to given wallet.
+  """
+  def create_on_chain_address(%Wallets.Wallet{} = _wallet) do
+    {:ok, _address} = Gold.getnewaddress(:wallet_btcd)
+  end
+
+  @doc """
+  Synchronize wallet with bitcoind state (on-chain transactions).
+
+  Updates existing transactions and/or creates new ones.
+  """
+  def synchronize_on_chain_transactions() do
+    # For testing purposes synchronize only last 5 transactions
+    last_n_transactions = 5
+    # http://chainquery.com/bitcoin-api/listtransactions
+    # Sorted from oldest to newest
+    {:ok, btcd_transactions} = Gold.listtransactions(:wallet_btcd, "", last_n_transactions)
+
+    btcd_transactions
+    |> Enum.filter(&(&1.category == :receive))
+    |> Enum.each(&synchronize_on_chain_transaction/1)
+  end
+
+  def synchronize_on_chain_transaction(%Gold.Transaction{} = on_chain_trn) do
+    IO.puts "Synchronizing incomming on-chain transaction for address #{on_chain_trn.address} - txid: #{on_chain_trn.txid}, amount: #{on_chain_trn.amount}, confirmations: #{on_chain_trn.confirmations}"
+    # SELECT FOR UPDATE WHERE trn.on_chain_txid === on_chain_trn.txid
+    # Update
+    #   on_chain_confirmations = on_chain_trn.confirmations
+    #   (when on_chain_trn.confirmations === 6 && trn.processed_at IS NULL) trn.processed_at = now()
+  end
+
+  @doc """
+  Send on-chain payment to given address.
+  """
+  def pay_to_on_chain_address(%Wallets.Wallet{} = _wallet, address, msatoshi) do
+    amount = Bitcoin.Amount.to_btc({msatoshi, :msatoshi})
+    # TODO: Set transaction fee
+    # TODO: - What's the amount here?
+    # TODO: - Make sure that settxfee is executed in 'transaction' with sendtoaddress.
+    # Gold.call(:wallet_btcd, {:settxfee, [Decimal.new("0.001")]})
+    {:ok, _on_chain_txid} = Gold.sendtoaddress(:wallet_btcd, address, amount)
   end
 
   @doc """
