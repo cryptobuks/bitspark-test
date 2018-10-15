@@ -477,8 +477,20 @@ defmodule Wallet.Wallets do
   @doc """
   Create new address for incomming on-chain payments and assign it to given wallet.
   """
-  def create_on_chain_address(%Wallets.Wallet{} = _wallet) do
-    {:ok, _address} = Gold.getnewaddress(:wallet_btcd)
+  def create_on_chain_address(%Wallets.Wallet{} = wallet) do
+    {:ok, address} = Gold.getnewaddress(:wallet_btcd)
+
+    %{
+      address: address,
+      wallet_id: wallet.id
+    }
+    |> create_on_chain_address
+  end
+
+  def create_on_chain_address(attrs) do
+    %Wallets.OnChainAddress{}
+    |> Wallets.OnChainAddress.changeset(attrs)
+    |> Repo.insert()
   end
 
   @doc """
