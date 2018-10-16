@@ -136,11 +136,12 @@ const actions = {
     api.logout()
     commit('clearStore')
   },
-  fetchUserInfo: ({ commit, getters: { api, user } }) => {
+  fetchUserInfo: ({ commit, dispatch, getters: { api, user } }) => {
     if (!user) return null
 
     api.subscribeToWalletInfo(walletInfo => {
       commit('walletInfo', walletInfo)
+      dispatch('fetchTransactions')
     })
 
     return api.getWalletInfo()
