@@ -60,9 +60,12 @@ defmodule Wallet.Wallets do
   def get_wallet_balance(wallet) do
     q = from t in Wallets.Transaction,
       select: sum(t.msatoshi),
-      where: t.state in ^[
-        Wallets.Transaction.approved, Wallets.Transaction.initial
-      ] and t.wallet_id == ^wallet.id
+      where: t.wallet_id == ^wallet.id,
+      where: (
+        # Incomming (only count approved transactions so that user can't access funds from un-confirmed transactions)
+        t.state in ^[Wallets.Transaction.approved] and t.msatoshi > 0) or (
+        # Outgoing (count both initial & approved)
+        t.state in ^[Wallets.Transaction.initial, Wallets.Transaction.approved] and t.msatoshi < 0)
 
     # SUM of integers in postgresql results in decimal, but we want Integer (we
     # know it's OK as there are only 21M BTC)
