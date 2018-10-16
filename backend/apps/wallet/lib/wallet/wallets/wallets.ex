@@ -638,10 +638,17 @@ defmodule Wallet.Wallets do
 
   """
   def update_transaction(%Wallets.Transaction{} = transaction, attrs) do
-    transaction
+    changeset = transaction
     |> Wallets.Transaction.changeset(attrs)
-    |> Repo.update()
-    |> on_success(&Events.transaction_updated/1)
+
+    case Enum.count(changeset.changes) do
+      0 ->
+        transaction
+      _ ->
+        changeset
+        |> Repo.update()
+        |> on_success(&Events.transaction_updated/1)
+    end
   end
 
   @doc """
