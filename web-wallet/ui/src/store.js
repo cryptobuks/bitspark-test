@@ -167,8 +167,10 @@ const actions = {
       }
     })
   },
-  loginFailure: ({ commit }, payload) => {
+  loginFailure: ({ commit, getters: { api } }, payload) => {
     commit('loginFailure', payload)
+
+    api.logout()
 
     // Payment & Claim pages support non-authorized user so stay there
     if (!['PayInvoice', 'Claim'].includes(router.currentRoute.name)) {

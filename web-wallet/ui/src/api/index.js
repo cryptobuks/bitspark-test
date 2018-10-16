@@ -20,14 +20,23 @@ function assertHttpOk (res) {
   return res
 }
 
+const graphqlClient = new GraphQlClient({accessToken: 'anonymous'})
+
 export class API {
   constructor (accessToken) {
     this.accessToken = accessToken
-    this.graphql = new GraphQlClient({accessToken})
+    this.graphql = graphqlClient
+    this.graphql.setToken(accessToken || 'anonymous')
+    this.subs = {}
   }
 
   logout () {
+    for (let sub of Object.values(this.subs)) {
+      sub.unsubscribe()
+    }
+    this.subs = {}
     this.graphql.clearStore()
+    this.graphql.setToken('anonymous')
   }
 
   getCurrencyRates (currency) {
@@ -50,11 +59,13 @@ export class API {
   }
 
   subscribeToWalletInfo (fn) {
+    if (this.subs.subscribeToWalletInfo) return
+
     var sub = this.graphql.subscribe({
       query: gql`subscription { currentUserWalletUpdated { id, balance { msatoshi } } }`
     })
 
-    sub.subscribe({
+    this.subs.subscribeToWalletInfo = sub.subscribe({
       next ({ data }) {
         fn(data.currentUserWalletUpdated)
       },
