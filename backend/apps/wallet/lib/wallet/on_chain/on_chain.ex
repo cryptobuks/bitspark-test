@@ -34,6 +34,6 @@ defmodule Wallet.OnChain do
   end
 
   def schendule_synchronization() do
-    Process.send_after(self(), :synchronize, :timer.seconds(2))
+    Process.send_after(self(), :synchronize, :timer.seconds(1))
   end
 end
