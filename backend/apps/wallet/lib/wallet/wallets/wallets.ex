@@ -497,6 +497,25 @@ defmodule Wallet.Wallets do
   end
 
   @doc """
+  Return all registered on chain addresses.
+  """
+  def list_on_chain_addresses() do
+    Repo.all(Wallets.OnChainAddress)
+  end
+
+  @doc """
+  Return registered address for given on-chain address.
+  """
+  def get_on_chain_address(address) do
+    with %Wallets.OnChainAddress{} = on_chain_address <- Repo.get_by(Wallets.OnChainAddress, address: address) do
+      {:ok, on_chain_address}
+    else
+      nil ->
+        {:error, :address_not_found}
+    end
+  end
+
+  @doc """
   Synchronize wallet with bitcoind state (on-chain transactions).
 
   Updates existing transactions and/or creates new ones.
@@ -507,7 +526,10 @@ defmodule Wallet.Wallets do
     # http://chainquery.com/bitcoin-api/listtransactions
     # Sorted from oldest to newest
     {:ok, btcd_transactions} = Gold.listtransactions(:wallet_btcd, "", last_n_transactions)
+    synchronize_on_chain_transactions(btcd_transactions)
+  end
 
+  def synchronize_on_chain_transactions(btcd_transactions) do
     btcd_transactions
     |> Enum.filter(&(&1.category == :receive))
     |> Enum.each(&synchronize_on_chain_transaction/1)
@@ -515,10 +537,60 @@ defmodule Wallet.Wallets do
 
   def synchronize_on_chain_transaction(%Gold.Transaction{} = on_chain_trn) do
     IO.puts "Synchronizing incomming on-chain transaction for address #{on_chain_trn.address} - txid: #{on_chain_trn.txid}, amount: #{on_chain_trn.amount}, confirmations: #{on_chain_trn.confirmations}"
-    # SELECT FOR UPDATE WHERE trn.on_chain_txid === on_chain_trn.txid
-    # Update
-    #   on_chain_confirmations = on_chain_trn.confirmations
-    #   (when on_chain_trn.confirmations === 6 && trn.processed_at IS NULL) trn.processed_at = now()
+
+    case get_transaction_by_on_chain_txid(on_chain_trn.txid) do
+      {:ok, trn} ->
+        update_transaction_from_on_chain_transaction(trn, on_chain_trn)
+      {:error, :transaction_not_found} ->
+        with {:ok, wallet_address} <- get_on_chain_address(on_chain_trn.address)
+          do
+          create_transaction_from_on_chain_transaction(wallet_address, on_chain_trn)
+        end
+    end
+  end
+
+  def update_transaction_from_on_chain_transaction(
+    %Wallets.Transaction{} = trn,
+    %Gold.Transaction{} = on_chain_trn
+  ) do
+    state = Wallets.Transaction.get_on_chain_transaction_state(on_chain_trn)
+    processed_at = cond do
+      trn.processed_at ->
+        # already processed (approved)
+        trn.processed_at
+      state == Wallets.Transaction.approved ->
+        # approved just now
+        TestableNaiveDateTime.utc_now()
+      true ->
+        nil
+    end
+
+    update_transaction(
+      trn, %{processed_at: processed_at,
+             state: state,
+             on_chain_confirmations: on_chain_trn.confirmations})
+  end
+
+  def create_transaction_from_on_chain_transaction(
+    %Wallets.OnChainAddress{} = wallet_address,
+    %Gold.Transaction{} = on_chain_trn
+  ) do
+    state = Wallets.Transaction.get_on_chain_transaction_state(on_chain_trn)
+    processed_at = if (state == "approved") do
+      TestableNaiveDateTime.utc_now()
+    else
+      nil
+    end
+
+    create_transaction(
+      %{"wallet_id" => wallet_address.wallet_id,
+        "on_chain_address_id" => wallet_address.id,
+        "on_chain_confirmations" => on_chain_trn.confirmations,
+        "on_chain_txid" => on_chain_trn.txid,
+        "state" => state,
+        "processed_at" => processed_at,
+        "msatoshi" => Bitcoin.Amount.to_msatoshi({on_chain_trn.amount, :btc}),
+        "description" => on_chain_trn.address})
   end
 
   @doc """

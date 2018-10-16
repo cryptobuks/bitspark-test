@@ -53,6 +53,9 @@ defmodule Wallet.Wallets.Transaction do
   def get_transaction_type(%{invoice: value}) when value != nil, do: :lightning
   def get_transaction_type(%{}), do: :other
 
+  def get_on_chain_transaction_state(%{confirmations: n}) when n >= 6, do: __MODULE__.approved
+  def get_on_chain_transaction_state(_), do: __MODULE__.initial
+
   @doc """
   Decide whether system should expire given claimable transaction
 
