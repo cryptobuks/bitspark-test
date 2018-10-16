@@ -16,6 +16,7 @@ defmodule Wallet.Application do
       supervisor(Wallet.Repo, []),
       supervisor(TestableNaiveDateTime, []),
       supervisor(Wallet.CurrencyRates, []),
+      supervisor(Wallet.OnChain, []),
     ], strategy: :one_for_one, name: Wallet.Supervisor)
   end
 end
