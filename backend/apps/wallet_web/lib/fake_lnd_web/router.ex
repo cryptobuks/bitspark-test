@@ -21,7 +21,7 @@ defmodule FakeLndWeb.Router do
       conn
       |> json(200, payload)
     else
-      {:error, reason} ->
+      {:error, _reason} ->
         conn
         |> json(500, %{"code" => 2, "error" => "invalid invoice"})
     end
