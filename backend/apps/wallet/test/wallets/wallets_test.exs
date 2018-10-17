@@ -147,6 +147,142 @@ defmodule Wallet.WalletsTest do
     end
   end
 
+  describe "wallet - on-chain transactions" do
+    test "synchronize_on_chain_transactions/1 creates initial transaction (confirmations < 6)" do
+      wallet = create_wallet()
+      addr1 = "addr1"
+      Wallets.create_on_chain_address(%{wallet_id: wallet.id, address: addr1})
+
+      btcd_transactions = [
+        %Gold.Transaction{
+          address: addr1,
+          amount: Bitcoin.Amount.to_btc({1000, :msatoshi}),
+          blockhash: "00000000000002d61da8f097242b683c1d877af7a4f857b242fa150855411627",
+          blockindex: 3,
+          category: :receive,
+          comment: nil,
+          confirmations: 5,
+          time: 1539582515,
+          timereceived: 1539582515,
+          txid: "02633f69aacfd7595baa923243f249e0f36db52e45ae67e6571b66612f2b321",
+          vout: 0}
+      ]
+      Wallets.synchronize_on_chain_transactions(btcd_transactions)
+
+      [trn] = Wallets.list_transactions(wallet)
+
+      assert_value canonicalize(
+                     trn
+                     |> Map.take([
+                       :state,
+                       :msatoshi,
+                       :on_chain_address_id,
+                       :on_chain_confirmations,
+                       :on_chain_txid,
+                       :inserted_at,
+                       :processed_at
+                     ])
+                   ) == %{
+                     inserted_at: "<NAIVEDATETIME>",
+                     msatoshi: 1000,
+                     on_chain_address_id: "<UUID>",
+                     on_chain_confirmations: 5,
+                     on_chain_txid:
+                       "02633f69aacfd7595baa923243f249e0f36db52e45ae67e6571b66612f2b321",
+                     processed_at: nil,
+                     state: "initial"
+                   }
+    end
+
+    test "synchronize_on_chain_transactions/1 creates approved transaction (confirmations >= 6)" do
+      wallet = create_wallet()
+      addr1 = "addr1"
+      Wallets.create_on_chain_address(%{wallet_id: wallet.id, address: addr1})
+
+      btcd_transactions = [
+        %Gold.Transaction{
+          address: addr1,
+          amount: Bitcoin.Amount.to_btc({1000, :msatoshi}),
+          blockhash: "00000000000002d61da8f097242b683c1d877af7a4f857b242fa150855411627",
+          blockindex: 3,
+          category: :receive,
+          comment: nil,
+          confirmations: 6,
+          time: 1539582515,
+          timereceived: 1539582515,
+          txid: "02633f69aacfd7595baa923243f249e0f36db52e45ae67e6571b66612f2b321",
+          vout: 0}
+      ]
+      Wallets.synchronize_on_chain_transactions(btcd_transactions)
+
+      [trn] = Wallets.list_transactions(wallet)
+
+      assert_value canonicalize(
+                     trn
+                     |> Map.take([
+                       :state,
+                       :msatoshi,
+                       :on_chain_address_id,
+                       :on_chain_confirmations,
+                       :on_chain_txid,
+                       :inserted_at,
+                       :processed_at
+                     ])
+                   ) == %{
+                     inserted_at: "<NAIVEDATETIME>",
+                     msatoshi: 1000,
+                     on_chain_address_id: "<UUID>",
+                     on_chain_confirmations: 6,
+                     on_chain_txid:
+                       "02633f69aacfd7595baa923243f249e0f36db52e45ae67e6571b66612f2b321",
+                     processed_at: "<NAIVEDATETIME>",
+                     state: "approved"
+                   }
+    end
+
+    test "synchronize_on_chain_transactions/1 updates initial transaction to approved (confirmations >= 6)" do
+      wallet = create_wallet()
+      addr1 = "addr1"
+      Wallets.create_on_chain_address(%{wallet_id: wallet.id, address: addr1})
+
+      trn1_0conf = %Gold.Transaction{
+        address: addr1,
+        amount: Bitcoin.Amount.to_btc({1000, :msatoshi}),
+        blockhash: "00000000000002d61da8f097242b683c1d877af7a4f857b242fa150855411627",
+        blockindex: 3,
+        category: :receive,
+        comment: nil,
+        confirmations: 0,
+        time: 1539582515,
+        timereceived: 1539582515,
+        txid: "02633f69aacfd7595baa923243f249e0f36db52e45ae67e6571b66612f2b321",
+        vout: 0
+      }
+
+      # Create an initial trasaction
+      Wallets.synchronize_on_chain_transactions([trn1_0conf])
+      [initial_trn] = Wallets.list_transactions(wallet)
+      assert_value canonicalize(initial_trn |> Map.take([:state, :processed_at])) == %{
+                     processed_at: nil,
+                     state: "initial"
+                   }
+
+      # Process same on-chain transaction again (should be noop)
+      Wallets.synchronize_on_chain_transactions([trn1_0conf])
+      [initial_trn2] = Wallets.list_transactions(wallet)
+      assert initial_trn == initial_trn2
+
+      # Process the transaction, but now with 6+ confirmations
+      trn1_6conf = Map.put(trn1_0conf, :confirmations, 6)
+      Wallets.synchronize_on_chain_transactions([trn1_6conf])
+      [approved_trn] = Wallets.list_transactions(wallet)
+      assert_value canonicalize(approved_trn |> Map.take([:state, :processed_at])) == %{
+                     processed_at: "<NAIVEDATETIME>",
+                     state: "approved"
+                   }
+    end
+  end
+
   describe "wallet - claimable transactions" do
     def claimable_trn_fixture(attrs \\ %{}) do
       wallet = create_wallet("claimable_trn_fixture")
