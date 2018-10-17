@@ -481,7 +481,7 @@ defmodule Wallet.Wallets do
   Create new address for incomming on-chain payments and assign it to given wallet.
   """
   def create_on_chain_address(%Wallets.Wallet{} = wallet) do
-    {:ok, address} = Gold.getnewaddress(:wallet_btcd)
+    {:ok, address} = Wallet.OnChain.create_address()
 
     %{
       address: address,
@@ -516,19 +516,10 @@ defmodule Wallet.Wallets do
   end
 
   @doc """
-  Synchronize wallet with bitcoind state (on-chain transactions).
+  Synchronize wallet with given on-chain transactions.
 
   Updates existing transactions and/or creates new ones.
   """
-  def synchronize_on_chain_transactions() do
-    # For testing purposes synchronize only last 5 transactions
-    last_n_transactions = 5
-    # http://chainquery.com/bitcoin-api/listtransactions
-    # Sorted from oldest to newest
-    {:ok, btcd_transactions} = Gold.listtransactions(:wallet_btcd, "", last_n_transactions)
-    synchronize_on_chain_transactions(btcd_transactions)
-  end
-
   def synchronize_on_chain_transactions(btcd_transactions) do
     btcd_transactions
     |> Enum.filter(&(&1.category == :receive))

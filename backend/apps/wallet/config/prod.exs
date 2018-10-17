@@ -11,6 +11,9 @@ config :wallet, Lightning,
   lnd_base_url: System.get_env("WALLET_LND_REST_URL"),
   lnd_macaroon: System.get_env("WALLET_LND_REST_MACAROON")
 
+config :wallet, Wallet.OnChain,
+  gold_module: Gold
+
 config :wallet, Wallet.CurrencyRates.Coinbase,
   base_url: "https://api.coinbase.com"
 
