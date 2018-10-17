@@ -536,8 +536,6 @@ defmodule Wallet.Wallets do
   end
 
   def synchronize_on_chain_transaction(%Gold.Transaction{} = on_chain_trn) do
-    IO.puts "Synchronizing incomming on-chain transaction for address #{on_chain_trn.address} - txid: #{on_chain_trn.txid}, amount: #{on_chain_trn.amount}, confirmations: #{on_chain_trn.confirmations}"
-
     case get_transaction_by_on_chain_txid(on_chain_trn.txid) do
       {:ok, trn} ->
         update_transaction_from_on_chain_transaction(trn, on_chain_trn)
