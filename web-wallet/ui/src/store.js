@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import VuexPersistence from 'vuex-persist'
 import router from './router'
 import { API, NotAuthorizedError } from './api'
+import debounce from 'lodash/debounce'
 
 Vue.use(Vuex)
 
@@ -139,9 +140,15 @@ const actions = {
   fetchUserInfo: ({ commit, dispatch, getters: { api, user } }) => {
     if (!user) return null
 
+    const fetchTransactions = debounce(
+      () => dispatch('fetchTransactions'),
+      1000,
+      { leading: true, trailing: true }
+    )
+
     api.subscribeToWalletInfo(walletInfo => {
       commit('walletInfo', walletInfo)
-      dispatch('fetchTransactions')
+      fetchTransactions()
     })
 
     return api.getWalletInfo()
